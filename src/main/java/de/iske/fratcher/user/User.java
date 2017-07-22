@@ -1,4 +1,6 @@
-package de.iske.fratcher.entity;
+package de.iske.fratcher.user;
+
+import de.iske.fratcher.match.Match;
 
 import java.util.ArrayList;
 import java.util.List;
