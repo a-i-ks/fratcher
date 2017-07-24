@@ -105,4 +105,13 @@ public class User {
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }
