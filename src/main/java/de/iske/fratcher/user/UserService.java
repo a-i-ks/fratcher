@@ -72,4 +72,12 @@ public class UserService {
         LOG.debug("Retrieving user from database. user={}", email);
         return userRepository.findByEmailAndPassword(email, password);
     }
+
+    public User getUser(Long id) {
+        return userRepository.findById(id);
+    }
+
+    public Iterable<User> getUserList() {
+        return userRepository.getAllUser();
+    }
 }
