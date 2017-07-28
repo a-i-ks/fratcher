@@ -2,13 +2,13 @@ package de.iske.fratcher.match;
 
 import de.iske.fratcher.user.User;
 
+import javax.persistence.Entity;
 import java.time.Instant;
 import java.util.AbstractMap;
 import java.util.Map;
 
+@Entity
 public class Match {
-
-
 
     private final Map.Entry<User,User> matchedUsers;
 
