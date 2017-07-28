@@ -80,4 +80,8 @@ public class UserService {
     public Iterable<User> getUserList() {
         return userRepository.getAllUser();
     }
+
+    public void addUser(User user) {
+        userRepository.save(user);
+    }
 }
