@@ -6,6 +6,7 @@ import de.iske.fratcher.match.Match;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,8 @@ public class User {
     private String firstName;
     private String lastName;
 
+    //TODO Check which attributes and settings are needed for a OneToMany relation
+    @OneToMany
     private List<Match> matches;
 
     public Long getId() {
