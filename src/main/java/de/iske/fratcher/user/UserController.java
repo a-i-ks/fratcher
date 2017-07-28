@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserController {
 
+    private static class UserCreated {
+        public String url;
+    }
+
     @Autowired
     private UserService userService;
 
