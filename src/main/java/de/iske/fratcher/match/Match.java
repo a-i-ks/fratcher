@@ -2,9 +2,7 @@ package de.iske.fratcher.match;
 
 import de.iske.fratcher.user.User;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.AbstractMap;
 import java.util.Map;
@@ -16,6 +14,11 @@ public class Match {
     @GeneratedValue
     private Long id;
 
+    public Long getId() {
+        return id;
+    }
+
+    @ManyToOne(targetEntity = User.class)
     private final Map.Entry<User,User> matchedUsers;
 
     private final Instant matchingTimestamp;

@@ -27,7 +27,7 @@ public class User {
     private String lastName;
 
     //TODO Check which attributes and settings are needed for a OneToMany relation
-    @OneToMany
+    @OneToMany(targetEntity = Match.class)
     private List<Match> matches;
 
     public Long getId() {
