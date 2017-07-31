@@ -16,6 +16,5 @@ public interface UserRepository extends CrudRepository<User, Long> {
     @Query("SELECT u from User_ u WHERE u.id = :id")
     User findById(@Param("id") Long id);
 
-    @Query("SELECT u from User_ u")
-    Stream<User> getAllUser();
+    Iterable<User> findAll();
 }

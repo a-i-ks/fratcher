@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * Service for all user-related functional operations.
@@ -35,7 +36,8 @@ public class UserService {
     }
 
     public Stream<User> getUserList() {
-        return userRepository.getAllUser();
+        Iterable<User> allUser = userRepository.findAll();
+        return StreamSupport.stream(allUser.spliterator(), false);
     }
 
     public void addUser(User user) {
