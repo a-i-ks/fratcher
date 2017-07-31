@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.stream.Stream;
+
 /**
  * Service for all user-related functional operations.
  * adopted from https://github.com/micromata/webengineering-2017/blob/master/src/main/java/com/micromata/webengineering/demo/user/UserService.java
@@ -32,7 +34,7 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public Iterable<User> getUserList() {
+    public Stream<User> getUserList() {
         return userRepository.getAllUser();
     }
 
