@@ -1,6 +1,7 @@
 package de.iske.fratcher.user;
 
 
+import de.iske.fratcher.util.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +16,8 @@ import java.util.stream.Stream;
 @RestController
 public class UserController {
 
-    private static class UserCreated {
-        public UserCreated(User user) {
-            this.url = "localhost:8080/api/user/" + user.getId();
-        }
-        public String url;
-    }
+    @Autowired
+    private AddressService addressService;
 
     @Autowired
     private UserService userService;
@@ -28,8 +25,7 @@ public class UserController {
     @RequestMapping(value = "api/user", method = RequestMethod.POST)
     public ResponseEntity<Object> addUser(@RequestBody User user) {
         userService.addUser(user);
-        //TODO Find a better way to return URL of recently created user
-        UserCreated userCreated = new UserCreated(user);
+        UserCreated userCreated = new UserCreated(user,addressService.getServerURL());
         return ResponseEntity.ok(userCreated);
     }
 
@@ -41,5 +37,13 @@ public class UserController {
     @RequestMapping(value = "/api/user/{id}", method = RequestMethod.GET)
     public User getUser(@PathVariable Long id) {
         return userService.getUser(id);
+    }
+
+    private static class UserCreated {
+
+        public String url;
+        public UserCreated(User user,String serverUrl) {
+            this.url = serverUrl + "/api/user/" + user.getId();
+        }
     }
 }
