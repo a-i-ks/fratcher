@@ -30,8 +30,16 @@ public class User {
     @OneToMany(targetEntity = Match.class)
     private List<Match> matches;
 
+    public User() {
+        matches = new ArrayList<>();
+    }
+
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getEmail() {
@@ -44,10 +52,6 @@ public class User {
 
     public String getUsername() {
         return username;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setUsername(String username) {
@@ -86,12 +90,6 @@ public class User {
         this.password = password;
     }
 
-
-
-    public User() {
-        matches = new ArrayList<>();
-    }
-
     // See https://stackoverflow.com/questions/17027777/relationship-between-hashcode-and-equals-method-in-java for
     // an explanation why we override both equals() and hashCode().
     @Override
@@ -120,5 +118,9 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';
+    }
+
+    public void addMatch(Match match) {
+        matches.add(match);
     }
 }
