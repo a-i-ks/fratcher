@@ -26,6 +26,11 @@ public class MatchServiceTest {
 
     private EnhancedRandom random = EnhancedRandomBuilder.aNewEnhancedRandom();
 
+    @Test
+    public void testServiceInjection() {
+        assertNotNull("No instance for userService. Dependency injection failed", matchService);
+        assertNotNull("No instance for userService. Dependency injection failed", userService);
+    }
 
     @Test
     @Rollback
