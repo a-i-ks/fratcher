@@ -31,7 +31,7 @@ public class UserServiceTest {
     private UserService userService;
 
     @Test
-    public void testNotNull() {
+    public void testServiceInjection() {
         assertNotNull("No instance for userService. Dependency injection failed", userService);
     }
 
