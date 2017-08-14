@@ -26,6 +26,32 @@ public class MatchServiceTest {
 
     private EnhancedRandom random = EnhancedRandomBuilder.aNewEnhancedRandom();
 
+
+    @Test
+    @Rollback
+    public void testIdShouldBeNullAfterCreation() {
+        User user1 = random.nextObject(User.class,"id");
+        User user2 = random.nextObject(User.class,"id");
+        userService.addUser(user1);
+        userService.addUser(user2);
+        Match match1 = new Match(user1);
+        assertNotNull("Match object should not null after creation",match1);
+        assertNull("Match id should be null before persisting entity",match1.getId());
+    }
+
+    @Test
+    @Rollback
+    public void testIdShouldNotBeNullAfterPersisting() {
+        User user1 = random.nextObject(User.class,"id");
+        User user2 = random.nextObject(User.class,"id");
+        userService.addUser(user1);
+        userService.addUser(user2);
+        Match match1 = new Match(user1);
+        matchService.addMatch(match1);
+        assertNotNull("Match object should not null after creation",match1);
+        assertNotNull("Match id should not null after persisting entity",match1.getId());
+    }
+
     @Test
     @Rollback
     public void testMatchCreation() {
