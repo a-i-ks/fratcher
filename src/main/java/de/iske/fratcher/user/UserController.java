@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.stream.Stream;
-
 /**
  * HTTP endpoint for a user-related HTTP requests.
  * @author André Iske
@@ -30,7 +28,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/api/user", method = RequestMethod.GET)
-    public Stream<User> getUserList() {
+    public Iterable<User> getUserList() {
         return userService.getUserList();
     }
 
