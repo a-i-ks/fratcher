@@ -2,10 +2,11 @@ package de.iske.fratcher.match;
 
 import de.iske.fratcher.user.User;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.time.Instant;
-import java.util.AbstractMap;
-import java.util.Map;
 
 @Entity
 public class Match {
