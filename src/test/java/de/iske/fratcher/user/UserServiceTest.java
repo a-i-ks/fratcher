@@ -9,8 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.stream.Stream;
 
 import static org.junit.Assert.*;
 
@@ -33,19 +35,17 @@ public class UserServiceTest {
     }
 
     @Test
-    @Rollback
+    @Transactional
     public void testUserCreation() {
         LOG.info("Number of user in database: {}", IterableUtil.sizeOf(userService.getUserList()));
         User user = random.nextObject(User.class,"id");
+        assertNotNull("user should not be null after creation",user);
         //Check that id is null in the beginning and is set only after persisting the entity
         assertNull("User id should be null before persisting entity",user.getId());
-
-        userService.addUser(user);
-        assertNotNull("User id should not be null after persisting entity",user.getId());
     }
 
     @Test
-    @Rollback
+    @Transactional
     public void testUserPersist() {
         User user = random.nextObject(User.class,"id");
         assertNull("User id should be null before persisting entity",user.getId());
@@ -56,4 +56,11 @@ public class UserServiceTest {
         assertEquals("User was not read correctly from database",user,storedUser);
     }
 
+    @Test
+    @Transactional
+    public void testUserList() {
+        Stream<User> userStream = random.objects(User.class, 10, "id");
+        userStream.forEach(user -> userService.addUser(user));
+        assertEquals("There sould be 10 users in the user list",10,IterableUtil.sizeOf(userService.getUserList()));
+    }
 }
