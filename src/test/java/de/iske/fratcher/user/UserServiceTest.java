@@ -1,15 +1,12 @@
 package de.iske.fratcher.user;
 
-import de.iske.fratcher.match.Match;
-import de.iske.fratcher.match.MatchService;
 import io.github.benas.randombeans.EnhancedRandomBuilder;
 import io.github.benas.randombeans.api.EnhancedRandom;
-import org.junit.Before;
+import org.assertj.core.util.IterableUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
@@ -38,7 +35,7 @@ public class UserServiceTest {
     @Test
     @Rollback
     public void testUserCreation() {
-        LOG.info("Number of user in database: {}",userService.getUserList().count());
+        LOG.info("Number of user in database: {}", IterableUtil.sizeOf(userService.getUserList()));
         User user = random.nextObject(User.class,"id");
         //Check that id is null in the beginning and is set only after persisting the entity
         assertNull("User id should be null before persisting entity",user.getId());
