@@ -25,26 +25,9 @@ public class Match {
         matchingTimestamp = Instant.now();
     }
 
-    public Match(User firstMatcher) {
-        matchingTimestamp = Instant.now();
-        user1 = firstMatcher;
-        user1.addMatch(this);
-    }
-
-    public Match(User u1, User u2) {
-        user1 = u1;
-        user2 = u2;
-        matchingTimestamp = Instant.now();
-        u1.addMatch(this);
-        u2.addMatch(this);
-    }
-
     public Long getId() {
         return id;
     }
-
-//    @ManyToOne(targetEntity = User.class)
-//    private final Map.Entry<User,User> matchedUsers;
 
     public User getUser1() {
         return user1;
