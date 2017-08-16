@@ -28,18 +28,13 @@ public class MatchServiceTest {
 
     @Test
     public void testServiceInjection() {
-        assertNotNull("No instance for userService. Dependency injection failed", matchService);
         assertNotNull("No instance for userService. Dependency injection failed", userService);
     }
 
     @Test
     @Rollback
     public void testIdShouldBeNullAfterCreation() {
-        User user1 = random.nextObject(User.class,"id");
-        User user2 = random.nextObject(User.class,"id");
-        userService.addUser(user1);
-        userService.addUser(user2);
-        Match match1 = new Match(user1);
+        Match match1 = new Match();
         assertNotNull("Match object should not null after creation",match1);
         assertNull("Match id should be null before persisting entity",match1.getId());
     }
@@ -47,11 +42,7 @@ public class MatchServiceTest {
     @Test
     @Rollback
     public void testIdShouldNotBeNullAfterPersisting() {
-        User user1 = random.nextObject(User.class,"id");
-        User user2 = random.nextObject(User.class,"id");
-        userService.addUser(user1);
-        userService.addUser(user2);
-        Match match1 = new Match(user1);
+        Match match1 = new Match();
         matchService.addMatch(match1);
         assertNotNull("Match object should not null after creation",match1);
         assertNotNull("Match id should not null after persisting entity",match1.getId());
@@ -66,23 +57,21 @@ public class MatchServiceTest {
         userService.addUser(user2);
 
 
-        Match match1 = new Match(user1);
-        assertNotNull("Match object should not null after creation",match1);
-        assertNull("Match id should be null before persisting entity",match1.getId());
-
+        Match match1 = new Match();
+        match1.setUser1(user1);
         matchService.addMatch(match1);
-        assertNotNull("Match id should not null after persisting entity",match1.getId());
 
+        Match match2 = new Match();
+        match2.setUser1(user1);
+        match2.setUser2(user2);
+        matchService.addMatch(match2);
+
+
+        assertNotNull("Match id should not null after persisting entity",match1.getId());
         assertEquals("User 1 should now have one Match in his list",1,user1.getMatches().size());
         assertEquals("User 1 should now have match2 in his list",match1, user1.getMatches().get(0));
-
-        Match match2 = new Match(user1,user2);
         assertNotNull("Match object should not null after creation",match2);
-        assertNull("Match id should be null before persisting entity",match2.getId());
-
-        matchService.addMatch(match2);
         assertNotNull("Match id should not null after persisting entity",match2.getId());
-
         assertEquals("User 1 should now have two Matches in his list",2,user1.getMatches().size());
         assertEquals("User 2 should now have one Match in his list",1,user2.getMatches().size());
         assertEquals("User 1 should now have match1 in his list",match1, user1.getMatches().get(0));
