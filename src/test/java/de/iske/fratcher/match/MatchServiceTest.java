@@ -7,8 +7,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.Assert.*;
 
@@ -32,7 +32,7 @@ public class MatchServiceTest {
     }
 
     @Test
-    @Rollback
+    @Transactional
     public void testIdShouldBeNullAfterCreation() {
         Match match1 = new Match();
         assertNotNull("Match object should not null after creation",match1);
@@ -40,7 +40,7 @@ public class MatchServiceTest {
     }
 
     @Test
-    @Rollback
+    @Transactional
     public void testIdShouldNotBeNullAfterPersisting() {
         Match match1 = new Match();
         matchService.addMatch(match1);
@@ -49,7 +49,7 @@ public class MatchServiceTest {
     }
 
     @Test
-    @Rollback
+    @Transactional
     public void testMatchCreation() {
         User user1 = random.nextObject(User.class,"id");
         User user2 = random.nextObject(User.class,"id");
