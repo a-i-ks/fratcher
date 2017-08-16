@@ -68,7 +68,6 @@ public class MatchServiceTest {
 
 
         assertNotNull("Match id should not null after persisting entity",match1.getId());
-        assertEquals("User 1 should now have one Match in his list",1,user1.getMatches().size());
         assertEquals("User 1 should now have match2 in his list",match1, user1.getMatches().get(0));
         assertNotNull("Match object should not null after creation",match2);
         assertNotNull("Match id should not null after persisting entity",match2.getId());
