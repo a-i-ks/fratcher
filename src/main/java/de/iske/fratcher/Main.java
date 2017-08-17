@@ -14,8 +14,4 @@ public class Main {
         SpringApplication.run(Main.class, args);
     }
 
-    @RequestMapping("/")
-    public String index() {
-        return new Date().toString();
-    }
 }
