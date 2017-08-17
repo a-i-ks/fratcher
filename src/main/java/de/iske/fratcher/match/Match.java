@@ -35,6 +35,7 @@ public class Match {
 
     public void setUser1(User user1) {
         this.user1 = user1;
+        user1.addMatch(this);
     }
 
     public User getUser2() {
@@ -43,6 +44,12 @@ public class Match {
 
     public void setUser2(User user2) {
         this.user2 = user2;
+        user2.addMatch(this);
+    }
+
+    public void setUsers(User user1, User user2) {
+        this.setUser1(user1);
+        this.setUser2(user2);
     }
 
     public Instant getMatchingTimestamp() {
