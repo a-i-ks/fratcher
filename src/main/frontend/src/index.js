@@ -7,7 +7,7 @@ import Greeter from "./components/greeter";
 ReactDOM.render(
     <div>
         <Greeter message="Students"/>
-        <Greeter message="Michael"/>
+        <Greeter message="Andre Iske"/>
         <Greeter />
     </div>,
     document.getElementById('root'));
