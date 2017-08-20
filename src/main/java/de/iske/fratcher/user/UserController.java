@@ -42,11 +42,4 @@ public class UserController {
         return new ResponseEntity<>(userService.getUserList(), HttpStatus.OK);
     }
 
-    private static class UserCreated {
-        public String url;
-
-        public UserCreated(User user, String serverUrl) {
-            this.url = serverUrl + "/api/user/" + user.getId();
-        }
-    }
 }

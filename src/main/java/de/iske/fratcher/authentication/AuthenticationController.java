@@ -31,13 +31,5 @@ public class AuthenticationController {
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
-    public static class UserLogin {
-        public String email;
-        public String password;
-    }
-
-
-
-
 
 }
