@@ -17,6 +17,18 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/user")
 public class AuthenticationController {
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ResponseEntity<Object> addUser(@RequestBody User user) {
+        userService.addUser(user);
+        UserCreated userCreated = new UserCreated(user, addressService.getServerURL());
+        return ResponseEntity.ok(userCreated);
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public Iterable<User> getUserList() {
+        return userService.getUserList();
+    }
+
     @Autowired
     private AuthenticationService authenticationService;
 
@@ -29,27 +41,23 @@ public class AuthenticationController {
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
-    public static class UserLogin {
-        public String email;
-        public String password;
-    }
-
     @Autowired
     private AddressService addressService;
 
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "/", method = RequestMethod.POST)
-    public ResponseEntity<Object> addUser(@RequestBody User user) {
-        userService.addUser(user);
-        UserCreated userCreated = new UserCreated(user,addressService.getServerURL());
-        return ResponseEntity.ok(userCreated);
+    public static class UserLogin {
+        public String email;
+        public String password;
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public Iterable<User> getUserList() {
-        return userService.getUserList();
+    private static class UserCreated {
+        public String url;
+
+        public UserCreated(User user, String serverUrl) {
+            this.url = serverUrl + "/api/user/" + user.getId();
+        }
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
@@ -57,10 +65,5 @@ public class AuthenticationController {
         return userService.getUser(id);
     }
 
-    private static class UserCreated {
-        public String url;
-        public UserCreated(User user,String serverUrl) {
-            this.url = serverUrl + "/api/user/" + user.getId();
-        }
-    }
+
 }
