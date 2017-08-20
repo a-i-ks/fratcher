@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
  * @since 2017-07-24
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class AuthenticationController {
     @Autowired
     private AuthenticationService authenticationService;
@@ -40,19 +40,19 @@ public class AuthenticationController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "api/user", method = RequestMethod.POST)
+    @RequestMapping(value = "/", method = RequestMethod.POST)
     public ResponseEntity<Object> addUser(@RequestBody User user) {
         userService.addUser(user);
         UserCreated userCreated = new UserCreated(user,addressService.getServerURL());
         return ResponseEntity.ok(userCreated);
     }
 
-    @RequestMapping(value = "/api/user", method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public Iterable<User> getUserList() {
         return userService.getUserList();
     }
 
-    @RequestMapping(value = "/api/user/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public User getUser(@PathVariable Long id) {
         return userService.getUser(id);
     }
