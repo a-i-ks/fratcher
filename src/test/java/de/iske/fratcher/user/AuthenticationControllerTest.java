@@ -16,7 +16,6 @@ import org.springframework.web.client.RestTemplate;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -28,9 +27,9 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class UserControllerTest {
+public class AuthenticationControllerTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(UserControllerTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AuthenticationControllerTest.class);
 
     @LocalServerPort
     int port;

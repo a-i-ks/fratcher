@@ -1,8 +1,11 @@
-package de.iske.fratcher.user;
+package de.iske.fratcher.authentication;
 
 
+import de.iske.fratcher.user.User;
+import de.iske.fratcher.user.UserService;
 import de.iske.fratcher.util.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +15,24 @@ import org.springframework.web.bind.annotation.*;
  * @since 2017-07-24
  */
 @RestController
-public class UserController {
+@RequestMapping("/user")
+public class AuthenticationController {
+    @Autowired
+    private AuthenticationService authenticationService;
+
+    @RequestMapping(value = "login", method = RequestMethod.POST)
+    public ResponseEntity<AuthenticationService.UserToken> login(@RequestBody UserLogin userLogin) {
+        AuthenticationService.UserToken token = authenticationService.login(userLogin.email, userLogin.password);
+        if (token == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        return new ResponseEntity<>(token, HttpStatus.OK);
+    }
+
+    public static class UserLogin {
+        public String email;
+        public String password;
+    }
 
     @Autowired
     private AddressService addressService;
@@ -38,7 +58,6 @@ public class UserController {
     }
 
     private static class UserCreated {
-
         public String url;
         public UserCreated(User user,String serverUrl) {
             this.url = serverUrl + "/api/user/" + user.getId();
