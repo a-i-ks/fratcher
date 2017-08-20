@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import java.time.Instant;
 
-@Entity
+@Entity(name = "Match_")
 public class Match {
 
     private final Instant matchingTimestamp;
