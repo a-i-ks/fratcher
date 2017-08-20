@@ -22,7 +22,7 @@ public class AuthenticationController {
     @Autowired
     private AuthenticationService authenticationService;
 
-    @RequestMapping(value = "login", method = RequestMethod.POST)
+    @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<AuthenticationService.UserToken> login(@RequestBody UserLogin userLogin) {
         AuthenticationService.UserToken token = authenticationService.login(userLogin.email, userLogin.password);
         if (token == null) {
