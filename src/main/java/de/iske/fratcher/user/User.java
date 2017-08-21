@@ -2,11 +2,9 @@ package de.iske.fratcher.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.iske.fratcher.match.Match;
+import de.iske.fratcher.user.profile.Profile;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,8 +21,18 @@ public class User {
     private String password;
 
     private String email;
-    private String firstName;
-    private String lastName;
+
+    @OneToOne(mappedBy = "user")
+    private Profile profile;
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
+
 
     //TODO Check which attributes and settings are needed for a OneToMany relation
     @OneToMany(targetEntity = Match.class)
@@ -56,22 +64,6 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public List<Match> getMatches() {
