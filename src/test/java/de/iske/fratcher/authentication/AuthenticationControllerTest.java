@@ -1,27 +1,33 @@
-package de.iske.fratcher.user;
+package de.iske.fratcher.authentication;
 
+import de.iske.fratcher.user.User;
+import de.iske.fratcher.user.UserService;
 import de.iske.fratcher.util.AddressService;
+import io.github.benas.randombeans.EnhancedRandomBuilder;
+import io.github.benas.randombeans.api.EnhancedRandom;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+
 /**
- *  Integration Test for UserController
+ *  Integration test for AuthenticationController
  *  @author André Iske
  *  @since 2017-08-14
  */
@@ -34,25 +40,44 @@ public class AuthenticationControllerTest {
     @LocalServerPort
     int port;
 
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private AddressService addressService;
 
-    /**
-     * Test that listing posts works.
-     */
-    @Test
-    @Rollback
-    public void testUserList() throws MalformedURLException {
-        String url = getURL();
-        LOG.info("Sending GET Request to "+url);
-        RestTemplate rest = new RestTemplate();
-        ResponseEntity<List> response = rest.getForEntity(getURL(), List.class);
-        List<User> users = response.getBody();
-        assertEquals("HTTP status code should be 200",200, response.getStatusCodeValue());
-        assertTrue("There shouldn't be any users in the database", users.size() == 0);
+    @Value("${authenticationService.salt}")
+    private String salt;
+
+    private EnhancedRandom random = EnhancedRandomBuilder.aNewEnhancedRandom();
+
+    @Before
+    public void setup() {
+        User adminUser = new User();
+        adminUser.setEmail("admin@fratcher.de");
+        adminUser.setUsername("admin");
+        adminUser.setPassword(DigestUtils.sha512Hex(salt + "kla4st#en"));
+        adminUser.setFirstName("Admin");
+        adminUser.setLastName("Admin");
+        userService.addUser(adminUser);
+        assertNotNull(adminUser.getId());
     }
 
+    @Test
+    @Transactional
+    public void testLoginWithMailAndCorrectPwd() throws MalformedURLException {
+        RestTemplate request = new RestTemplate();
+        //ResponseEntity<List> response = request.postForEntity(getURL(),)
+
+
+    }
+
+    @Test
+    @Transactional
+    public void testTest2() {
+        userService.getUserList().forEach(user -> System.out.println(user));
+        assertTrue(true);
+    }
 
     /**
      * Use the AdressService to get the current server address and fix the port to the correct value, that is used
@@ -67,5 +92,4 @@ public class AuthenticationControllerTest {
         url.append("api/user");
         return url.toString();
     }
-
 }
