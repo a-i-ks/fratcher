@@ -13,27 +13,33 @@ import java.util.List;
 @Entity(name =  "User_")
 public class User {
 
-    @Enumerated(EnumType.STRING)
-    private UserType userType;
-
     @Id
     @GeneratedValue
     private Long id;
 
-    private String username;
-
     @Enumerated(EnumType.ORDINAL)
     private Status status;
+
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
+
+    private String username;
+
     @JsonIgnore
     private String password;
+
     private String email;
+
     @OneToOne(mappedBy = "user")
     private Profile profile;
+
     @OneToMany(targetEntity = Match.class, cascade = CascadeType.ALL)
     private List<Match> matches;
 
     public User() {
         matches = new ArrayList<>();
+        status = Status.DEFAULT;
+        userType = UserType.USER;
     }
 
     public Status getStatus() {
@@ -140,4 +146,6 @@ public class User {
         ADMIN,
         SUPER_ADMIN
     }
+
+
 }
