@@ -13,9 +13,12 @@ public class Profile {
     @Id
     @GeneratedValue
     private Long id;
-    @OneToOne(mappedBy = "profile")
+
+    @OneToOne
     private User user;
+
     private String firstName;
+
     private String lastName;
 
     public Long getId() {
