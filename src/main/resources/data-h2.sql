@@ -4,8 +4,10 @@
 
 
 -- Remove everything.
-DELETE FROM USER_;
 DELETE FROM MATCH_;
+DELETE FROM PROFILE;
+DELETE FROM USER_;
+
 
 -- Insert new users.
 INSERT INTO USER_ (id, username, email, PASSWORD) VALUES
