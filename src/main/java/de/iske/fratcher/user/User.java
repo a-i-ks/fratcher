@@ -3,6 +3,7 @@ package de.iske.fratcher.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.iske.fratcher.match.Match;
 import de.iske.fratcher.user.profile.Profile;
+import de.iske.fratcher.util.Status;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -20,10 +21,28 @@ public class User {
     private Long id;
 
     private String username;
+
+    @Enumerated(EnumType.ORDINAL)
+    private Status status;
     @JsonIgnore
     private String password;
-
     private String email;
+    @OneToOne(mappedBy = "user")
+    private Profile profile;
+    @OneToMany(targetEntity = Match.class, cascade = CascadeType.ALL)
+    private List<Match> matches;
+
+    public User() {
+        matches = new ArrayList<>();
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
     public UserType getUserType() {
         return userType;
@@ -33,30 +52,12 @@ public class User {
         this.userType = userType;
     }
 
-    public enum UserType {
-        USER,
-        MODERATOR,
-        ADMIN,
-        SUPER_ADMIN
-    }
-
-
-    @OneToOne(mappedBy = "user")
-    private Profile profile;
-
     public Profile getProfile() {
         return profile;
     }
 
     public void setProfile(Profile profile) {
         this.profile = profile;
-    }
-
-    @OneToMany(targetEntity = Match.class, cascade = CascadeType.ALL)
-    private List<Match> matches;
-
-    public User() {
-        matches = new ArrayList<>();
     }
 
     public Long getId() {
@@ -131,5 +132,12 @@ public class User {
 
     public void addMatch(Match match) {
         matches.add(match);
+    }
+
+    public enum UserType {
+        USER,
+        MODERATOR,
+        ADMIN,
+        SUPER_ADMIN
     }
 }
