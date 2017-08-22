@@ -18,16 +18,42 @@ public class Match {
     @Enumerated(EnumType.ORDINAL)
     private Status status;
 
+    /**
+     * User 1 is always the user who likes the other person first
+     */
     @ManyToOne(targetEntity = User.class)
     private User user1;
 
+    /**
+     * User 2 is the user who has to confirm the match
+     */
     @ManyToOne(targetEntity = User.class)
     private User user2;
+
+    private boolean isConfirmed;
+
+    private Instant confirmationTimestamp;
 
     public Match() {
         matchingTimestamp = Instant.now();
         status = Status.DEFAULT;
+        isConfirmed = false;
+    }
 
+    public boolean isConfirmed() {
+        return isConfirmed;
+    }
+
+    public void setConfirmed(boolean confirmed) {
+        isConfirmed = confirmed;
+    }
+
+    public Instant getConfirmationTimestamp() {
+        return confirmationTimestamp;
+    }
+
+    public void setConfirmationTimestamp(Instant confirmationTimestamp) {
+        this.confirmationTimestamp = confirmationTimestamp;
     }
 
     public Status getStatus() {
@@ -71,5 +97,10 @@ public class Match {
 
     public Instant getMatchingTimestamp() {
         return matchingTimestamp;
+    }
+
+    public void confirm() {
+        setConfirmed(true);
+        confirmationTimestamp = Instant.now();
     }
 }
