@@ -12,6 +12,9 @@ import java.util.List;
 @Entity(name =  "User_")
 public class User {
 
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
+
     @Id
     @GeneratedValue
     private Long id;
@@ -21,6 +24,22 @@ public class User {
     private String password;
 
     private String email;
+
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
+    }
+
+    public enum UserType {
+        USER,
+        MODERATOR,
+        ADMIN,
+        SUPER_ADMIN
+    }
+
 
     @OneToOne(mappedBy = "user")
     private Profile profile;
