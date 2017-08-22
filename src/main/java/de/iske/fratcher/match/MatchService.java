@@ -32,7 +32,6 @@ public class MatchService {
 
     public void addMatch(Match match) {
         matchRepository.save(match);
-        LOG.info(match.getUser1().getUsername());
     }
 
     /**
