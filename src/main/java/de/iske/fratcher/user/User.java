@@ -33,9 +33,7 @@ public class User {
         this.profile = profile;
     }
 
-
-    //TODO Check which attributes and settings are needed for a OneToMany relation
-    @OneToMany(targetEntity = Match.class)
+    @OneToMany(targetEntity = Match.class, cascade = CascadeType.ALL)
     private List<Match> matches;
 
     public User() {
