@@ -9,7 +9,6 @@ import java.time.Instant;
 @Entity(name = "Match_")
 public class Match {
 
-    private final Instant matchingTimestamp;
 
     @Id
     @GeneratedValue
@@ -30,6 +29,8 @@ public class Match {
     @ManyToOne(targetEntity = User.class)
     private User user2;
 
+    private Instant matchingTimestamp;
+
     private boolean isConfirmed;
 
     private Instant confirmationTimestamp;
@@ -38,6 +39,11 @@ public class Match {
         matchingTimestamp = Instant.now();
         status = Status.DEFAULT;
         isConfirmed = false;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        matchingTimestamp = Instant.now();
     }
 
     public boolean isConfirmed() {
