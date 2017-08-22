@@ -28,7 +28,7 @@ public class AuthenticationController {
         if (token == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        return new ResponseEntity<>(token, HttpStatus.OK);
+        return new ResponseEntity<>(token, HttpStatus.ACCEPTED);
     }
 
 
