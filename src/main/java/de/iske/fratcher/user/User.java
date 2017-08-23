@@ -33,7 +33,7 @@ public class User {
     @OneToOne(mappedBy = "user")
     private Profile profile;
 
-    @OneToMany(targetEntity = Match.class, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = Match.class)
     private List<Match> matches;
 
     public User() {
