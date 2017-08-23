@@ -50,15 +50,4 @@ public class MatchController {
         return ResponseEntity.ok(matchCreated);
     }
 
-    private static class MatchCreated {
-        public String url;
-
-        public boolean confirmed;
-
-        public MatchCreated(Match match, String url) {
-            this.url = url + "/api/match/" + match.getId();
-            this.confirmed = match.isConfirmed();
-        }
-    }
-
 }
