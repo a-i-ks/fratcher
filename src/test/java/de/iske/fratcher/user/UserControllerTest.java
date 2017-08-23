@@ -1,6 +1,7 @@
 package de.iske.fratcher.user;
 
 import de.iske.fratcher.util.AddressService;
+import de.iske.fratcher.util.AddressUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -14,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -24,8 +24,10 @@ import static org.junit.Assert.assertTrue;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserControllerTest {
     private static final Logger LOG = LoggerFactory.getLogger(UserControllerTest.class);
+
     @LocalServerPort
     int port;
+
     @Autowired
     private AddressService addressService;
 
@@ -35,29 +37,14 @@ public class UserControllerTest {
     @Test
     @Transactional
     public void testUserList() throws MalformedURLException {
-        String url = getURL();
+        String url = AddressUtils.getURL(addressService.getServerURL(), "api/user", port);
         LOG.info("Sending GET Request to " + url);
         RestTemplate rest = new RestTemplate();
-        ResponseEntity<List> response = rest.getForEntity(getURL(), List.class);
+        ResponseEntity<List> response = rest.getForEntity(url, List.class);
         List<?> users = response.getBody();
         assertEquals("HTTP status code should be 200", 200, response.getStatusCodeValue());
         assertTrue("There shouldn't be any users in the database", users.size() == 0);
     }
 
-    /**
-     * Use the AddressService to get the current server address and fix the port to the correct value, that is used
-     * in this test environment
-     *
-     * @return the correct server url
-     */
-    private String getURL() throws MalformedURLException {
-        URL originalUrl = new URL(addressService.getServerURL());
-        URL correctUrl = new URL(originalUrl.getProtocol(), originalUrl.getHost(), port, originalUrl.getFile());
-        StringBuilder url = new StringBuilder(correctUrl.toString());
-        if (!url.toString().endsWith("/")) {
-            url.append("/");
-        }
-        url.append("api/user");
-        return url.toString();
-    }
+
 }
