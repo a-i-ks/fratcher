@@ -50,8 +50,8 @@ public class MatchService {
             }
         }
         Match unconfirmedMatch = new Match();
-        unconfirmedMatch.setUsers(initialUser, likedUser);
         addMatch(unconfirmedMatch);
+        unconfirmedMatch.setUsers(initialUser, likedUser);
         return unconfirmedMatch;
     }
 }
