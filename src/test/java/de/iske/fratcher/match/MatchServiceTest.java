@@ -1,6 +1,7 @@
 package de.iske.fratcher.match;
 import de.iske.fratcher.user.User;
 import de.iske.fratcher.user.UserService;
+import de.iske.fratcher.util.Status;
 import io.github.benas.randombeans.EnhancedRandomBuilder;
 import io.github.benas.randombeans.api.EnhancedRandom;
 import org.junit.Test;
@@ -76,6 +77,54 @@ public class MatchServiceTest {
         assertEquals("User 1 should now have match1 in his list",match1, user1.getMatches().get(0));
         assertEquals("User 1 should now have match2 in his list",match2, user1.getMatches().get(1));
         assertEquals("User 2 should now have match1 in his list",match2, user2.getMatches().get(0));
+    }
 
+    @Test
+    @Transactional
+    public void testUserInitialLike() {
+        User user1 = random.nextObject(User.class, "id");
+        User user2 = random.nextObject(User.class, "id");
+        userService.addUser(user1);
+        userService.addUser(user2);
+
+        userService.setCurrentUser(user1.getId(), user1.getEmail());
+        Match match = matchService.likeUser(user2);
+
+        assertNotNull("Returned match object should not be null", match);
+        assertNotNull("Match object id should not be null", match.getId());
+        assertNotNull("Match matchingTimestamp should not be null", match.getMatchingTimestamp());
+        assertEquals("Match status should be default", Status.DEFAULT, match.getStatus());
+        assertEquals("Match should have User 1 in property user1", user1, match.getUser1());
+        assertEquals("Match should have User 2 in property user2", user2, match.getUser2());
+        assertEquals("Match should not be confirmed", false, match.isConfirmed());
+        assertNull("Match should have a empty confirmationTimestamp", match.getConfirmationTimestamp());
+        assertEquals("User 1 should have exactly 1 match in his list", 1, user1.getMatches().size());
+        assertEquals("User 2 should have exactly 1 match in his list", 1, user2.getMatches().size());
+    }
+
+    @Test
+    @Transactional
+    public void testUserConfirmLike() {
+        User user1 = random.nextObject(User.class, "id");
+        User user2 = random.nextObject(User.class, "id");
+        userService.addUser(user1);
+        userService.addUser(user2);
+
+        userService.setCurrentUser(user1.getId(), user1.getEmail());
+        matchService.likeUser(user2);
+
+        userService.setCurrentUser(user2.getId(), user2.getEmail());
+        Match match = matchService.likeUser(user1);
+
+        assertNotNull("Returned match object should not be null", match);
+        assertNotNull("Match object id should not be null", match.getId());
+        assertNotNull("Match matchingTimestamp should not be null", match.getMatchingTimestamp());
+        assertEquals("Match status should be default", Status.DEFAULT, match.getStatus());
+        assertEquals("Match should have User 1 in property user1", user1, match.getUser1());
+        assertEquals("Match should have User 2 in property user2", user2, match.getUser2());
+        assertEquals("Match should be confirmed", true, match.isConfirmed());
+        assertNotNull("Match should have a confirmationTimestamp", match.getConfirmationTimestamp());
+        assertEquals("User 1 should have exactly 1 match in his list", 1, user1.getMatches().size());
+        assertEquals("User 2 should have exactly 1 match in his list", 1, user2.getMatches().size());
     }
 }
