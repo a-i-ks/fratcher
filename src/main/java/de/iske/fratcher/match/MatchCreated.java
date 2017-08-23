@@ -9,4 +9,7 @@ class MatchCreated {
         this.url = url + "/api/match/" + match.getId();
         this.confirmed = match.isConfirmed();
     }
+
+    public MatchCreated() {
+    }
 }
