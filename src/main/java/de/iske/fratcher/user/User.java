@@ -1,13 +1,10 @@
 package de.iske.fratcher.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import de.iske.fratcher.match.Match;
 import de.iske.fratcher.user.profile.Profile;
 import de.iske.fratcher.util.Status;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 // Renaming because "User" is keyword for PostgreSQL
 @Entity(name =  "User_")
@@ -33,11 +30,7 @@ public class User {
     @OneToOne(mappedBy = "user")
     private Profile profile;
 
-    @OneToMany(targetEntity = Match.class)
-    private List<Match> matches;
-
     public User() {
-        matches = new ArrayList<>();
         status = Status.DEFAULT;
         userType = UserType.USER;
     }
@@ -90,14 +83,6 @@ public class User {
         this.username = username;
     }
 
-    public List<Match> getMatches() {
-        return matches;
-    }
-
-    public void setMatches(List<Match> matches) {
-        this.matches = matches;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -134,10 +119,6 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';
-    }
-
-    public void addMatch(Match match) {
-        matches.add(match);
     }
 
     public enum UserType {

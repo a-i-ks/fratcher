@@ -69,14 +69,8 @@ public class MatchServiceTest {
 
 
         assertNotNull("Match id should not null after persisting entity",match1.getId());
-        assertEquals("User 1 should now have match2 in his list",match1, user1.getMatches().get(0));
         assertNotNull("Match object should not null after creation",match2);
         assertNotNull("Match id should not null after persisting entity",match2.getId());
-        assertEquals("User 1 should now have two Matches in his list",2,user1.getMatches().size());
-        assertEquals("User 2 should now have one Match in his list",1,user2.getMatches().size());
-        assertEquals("User 1 should now have match1 in his list",match1, user1.getMatches().get(0));
-        assertEquals("User 1 should now have match2 in his list",match2, user1.getMatches().get(1));
-        assertEquals("User 2 should now have match1 in his list",match2, user2.getMatches().get(0));
     }
 
     @Test
@@ -98,8 +92,6 @@ public class MatchServiceTest {
         assertEquals("Match should have User 2 in property user2", user2, match.getUser2());
         assertEquals("Match should not be confirmed", false, match.isConfirmed());
         assertNull("Match should have a empty confirmationTimestamp", match.getConfirmationTimestamp());
-        assertEquals("User 1 should have exactly 1 match in his list", 1, user1.getMatches().size());
-        assertEquals("User 2 should have exactly 1 match in his list", 1, user2.getMatches().size());
     }
 
     @Test
@@ -124,7 +116,7 @@ public class MatchServiceTest {
         assertEquals("Match should have User 2 in property user2", user2, match.getUser2());
         assertEquals("Match should be confirmed", true, match.isConfirmed());
         assertNotNull("Match should have a confirmationTimestamp", match.getConfirmationTimestamp());
-        assertEquals("User 1 should have exactly 1 match in his list", 1, user1.getMatches().size());
-        assertEquals("User 2 should have exactly 1 match in his list", 1, user2.getMatches().size());
     }
+
+
 }

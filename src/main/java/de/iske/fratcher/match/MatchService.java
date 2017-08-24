@@ -43,15 +43,14 @@ public class MatchService {
     public Match likeUser(User likedUser) {
         User initialUser = userService.getCurrentUser();
         //check if likedUser has already like initialUser
-        for (Match match : likedUser.getMatches()) {
-            if (match.getUser2().equals(initialUser)) {
-                match.confirm();
-                return match; // it's a match
-            }
+        Match inverseMatch = matchRepository.findMatchForUsers(likedUser, initialUser);
+        if (inverseMatch != null) {
+            inverseMatch.confirm();
+            return inverseMatch;
         }
         Match unconfirmedMatch = new Match();
-        addMatch(unconfirmedMatch);
         unconfirmedMatch.setUsers(initialUser, likedUser);
+        addMatch(unconfirmedMatch);
         return unconfirmedMatch;
     }
 }
