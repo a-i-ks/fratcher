@@ -1,6 +1,6 @@
 package de.iske.fratcher.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import de.iske.fratcher.user.profile.Profile;
 import de.iske.fratcher.util.Status;
 
@@ -22,12 +22,12 @@ public class User {
 
     private String username;
 
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     private String email;
 
-    @OneToOne(mappedBy = "user")
+    @Embedded
     private Profile profile;
 
     public User() {

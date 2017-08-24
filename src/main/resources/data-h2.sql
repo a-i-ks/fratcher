@@ -5,7 +5,6 @@
 
 -- Remove everything.
 DELETE FROM MATCH_;
-DELETE FROM PROFILE;
 DELETE FROM USER_;
 
 
