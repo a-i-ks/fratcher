@@ -61,6 +61,7 @@ public class UserServiceTest {
     public void testUserList() {
         Stream<User> userStream = random.objects(User.class, 10, "id");
         userStream.forEach(user -> userService.addUser(user));
-        assertEquals("There sould be 10 users in the user list",10,IterableUtil.sizeOf(userService.getUserList()));
+        // 202 Test User + 10 from this Test = 212
+        assertEquals("There should be 212 users in the user list", 212, IterableUtil.sizeOf(userService.getUserList()));
     }
 }
