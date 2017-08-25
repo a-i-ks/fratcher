@@ -20,7 +20,7 @@ public class AddressUtils {
         if (!url.toString().endsWith("/")) {
             url.append("/");
         }
-        url.append(pathSuffix);
+        url.append(pathSuffix + "/");
         return url.toString();
     }
 
