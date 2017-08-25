@@ -23,19 +23,19 @@ public class UserController {
     public ResponseEntity<User> getUser(@PathVariable Long id) {
         if (userService.isAnonymous()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else {
+            return new ResponseEntity<>(userService.getUser(id), HttpStatus.OK);
         }
-        return new ResponseEntity<>(userService.getUser(id), HttpStatus.OK);
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<Void> addUser(@RequestBody User user) {
+    public ResponseEntity<Object> addUser(@RequestBody User user) {
         userService.addUser(user);
         UserCreated userCreated = new UserCreated(user, addressService.getServerURL());
         // Add url of new created user to Location head field
         final URI location = ServletUriComponentsBuilder
-                .fromCurrentServletMapping().path("/user/{id}").build()
+                .fromCurrentServletMapping().path("api/user/{id}").build()
                 .expand(user.getId()).toUri();
-
         final HttpHeaders headers = new HttpHeaders();
         headers.setLocation(location);
 
@@ -46,8 +46,11 @@ public class UserController {
     public ResponseEntity<Object> getUserList() {
         if (userService.isAnonymous()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else if (userService.getCurrentUser().isAdmin()) {
+            return new ResponseEntity<>(userService.getUserList(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(userService.getCurrentUser(), HttpStatus.OK);
         }
-        return new ResponseEntity<>(userService.getUserList(), HttpStatus.OK);
     }
 
 }
