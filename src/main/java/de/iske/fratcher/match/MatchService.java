@@ -42,15 +42,21 @@ public class MatchService {
      */
     public Match likeUser(User likedUser) {
         User initialUser = userService.getCurrentUser();
-        //check if likedUser has already like initialUser
+        // Check if likedUser has already like initialUser
         Match inverseMatch = matchRepository.findMatchForUsers(likedUser, initialUser);
         if (inverseMatch != null) {
             inverseMatch.confirm();
             return inverseMatch;
         }
-        Match unconfirmedMatch = new Match();
-        unconfirmedMatch.setUsers(initialUser, likedUser);
-        addMatch(unconfirmedMatch);
-        return unconfirmedMatch;
+        // Check if there is already an existing match for initialUser -> likedUser
+        Match existingMatch = matchRepository.findMatchForUsers(initialUser, likedUser);
+        if (existingMatch != null) {
+            return existingMatch;
+        } else {
+            Match unconfirmedMatch = new Match();
+            unconfirmedMatch.setUsers(initialUser, likedUser);
+            addMatch(unconfirmedMatch);
+            return unconfirmedMatch;
+        }
     }
 }
