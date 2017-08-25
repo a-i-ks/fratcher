@@ -35,6 +35,7 @@ public class User {
         userType = UserType.USER;
     }
 
+
     public Status getStatus() {
         return status;
     }
@@ -119,6 +120,10 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';
+    }
+
+    public boolean isAdmin() {
+        return (getUserType() == UserType.ADMIN);
     }
 
     public enum UserType {
