@@ -59,16 +59,17 @@ public class UserService {
     }
 
     /**
-     * Retrieve a user with the given email and password.
+     * Retrieve a user with the given email/username and password.
      *
-     * @param email    email
+     * @param emailOrUsername    email or username
      * @param password password
      * @return the user or null if none could be found
      */
-    public User getUser(String email, String password) {
-        LOG.debug("Retrieving user from database. user={}", email);
-        return userRepository.findByEmailAndPassword(email, password);
+    public User getUser(String emailOrUsername, String password) {
+        LOG.debug("Retrieving user from database. user={}", emailOrUsername);
+        return userRepository.findByEmailOrUsernameAndPassword(emailOrUsername, password);
     }
+
 
     public User getUser(Long id) {
         return userRepository.findById(id);

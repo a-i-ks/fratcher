@@ -33,20 +33,23 @@ public class MatchControllerTest {
     @Autowired
     private AddressService addressService;
 
+    @Autowired
+    private RestAuthUtils restAuthUtils;
+
     @Test
     public void testMatchCreation() throws MalformedURLException {
         RestTemplate restTemplate = new RestTemplate();
 
         // Get user120 via REST
         String user120Url = AddressUtils.getURL(addressService.getServerURL(), "api/user/120", port);
-        HttpEntity<Object> authHeader = RestAuthUtils.getEntityWithAdminAuthHeader(null);//send empty body with admin auth
+        HttpEntity<Object> authHeader = restAuthUtils.getEntityWithAdminAuthHeader(null);//send empty body with admin auth
         ResponseEntity<User> userResponse = restTemplate.exchange(user120Url, HttpMethod.GET, authHeader, User.class);
         User user120 = userResponse.getBody();
         assertNotNull("User object should not be null", user120);
 
         // send like for user120
         String createMatchUrl = AddressUtils.getURL(addressService.getServerURL(), "api/match", port);
-        HttpEntity<User> request = RestAuthUtils.getEntityWithAdminAuthHeader(user120);
+        HttpEntity<User> request = restAuthUtils.getEntityWithAdminAuthHeader(user120);
         ResponseEntity<MatchCreated> matchResponse = restTemplate.exchange(createMatchUrl, HttpMethod.POST, request, MatchCreated.class);
         MatchCreated matchCreated = matchResponse.getBody();
         assertNotNull("Match object should not be null", matchCreated);

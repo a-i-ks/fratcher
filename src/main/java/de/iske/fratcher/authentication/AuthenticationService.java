@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 public class AuthenticationService {
     private static final Logger LOG = LoggerFactory.getLogger(AuthenticationService.class);
@@ -19,31 +21,35 @@ public class AuthenticationService {
     private UserService userService;
 
     @Value("${authenticationService.jwt.secret}")
-    private String JWTSecret;
+    private String JWTSECRET;
 
     @Value("${authenticationService.salt}")
-    private String salt;
+    private String SALT;
+
+    @Value("${authenticationService.expiration_time}")
+    private long EXPIRATION_TIME; // 10 days
 
     /**
      * Create a JWT token and additional user information if the user's credentails are valid.
      *
-     * @param email    email
+     * @param emailOrUsername    email or username
      * @param password password
      * @return a UserToken or null if the credentials are not valid
      */
-    public UserToken login(String email, String password) {
+    public UserToken login(String emailOrUsername, String password) {
         String hashedPassword = hashPassword(password);
-        User user = userService.getUser(email, hashedPassword);
+        User user = userService.getUser(emailOrUsername, hashedPassword);
         if (user == null) {
-            LOG.info("User unable to login. user={}", email);
+            LOG.info("User unable to login. user={}", emailOrUsername);
             return null;
         }
-        LOG.info("User successfully logged in. user={}", email);
+        LOG.info("User successfully logged in. user={}", emailOrUsername);
 
         String token = Jwts.builder()
-                .setSubject(email)
+                .setSubject(emailOrUsername)
                 .setId(user.getId().toString())
-                .signWith(SignatureAlgorithm.HS512, JWTSecret)
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(SignatureAlgorithm.HS512, JWTSECRET)
                 .compact();
 
         UserToken userToken = new UserToken();
@@ -63,7 +69,7 @@ public class AuthenticationService {
     public Object parseToken(String jwtToken) {
         LOG.debug("Parsing JWT token. JWTtoken={}", jwtToken);
         return Jwts.parser()
-                .setSigningKey(JWTSecret)
+                .setSigningKey(JWTSECRET)
                 .parse(jwtToken)
                 .getBody();
     }
@@ -77,7 +83,7 @@ public class AuthenticationService {
      * @return hashed password
      */
     private String hashPassword(String password) {
-        return DigestUtils.sha512Hex(salt + password);
+        return DigestUtils.sha512Hex(SALT + password);
 
     }
 

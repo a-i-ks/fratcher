@@ -1,7 +1,9 @@
 package de.iske.fratcher.authentication;
 
+import de.iske.fratcher.user.User;
 import de.iske.fratcher.user.UserService;
 import de.iske.fratcher.util.AddressService;
+import de.iske.fratcher.util.AddressUtils;
 import io.github.benas.randombeans.EnhancedRandomBuilder;
 import io.github.benas.randombeans.api.EnhancedRandom;
 import org.junit.Test;
@@ -12,18 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 
 /**
@@ -54,26 +51,27 @@ public class AuthenticationControllerTest {
     @Test
     public void testLoginWithMailAndCorrectPwd() throws MalformedURLException {
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity<UserLogin> request = new HttpEntity<>(new UserLogin("admin@fratcher.de", "kla4st#en"));
-        ResponseEntity<AuthenticationService.UserToken> response = restTemplate.exchange(getURL(), HttpMethod.POST, request, AuthenticationService.UserToken.class);
-        assertEquals("HTTP response code should be 202 (ACCEPTED).", HttpStatus.ACCEPTED, response.getStatusCode());
-        assertNotNull("Response body shouldn't be empty", response.getBody());
-        assertEquals("Response user should be the same which had send the request", "admin@fratcher.de", response.getBody().user.getEmail());
-        assertNotNull("Response token should not be null", response.getBody().token);
-        assertEquals("Response token should be correct", "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBmcmF0Y2hlci5kZSIsImp0aSI6IjEifQ.xBedRIOA_j5QeUH3uUu5f6y6RufIoJdUjXjevNYLUK2SxXSRbbZmcnYaymd5uyN3j2Y445kPIAtcP1W5KSCZzw", response.getBody().token);
+        HttpEntity<UserLogin> loginRequest = new HttpEntity<>(new UserLogin("admin@fratcher.de", "kla4st#en"));
+        final String loginUrl = AddressUtils.getURL(addressService.getServerURL(), "api/login", port);
+        final ResponseEntity<AuthenticationService.UserToken> loginResponse = restTemplate.exchange(loginUrl, HttpMethod.POST, loginRequest, AuthenticationService.UserToken.class);
+
+        final String token = loginResponse.getBody().token;
+
+        assertEquals("HTTP response code should be 202 (ACCEPTED).", HttpStatus.ACCEPTED, loginResponse.getStatusCode());
+        assertNotNull("Response body shouldn't be empty", loginResponse.getBody());
+        assertEquals("Response user should be the same which had send the request", "admin@fratcher.de", loginResponse.getBody().user.getEmail());
+        assertNotNull("Response token should not be null", token);
+        assertTrue("Response token should have a correct format", token.matches("^\\S+\\.\\S+\\.\\S+$"));
+
+        //Try to access own user information via REST
+        final String getUserUrl = AddressUtils.getURL(addressService.getServerURL(), "api/user/1", port);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
+        final HttpEntity<Object> getUserRequest = new HttpEntity<>(null, headers);
+        final ResponseEntity<User> getUserResponse = restTemplate.exchange(getUserUrl, HttpMethod.GET, getUserRequest, User.class);
+
+        assertEquals("HTTP response code should be 200 (OK).", HttpStatus.OK, getUserResponse.getStatusCode());
     }
 
-    /**
-     * Use the AdressService to get the current server address and fix the port to the correct value, that is used
-     * in this test environment
-     * @return the correct server url
-     */
-    private String getURL() throws MalformedURLException {
-        URL originalUrl = new URL(addressService.getServerURL());
-        URL correctUrl = new URL(originalUrl.getProtocol(),originalUrl.getHost(),port, originalUrl.getFile());
-        StringBuilder url = new StringBuilder(correctUrl.toString());
-        if (!url.toString().endsWith("/"))  { url.append("/"); }
-        url.append("api/login");
-        return url.toString();
-    }
+
 }

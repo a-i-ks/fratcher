@@ -39,6 +39,9 @@ public class UserControllerTest {
     @Autowired
     private AddressService addressService;
 
+    @Autowired
+    private RestAuthUtils restAuthUtils;
+
     /**
      * Test that listing of all user works (if you logged in as admin)
      */
@@ -47,7 +50,7 @@ public class UserControllerTest {
         String url = AddressUtils.getURL(addressService.getServerURL(), "api/user", port);
         LOG.info("Sending GET Request to " + url);
         RestTemplate rest = new RestTemplate();
-        HttpEntity<Object> authHeaderRequest = RestAuthUtils.getEntityWithAdminAuthHeader(null);
+        HttpEntity<Object> authHeaderRequest = restAuthUtils.getEntityWithAdminAuthHeader(null);
         ResponseEntity<List> response = rest.exchange(url, HttpMethod.GET, authHeaderRequest, List.class);
         List<?> users = response.getBody();
         assertEquals("HTTP status code should be 200", 200, response.getStatusCodeValue());
@@ -58,7 +61,7 @@ public class UserControllerTest {
     /**
      * Test if a new user can be generated via REST Endpoint
      *
-     * @throws Exception
+     * @throws Exception if something goes wrong
      */
     @Test
     public void testCreationOfNewUser() throws Exception {
