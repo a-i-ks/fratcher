@@ -24,7 +24,7 @@ public class AuthenticationController {
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<AuthenticationService.UserToken> login(@RequestBody UserLogin userLogin) {
-        AuthenticationService.UserToken token = authenticationService.login(userLogin.email, userLogin.password);
+        AuthenticationService.UserToken token = authenticationService.login(userLogin.identification, userLogin.password);
         if (token == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
