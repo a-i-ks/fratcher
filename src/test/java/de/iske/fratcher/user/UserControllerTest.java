@@ -14,16 +14,15 @@ import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -68,13 +67,13 @@ public class UserControllerTest {
         String url = AddressUtils.getURL(addressService.getServerURL(), "api/user", port);
         RestTemplate rest = new RestTemplate();
         User newUser = random.nextObject(User.class, "id");
-        URI location = rest.postForLocation(url, newUser);
-        String s = location.toString();
+        HttpEntity<User> requestObj = new HttpEntity<>(newUser);
+        final ResponseEntity<Void> response = rest.exchange(url, HttpMethod.POST, requestObj, Void.class);
 
-//        assertEquals("Response status code should be 201", HttpStatus.CREATED, response.getStatusCode());
-//        LOG.info(response.getHeaders().getLocation().toString());
-//        assertNull("Response body should be empty.", response.getBody());
-//        assertNotNull("Location header should not be null", response.getHeaders().getLocation());
-//        assertTrue("Location header should contain a valid resource location", response.getHeaders().getLocation().toString().matches(".*/\\d+/?"));
+        assertEquals("Response status code should be 201", HttpStatus.CREATED, response.getStatusCode());
+        assertNull("Response body should be empty.", response.getBody());
+        assertNotNull("Location header should not be null", response.getHeaders().getLocation());
+        assertTrue("Location header should contain the actual server address", response.getHeaders().getLocation().toString().startsWith(url));
+        assertTrue("Location header should contain a valid resource location", response.getHeaders().getLocation().toString().matches(".*/\\d+/?"));
     }
 }
