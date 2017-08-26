@@ -6,7 +6,9 @@ import de.iske.fratcher.util.AddressService;
 import de.iske.fratcher.util.AddressUtils;
 import io.github.benas.randombeans.EnhancedRandomBuilder;
 import io.github.benas.randombeans.api.EnhancedRandom;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +18,13 @@ import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.MalformedURLException;
 
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
 
@@ -46,6 +51,9 @@ public class AuthenticationControllerTest {
     @Value("${authenticationService.salt}")
     private String salt;
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     private EnhancedRandom random = EnhancedRandomBuilder.aNewEnhancedRandom();
 
     @Test
@@ -71,6 +79,59 @@ public class AuthenticationControllerTest {
         final ResponseEntity<User> getUserResponse = restTemplate.exchange(getUserUrl, HttpMethod.GET, getUserRequest, User.class);
 
         assertEquals("HTTP response code should be 200 (OK).", HttpStatus.OK, getUserResponse.getStatusCode());
+    }
+
+    @Test
+    public void testLoginWithUsernameAndCorrectPwd() throws MalformedURLException {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity<UserLogin> loginRequest = new HttpEntity<>(new UserLogin("admin", "kla4st#en"));
+        final String loginUrl = AddressUtils.getURL(addressService.getServerURL(), "api/login", port);
+        final ResponseEntity<AuthenticationService.UserToken> loginResponse = restTemplate.exchange(loginUrl, HttpMethod.POST, loginRequest, AuthenticationService.UserToken.class);
+
+        final String token = loginResponse.getBody().token;
+
+        assertEquals("HTTP response code should be 202 (ACCEPTED).", HttpStatus.ACCEPTED, loginResponse.getStatusCode());
+        assertNotNull("Response body shouldn't be empty", loginResponse.getBody());
+        assertEquals("Response user should be the same which had send the request", "admin@fratcher.de", loginResponse.getBody().user.getEmail());
+        assertNotNull("Response token should not be null", token);
+        assertTrue("Response token should have a correct format", token.matches("^\\S+\\.\\S+\\.\\S+$"));
+
+        //Try to access own user information via REST
+        final String getUserUrl = AddressUtils.getURL(addressService.getServerURL(), "api/user/1", port);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
+        final HttpEntity<Object> getUserRequest = new HttpEntity<>(null, headers);
+        final ResponseEntity<User> getUserResponse = restTemplate.exchange(getUserUrl, HttpMethod.GET, getUserRequest, User.class);
+
+        assertEquals("HTTP response code should be 200 (OK).", HttpStatus.OK, getUserResponse.getStatusCode());
+    }
+
+    @Test
+    public void testLoginUnknownUsernameAndCorrectPwd() throws MalformedURLException {
+        RestTemplate restTemplate = new RestTemplate();
+        final String randUsername = random.nextObject(String.class);
+        HttpEntity<UserLogin> loginRequest = new HttpEntity<>(new UserLogin(randUsername, "kla4st#en"));
+        final String loginUrl = AddressUtils.getURL(addressService.getServerURL(), "api/login", port);
+
+        thrown.expect(HttpClientErrorException.class);
+        thrown.expect(hasProperty("statusCode", is(HttpStatus.UNAUTHORIZED)));
+        thrown.expect(hasProperty("responseBodyAsString", is("")));
+
+        ResponseEntity<AuthenticationService.UserToken> loginResponse = restTemplate.exchange(loginUrl, HttpMethod.POST, loginRequest, AuthenticationService.UserToken.class);
+    }
+
+    @Test
+    public void testLoginWithUsernameAndWrongPwd() throws MalformedURLException {
+        RestTemplate restTemplate = new RestTemplate();
+        final String randPassword = random.nextObject(String.class);
+        HttpEntity<UserLogin> loginRequest = new HttpEntity<>(new UserLogin("admin", randPassword));
+        final String loginUrl = AddressUtils.getURL(addressService.getServerURL(), "api/login", port);
+
+        thrown.expect(HttpClientErrorException.class);
+        thrown.expect(hasProperty("statusCode", is(HttpStatus.UNAUTHORIZED)));
+        thrown.expect(hasProperty("responseBodyAsString", is("")));
+
+        ResponseEntity<AuthenticationService.UserToken> loginResponse = restTemplate.exchange(loginUrl, HttpMethod.POST, loginRequest, AuthenticationService.UserToken.class);
     }
 
 
