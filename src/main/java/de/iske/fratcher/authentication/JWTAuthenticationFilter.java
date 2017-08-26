@@ -16,13 +16,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class JWTFilter extends GenericFilterBean {
-    private static final Logger LOG = LoggerFactory.getLogger(JWTFilter.class);
+public class JWTAuthenticationFilter extends GenericFilterBean {
+    private static final Logger LOG = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
 
     private AuthenticationService authenticationService;
     private UserService userService;
 
-    public JWTFilter(AuthenticationService authenticationService, UserService userService) {
+    public JWTAuthenticationFilter(AuthenticationService authenticationService, UserService userService) {
         this.authenticationService = authenticationService;
         this.userService = userService;
     }
