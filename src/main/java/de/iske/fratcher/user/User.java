@@ -18,9 +18,13 @@ public class User {
     private Long id;
 
     @Enumerated(EnumType.ORDINAL)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @NotNull
     private Status status;
 
     @Enumerated(EnumType.STRING)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @NotNull
     private UserType userType;
 
     @Column(unique = true)
