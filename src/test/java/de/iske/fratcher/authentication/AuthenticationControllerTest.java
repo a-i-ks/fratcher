@@ -5,7 +5,10 @@ import de.iske.fratcher.user.UserService;
 import de.iske.fratcher.util.AddressService;
 import de.iske.fratcher.util.AddressUtils;
 import io.github.benas.randombeans.EnhancedRandomBuilder;
+import io.github.benas.randombeans.FieldDefinitionBuilder;
 import io.github.benas.randombeans.api.EnhancedRandom;
+import io.github.benas.randombeans.randomizers.EmailRandomizer;
+import io.github.benas.randombeans.randomizers.text.StringRandomizer;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -54,8 +57,12 @@ public class AuthenticationControllerTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    private EnhancedRandom random = EnhancedRandomBuilder.aNewEnhancedRandom();
-
+    private EnhancedRandom random = EnhancedRandomBuilder.aNewEnhancedRandomBuilder()
+            .randomize(FieldDefinitionBuilder.field().named("email").ofType(String.class).inClass(User.class).get(),
+                    new EmailRandomizer())
+            .randomize(FieldDefinitionBuilder.field().named("password").ofType(String.class).inClass(User.class).get(),
+                    new StringRandomizer(8, 25, System.currentTimeMillis()))
+            .build();
     @Test
     public void testLoginWithMailAndCorrectPwd() throws MalformedURLException {
         RestTemplate restTemplate = new RestTemplate();

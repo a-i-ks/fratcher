@@ -1,14 +1,20 @@
 package de.iske.fratcher.user;
 
 import io.github.benas.randombeans.EnhancedRandomBuilder;
+import io.github.benas.randombeans.FieldDefinitionBuilder;
 import io.github.benas.randombeans.api.EnhancedRandom;
+import io.github.benas.randombeans.randomizers.EmailRandomizer;
+import io.github.benas.randombeans.randomizers.text.StringRandomizer;
 import org.assertj.core.util.IterableUtil;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,9 +28,17 @@ import static org.junit.Assert.*;
 @SpringBootTest
 public class UserServiceTest {
 
-    private EnhancedRandom random = EnhancedRandomBuilder.aNewEnhancedRandom();
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     private static final Logger LOG = LoggerFactory.getLogger(UserServiceTest.class);
+
+    private EnhancedRandom random = EnhancedRandomBuilder.aNewEnhancedRandomBuilder()
+            .randomize(FieldDefinitionBuilder.field().named("email").ofType(String.class).inClass(User.class).get(),
+                    new EmailRandomizer())
+            .randomize(FieldDefinitionBuilder.field().named("password").ofType(String.class).inClass(User.class).get(),
+                    new StringRandomizer(8, 25, System.currentTimeMillis()))
+            .build();
 
     @Autowired
     private UserService userService;
@@ -63,5 +77,35 @@ public class UserServiceTest {
         userStream.forEach(user -> userService.addUser(user));
         // 202 Test User + 10 from this Test = 212
         assertEquals("There should be 212 users in the user list", 212, IterableUtil.sizeOf(userService.getUserList()));
+    }
+
+    @Test
+    @Transactional
+    public void testErrorOnNonUniqueUsername() {
+        User user1 = random.nextObject(User.class, "id");
+        User user2 = random.nextObject(User.class, "id");
+
+        user1.setUsername("test");
+        userService.addUser(user1);
+        user2.setUsername("test");
+
+        thrown.expect(DataIntegrityViolationException.class);
+        thrown.expectMessage("ConstraintViolationException");
+        userService.addUser(user2);
+    }
+
+    @Test
+    @Transactional
+    public void testErrorOnNonUniqueEmail() {
+        User user1 = random.nextObject(User.class, "id");
+        User user2 = random.nextObject(User.class, "id");
+
+        user1.setEmail("test@test.de");
+        userService.addUser(user1);
+        user2.setEmail("test@test.de");
+
+        thrown.expect(DataIntegrityViolationException.class);
+        thrown.expectMessage("ConstraintViolationException");
+        userService.addUser(user2);
     }
 }

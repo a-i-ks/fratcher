@@ -1,9 +1,13 @@
 package de.iske.fratcher.match;
+
 import de.iske.fratcher.user.User;
 import de.iske.fratcher.user.UserService;
 import de.iske.fratcher.util.Status;
 import io.github.benas.randombeans.EnhancedRandomBuilder;
+import io.github.benas.randombeans.FieldDefinitionBuilder;
 import io.github.benas.randombeans.api.EnhancedRandom;
+import io.github.benas.randombeans.randomizers.EmailRandomizer;
+import io.github.benas.randombeans.randomizers.text.StringRandomizer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +29,13 @@ public class MatchServiceTest {
     @Autowired
     private UserService userService;
 
-    private EnhancedRandom random = EnhancedRandomBuilder.aNewEnhancedRandom();
+
+    private EnhancedRandom random = EnhancedRandomBuilder.aNewEnhancedRandomBuilder()
+            .randomize(FieldDefinitionBuilder.field().named("email").ofType(String.class).inClass(User.class).get(),
+                    new EmailRandomizer())
+            .randomize(FieldDefinitionBuilder.field().named("password").ofType(String.class).inClass(User.class).get(),
+                    new StringRandomizer(8, 25, System.currentTimeMillis()))
+            .build();
 
     @Test
     public void testServiceInjection() {

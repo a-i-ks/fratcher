@@ -5,6 +5,8 @@ import de.iske.fratcher.user.profile.Profile;
 import de.iske.fratcher.util.Status;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 // Renaming because "User" is keyword for PostgreSQL
 @Entity(name =  "User_")
@@ -20,11 +22,15 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserType userType;
 
+    @Column(unique = true)
     private String username;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Size(min = 8)
     private String password;
 
+    @Pattern(regexp = ".+@.+\\.[a-z]+")
+    @Column(unique = true)
     private String email;
 
     @Embedded
