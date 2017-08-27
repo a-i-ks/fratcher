@@ -1,5 +1,7 @@
 package de.iske.fratcher.user;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.iske.fratcher.util.AddressService;
 import de.iske.fratcher.util.AddressUtils;
 import de.iske.fratcher.util.RestAuthUtils;
@@ -17,10 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -28,8 +27,7 @@ import org.springframework.web.client.RestTemplate;
 import java.net.MalformedURLException;
 import java.util.List;
 
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
@@ -58,6 +56,27 @@ public class UserControllerTest {
     private RestAuthUtils restAuthUtils;
 
     /**
+     * Helper method to archive a dirty workaround.
+     * Since I annotated the password field with JsonProperty.Access.WRITE_ONLY the password properties
+     * is always null when I send a object via framework. So I have to manipulate the JSON string by myself.
+     * But this is just a problem that occurs in my test environment because normally the JSON string is
+     * sent from the frontend without by parsed by the Jackson parser.
+     *
+     * @param user complete user object which contains the password property
+     * @return HTTP Entity with complete user object as JSON containing the user password as well
+     * @throws JsonProcessingException if something goes wrong during json serialization
+     */
+    private static HttpEntity<String> getUserObjAsJsonWithPwd(User user) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonUser = mapper.writeValueAsString(user);
+        String pwdReplacement = String.format(",\"password\":\"%s\"}", user.getPassword());
+        jsonUser = jsonUser.replaceFirst("\\}$", pwdReplacement);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        return new HttpEntity<>(jsonUser, headers);
+    }
+
+    /**
      * Test that listing of all user works (if you logged in as admin)
      */
     @Test
@@ -83,7 +102,7 @@ public class UserControllerTest {
         String url = AddressUtils.getURL(addressService.getServerURL(), "api/user", port);
         RestTemplate rest = new RestTemplate();
         User newUser = random.nextObject(User.class, "id");
-        HttpEntity<User> requestObj = new HttpEntity<>(newUser);
+        HttpEntity<String> requestObj = getUserObjAsJsonWithPwd(newUser);
         final ResponseEntity<Void> response = rest.exchange(url, HttpMethod.POST, requestObj, Void.class);
 
         assertEquals("Response status code should be 201", HttpStatus.CREATED, response.getStatusCode());
@@ -92,6 +111,7 @@ public class UserControllerTest {
         assertTrue("Location header should contain the actual server address", response.getHeaders().getLocation().toString().startsWith(url));
         assertTrue("Location header should contain a valid resource location", response.getHeaders().getLocation().toString().matches(".*/\\d+/?"));
     }
+
 
     /**
      * Test if the expected error message returns if you try to create a new user with an existing username.
@@ -104,7 +124,7 @@ public class UserControllerTest {
         RestTemplate rest = new RestTemplate();
         User newUser = random.nextObject(User.class, "id");
         newUser.setUsername("admin"); //username admin is already in use
-        HttpEntity<User> requestObj = new HttpEntity<>(newUser);
+        HttpEntity<String> requestObj = getUserObjAsJsonWithPwd(newUser);
 
         thrown.expect(HttpClientErrorException.class);
         thrown.expect(hasProperty("statusCode", is(HttpStatus.BAD_REQUEST)));
@@ -124,11 +144,94 @@ public class UserControllerTest {
         RestTemplate rest = new RestTemplate();
         User newUser = random.nextObject(User.class, "id");
         newUser.setEmail("admin@fratcher.de"); //email admin@fratcher.de is already in use
-        HttpEntity<User> requestObj = new HttpEntity<>(newUser);
+        HttpEntity<String> requestObj = getUserObjAsJsonWithPwd(newUser);
 
         thrown.expect(HttpClientErrorException.class);
         thrown.expect(hasProperty("statusCode", is(HttpStatus.BAD_REQUEST)));
         thrown.expect(hasProperty("responseBodyAsString", is("ALREADY_EXISTING")));
+
+        final ResponseEntity<Void> response = rest.exchange(url, HttpMethod.POST, requestObj, Void.class);
+    }
+
+    /**
+     * Test if the expected error message returns if you try to create a new user with a password that
+     * is shorter than 8 characters.
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testErrorCreationWithtooShortPassword() throws Exception {
+        String url = AddressUtils.getURL(addressService.getServerURL(), "api/user", port);
+        RestTemplate rest = new RestTemplate();
+        User newUser = random.nextObject(User.class, "id");
+        newUser.setPassword("tooshor");
+        HttpEntity<String> requestObj = getUserObjAsJsonWithPwd(newUser);
+
+        thrown.expect(HttpClientErrorException.class);
+        thrown.expect(hasProperty("statusCode", is(HttpStatus.BAD_REQUEST)));
+        thrown.expect(hasProperty("responseBodyAsString", containsString("Invalid password")));
+
+        final ResponseEntity<Void> response = rest.exchange(url, HttpMethod.POST, requestObj, Void.class);
+    }
+
+    /**
+     * Test if the expected error message returns if you try to create a new user with an invalid email address
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testErrorCreationWithInvalidEmail() throws Exception {
+        String url = AddressUtils.getURL(addressService.getServerURL(), "api/user", port);
+        RestTemplate rest = new RestTemplate();
+        User newUser = random.nextObject(User.class, "id");
+        newUser.setEmail("blabla");
+        HttpEntity<String> requestObj = getUserObjAsJsonWithPwd(newUser);
+
+        thrown.expect(HttpClientErrorException.class);
+        thrown.expect(hasProperty("statusCode", is(HttpStatus.BAD_REQUEST)));
+        thrown.expect(hasProperty("responseBodyAsString", containsString("Invalid email")));
+
+        final ResponseEntity<Void> response = rest.exchange(url, HttpMethod.POST, requestObj, Void.class);
+    }
+
+    /**
+     * Test if the expected error message returns if you try to create a new user with a username shorter than 3
+     * characters
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testErrorCreationWithTooShortUsername() throws Exception {
+        String url = AddressUtils.getURL(addressService.getServerURL(), "api/user", port);
+        RestTemplate rest = new RestTemplate();
+        User newUser = random.nextObject(User.class, "id");
+        newUser.setUsername("sa");
+        HttpEntity<String> requestObj = getUserObjAsJsonWithPwd(newUser);
+
+        thrown.expect(HttpClientErrorException.class);
+        thrown.expect(hasProperty("statusCode", is(HttpStatus.BAD_REQUEST)));
+        thrown.expect(hasProperty("responseBodyAsString", containsString("Invalid username")));
+
+        final ResponseEntity<Void> response = rest.exchange(url, HttpMethod.POST, requestObj, Void.class);
+    }
+
+    /**
+     * Test if the expected error message returns if you try to create a new user with a username longer than 32
+     * characters
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testErrorCreationWithTooLongUsername() throws Exception {
+        String url = AddressUtils.getURL(addressService.getServerURL(), "api/user", port);
+        RestTemplate rest = new RestTemplate();
+        User newUser = random.nextObject(User.class, "id");
+        newUser.setUsername("74Smg6B1XrJVyPoiC3bPREKwLtZcbIbMi"); //more than 32 characters
+        HttpEntity<String> requestObj = getUserObjAsJsonWithPwd(newUser);
+
+        thrown.expect(HttpClientErrorException.class);
+        thrown.expect(hasProperty("statusCode", is(HttpStatus.BAD_REQUEST)));
+        thrown.expect(hasProperty("responseBodyAsString", containsString("Invalid username")));
 
         final ResponseEntity<Void> response = rest.exchange(url, HttpMethod.POST, requestObj, Void.class);
     }
