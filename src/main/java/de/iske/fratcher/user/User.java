@@ -25,6 +25,7 @@ public class User {
 
     @Column(unique = true)
     @Size(min = 3, max = 32)
+    @NotNull
     private String username;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
