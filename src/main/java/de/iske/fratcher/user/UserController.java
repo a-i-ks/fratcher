@@ -42,25 +42,25 @@ public class UserController {
      * Will validate the new user values and create only a new user if it has
      * validate values. Won't create user if email or username are already existing.
      *
-     * @param user the new user that should be created
+     * @param newUser the new user that should be created
      * @return The created user object
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<String> addUser(@RequestBody User user) {
+    public ResponseEntity<String> addUser(@RequestBody User newUser) {
 
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
+        Set<ConstraintViolation<User>> violations = validator.validate(newUser);
         if (violations.isEmpty()) {
             try {
-                userService.addUser(user);
+                userService.addUser(newUser);
             } catch (DataIntegrityViolationException e) {
                 System.out.println(e.getMessage());
                 return new ResponseEntity<>("ALREADY_EXISTING", HttpStatus.BAD_REQUEST);
             }
-            UserCreated userCreated = new UserCreated(user, addressService.getServerURL());
+            UserCreated userCreated = new UserCreated(newUser, addressService.getServerURL());
             // Add url of new created user to Location head field
             final URI location = ServletUriComponentsBuilder
                     .fromCurrentServletMapping().path("api/user/{id}").build()
-                    .expand(user.getId()).toUri();
+                    .expand(newUser.getId()).toUri();
             final HttpHeaders headers = new HttpHeaders();
             headers.setLocation(location);
 
