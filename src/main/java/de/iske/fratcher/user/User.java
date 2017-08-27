@@ -5,6 +5,7 @@ import de.iske.fratcher.user.profile.Profile;
 import de.iske.fratcher.util.Status;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -27,6 +28,7 @@ public class User {
     private String username;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @NotNull
     @Size(min = 8)
     private String password;
 
