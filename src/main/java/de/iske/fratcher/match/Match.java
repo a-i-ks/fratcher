@@ -18,7 +18,7 @@ public class Match {
     private Status status;
 
     /**
-     * User 1 is always the user who likes the other person first
+     * User 1 is always the user who likes/dislikes the other person first
      */
     @ManyToOne(targetEntity = User.class)
     private User user1;
@@ -31,6 +31,8 @@ public class Match {
 
     private Instant matchingTimestamp;
 
+    private boolean isDisliked;
+
     private boolean isConfirmed;
 
     private Instant confirmationTimestamp;
@@ -39,6 +41,14 @@ public class Match {
         matchingTimestamp = Instant.now();
         status = Status.DEFAULT;
         isConfirmed = false;
+    }
+
+    public boolean isDisliked() {
+        return isDisliked;
+    }
+
+    public void setDisliked(boolean disliked) {
+        isDisliked = disliked;
     }
 
     @PrePersist
@@ -103,8 +113,16 @@ public class Match {
         return matchingTimestamp;
     }
 
+    public void setMatchingTimestamp(Instant matchingTimestamp) {
+        this.matchingTimestamp = matchingTimestamp;
+    }
+
     public void confirm() {
         setConfirmed(true);
         confirmationTimestamp = Instant.now();
+    }
+
+    public void dislike() {
+        setDisliked(true);
     }
 }
