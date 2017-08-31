@@ -53,7 +53,14 @@ public class UserService {
      */
     public void setCurrentUser(Long id, String email) {
         LOG.debug("Setting user context. id={}, user={}", id, email);
-        User user = userRepository.findById(id);
+        User user;
+        if (id > 0) {
+            user = userRepository.findById(id);
+        } else {
+            user = new User();
+            user.setId(id);
+            user.setEmail(email);
+        }
         UsernamePasswordAuthenticationToken secAuth = new UsernamePasswordAuthenticationToken(user, null);
         SecurityContextHolder.getContext().setAuthentication(secAuth);
     }
