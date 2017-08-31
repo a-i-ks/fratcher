@@ -57,8 +57,8 @@ public class MatchControllerTest {
 
         // Send like for user120
         String createMatchUrl = AddressUtils.getURL(addressService.getServerURL(), "api/match", port);
-        HttpEntity<User> request = restAuthUtils.getEntityWithAdminAuthHeader(user120);
-        final ResponseEntity<MatchCreated> matchResponse = restTemplate.exchange(createMatchUrl + "/like", HttpMethod.POST, request, MatchCreated.class);
+        HttpEntity<User> adminLike120request = restAuthUtils.getEntityWithAdminAuthHeader(user120);
+        final ResponseEntity<MatchCreated> matchResponse = restTemplate.exchange(createMatchUrl + "/like", HttpMethod.POST, adminLike120request, MatchCreated.class);
         MatchCreated matchCreated = matchResponse.getBody();
 
         assertEquals("Response Status should be CREATED", HttpStatus.CREATED, matchResponse.getStatusCode());
@@ -69,7 +69,8 @@ public class MatchControllerTest {
         assertFalse("Match object should not be confirmed", matchCreated.confirmed);
 
         // Get created match
-        final ResponseEntity<Match> matchResponse2 = restTemplate.getForEntity(matchResponse.getHeaders().getLocation(), Match.class);
+        final HttpEntity<Object> getMatchRequest = restAuthUtils.getEntityWithAdminAuthHeader(null);
+        final ResponseEntity<Match> matchResponse2 = restTemplate.exchange(matchResponse.getHeaders().getLocation(), HttpMethod.GET, getMatchRequest, Match.class);
 
         assertEquals("Get should return HTTP 200", HttpStatus.OK, matchResponse2.getStatusCode());
         assertNotNull("Response body should not be empty", matchResponse2.getBody());
