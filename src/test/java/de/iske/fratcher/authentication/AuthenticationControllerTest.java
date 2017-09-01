@@ -67,7 +67,7 @@ public class AuthenticationControllerTest {
     public void testLoginWithMailAndCorrectPwd() throws MalformedURLException {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity<UserLogin> loginRequest = new HttpEntity<>(new UserLogin("admin@fratcher.de", "kla4st#en"));
-        final String loginUrl = AddressUtils.getURL(addressService.getServerURL(), "api/login", port);
+        final String loginUrl = AddressUtils.getURL(addressService.getServerURL(), "api/user/login", port);
         final ResponseEntity<AuthenticationService.UserToken> loginResponse = restTemplate.exchange(loginUrl, HttpMethod.POST, loginRequest, AuthenticationService.UserToken.class);
 
         final String token = loginResponse.getBody().token;
@@ -92,7 +92,7 @@ public class AuthenticationControllerTest {
     public void testLoginWithUsernameAndCorrectPwd() throws MalformedURLException {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity<UserLogin> loginRequest = new HttpEntity<>(new UserLogin("admin", "kla4st#en"));
-        final String loginUrl = AddressUtils.getURL(addressService.getServerURL(), "api/login", port);
+        final String loginUrl = AddressUtils.getURL(addressService.getServerURL(), "api/user/login", port);
         final ResponseEntity<AuthenticationService.UserToken> loginResponse = restTemplate.exchange(loginUrl, HttpMethod.POST, loginRequest, AuthenticationService.UserToken.class);
 
         final String token = loginResponse.getBody().token;
@@ -118,7 +118,7 @@ public class AuthenticationControllerTest {
         RestTemplate restTemplate = new RestTemplate();
         final String randUsername = random.nextObject(String.class);
         HttpEntity<UserLogin> loginRequest = new HttpEntity<>(new UserLogin(randUsername, "kla4st#en"));
-        final String loginUrl = AddressUtils.getURL(addressService.getServerURL(), "api/login", port);
+        final String loginUrl = AddressUtils.getURL(addressService.getServerURL(), "api/user/login", port);
 
         thrown.expect(HttpClientErrorException.class);
         thrown.expect(hasProperty("statusCode", is(HttpStatus.UNAUTHORIZED)));
@@ -132,7 +132,7 @@ public class AuthenticationControllerTest {
         RestTemplate restTemplate = new RestTemplate();
         final String randPassword = random.nextObject(String.class);
         HttpEntity<UserLogin> loginRequest = new HttpEntity<>(new UserLogin("admin", randPassword));
-        final String loginUrl = AddressUtils.getURL(addressService.getServerURL(), "api/login", port);
+        final String loginUrl = AddressUtils.getURL(addressService.getServerURL(), "api/user/login", port);
 
         thrown.expect(HttpClientErrorException.class);
         thrown.expect(hasProperty("statusCode", is(HttpStatus.UNAUTHORIZED)));
