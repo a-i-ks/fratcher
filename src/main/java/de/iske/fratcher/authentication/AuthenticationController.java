@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * HTTP endpoint for a user-related HTTP requests.
+ * HTTP endpoint for a login requests.
  * @author André Iske
  * @since 2017-07-24
  */
 @RestController
-@RequestMapping("/api/login")
+@RequestMapping("/api/user/login")
 public class AuthenticationController {
 
 
