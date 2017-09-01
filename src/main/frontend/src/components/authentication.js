@@ -8,7 +8,7 @@ class Authentication extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: '',
+            identification: '',
             password: '',
             error: undefined
         };
@@ -21,7 +21,7 @@ class Authentication extends React.Component {
     }
 
     handleEmailChange(event) {
-        this.setState({email: event.target.value});
+        this.setState({identification: event.target.value});
     }
 
 
@@ -32,7 +32,7 @@ class Authentication extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        axios.post('/user/login', this.state, {
+        axios.post('/api/user/login', this.state, {
             // We allow a status code of 401 (unauthorized). Otherwise it is interpreted as an error and we can't
             // check the HTTP status code.
             validateStatus: (status) => {
@@ -41,7 +41,7 @@ class Authentication extends React.Component {
         })
             .then(({data, status}) => {
                 switch (status) {
-                    case 200:
+                    case 202:
                         User.setCookieCredentials(data);
                         this.setState({error: undefined});
 
@@ -86,7 +86,7 @@ class Authentication extends React.Component {
                         <div className="col-sm-4">
                             <input type="text" className="form-control"
                                    autoFocus={true}
-                                   value={this.state.email}
+                                   value={this.state.identification}
                                    onChange={this.handleEmailChange}/>
                         </div>
                     </div>
