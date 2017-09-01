@@ -1,6 +1,5 @@
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
-
 module.exports = {
     entry: [
         './src/index.js'
@@ -14,6 +13,7 @@ module.exports = {
     plugins: [
         new CopyWebpackPlugin([
             {from: 'assets/**/*'},
+            {from: 'locales/**/*'},
             {from: 'index.html'}
         ])
     ],
@@ -22,7 +22,7 @@ module.exports = {
             exclude: /node_modules/,
             loader: 'babel-loader',
             query: {
-                presets: ['react', 'es2015', 'stage-1']
+                presets: ['react', 'env']
             }
         }]
     },
