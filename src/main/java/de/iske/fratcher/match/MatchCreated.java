@@ -4,7 +4,11 @@ class MatchCreated {
     public boolean confirmed;
 
     public MatchCreated(Match match) {
-        this.confirmed = match.isConfirmed();
+        if (match instanceof LikeMatch) {
+            this.confirmed = ((LikeMatch) match).isConfirmed();
+        } else {
+            this.confirmed = false;
+        }
     }
 
     public MatchCreated() { //JPA only
