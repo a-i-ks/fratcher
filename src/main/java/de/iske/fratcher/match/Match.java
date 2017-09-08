@@ -1,5 +1,6 @@
 package de.iske.fratcher.match;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import de.iske.fratcher.user.User;
 import de.iske.fratcher.util.Status;
 
@@ -8,6 +9,7 @@ import java.time.Instant;
 
 @Entity(name = "Match_")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 public abstract class Match {
 
     @Id
