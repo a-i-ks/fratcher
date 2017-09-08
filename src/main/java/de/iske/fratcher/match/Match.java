@@ -7,8 +7,8 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity(name = "Match_")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Match {
-
 
     @Id
     @GeneratedValue
@@ -31,45 +31,30 @@ public class Match {
 
     private Instant matchingTimestamp;
 
-    private boolean isDisliked;
-
-    private boolean isConfirmed;
-
-    private Instant confirmationTimestamp;
+    /**
+     * Timestamp when user2 presses like/dislike on user1
+     * This timestamp saved the time when user2 reacts on the like/dislike
+     * of user1.
+     * This timestamp is null, if user2 has not react on the like/dislike of user1
+     */
+    private Instant reactionTimestamp;
 
     public Match() {
         matchingTimestamp = Instant.now();
         status = Status.DEFAULT;
-        isConfirmed = false;
     }
 
-    public boolean isDisliked() {
-        return isDisliked;
+    public Instant getReactionTimestamp() {
+        return reactionTimestamp;
     }
 
-    public void setDisliked(boolean disliked) {
-        isDisliked = disliked;
+    public void setReactionTimestamp(Instant reactionTimestamp) {
+        this.reactionTimestamp = reactionTimestamp;
     }
 
     @PrePersist
     public void prePersist() {
         matchingTimestamp = Instant.now();
-    }
-
-    public boolean isConfirmed() {
-        return isConfirmed;
-    }
-
-    public void setConfirmed(boolean confirmed) {
-        isConfirmed = confirmed;
-    }
-
-    public Instant getConfirmationTimestamp() {
-        return confirmationTimestamp;
-    }
-
-    public void setConfirmationTimestamp(Instant confirmationTimestamp) {
-        this.confirmationTimestamp = confirmationTimestamp;
     }
 
     public Status getStatus() {
@@ -117,12 +102,7 @@ public class Match {
         this.matchingTimestamp = matchingTimestamp;
     }
 
-    public void confirm() {
-        setConfirmed(true);
-        confirmationTimestamp = Instant.now();
-    }
-
-    public void dislike() {
-        setDisliked(true);
+    public boolean hasReaction() {
+        return (getReactionTimestamp() != null);
     }
 }

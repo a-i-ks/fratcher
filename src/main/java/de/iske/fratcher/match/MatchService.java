@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+
 /**
  * Service for all match-related functional operations.
  * @author André Iske
@@ -41,7 +43,13 @@ public class MatchService {
         // Check if likedUser has already like initialUser
         Match inverseMatch = matchRepository.findMatchForUsers(likedUser, initialUser);
         if (inverseMatch != null) {
-            if (!inverseMatch.isDisliked()) inverseMatch.confirm();
+            // Check if inverse match was also a like
+            if (inverseMatch instanceof LikeMatch) {
+                // => confirm like
+                ((LikeMatch) inverseMatch).confirm();
+            } else { // => just set reaction timestamp for match
+                inverseMatch.setReactionTimestamp(Instant.now());
+            }
             return inverseMatch;
         }
         // Check if there is already an existing match for initialUser -> likedUser
@@ -49,7 +57,7 @@ public class MatchService {
         if (existingMatch != null) {
             return existingMatch;
         } else {
-            Match unconfirmedMatch = new Match();
+            Match unconfirmedMatch = new LikeMatch();
             unconfirmedMatch.setUsers(initialUser, likedUser);
             addMatch(unconfirmedMatch);
             return unconfirmedMatch;
@@ -68,17 +76,22 @@ public class MatchService {
         // Check if likedUser has already disliked initialUser
         Match inverseMatch = matchRepository.findMatchForUsers(dislikeUser, initialUser);
         if (inverseMatch != null) {
-            inverseMatch.dislike();
+            // Check if inverse match was also a dislike
+            if (inverseMatch instanceof DislikeMatch) {
+                // => confirm dislike
+                ((DislikeMatch) inverseMatch).confirmDislike();
+            } else { // => just set reaction timestamp for match
+                inverseMatch.setReactionTimestamp(Instant.now());
+            }
             return inverseMatch;
         }
-        // Check if there is already an existing match for initialUser -> dislikeUser
+        // Check if there is already an existing dislike match for initialUser -> dislikeUser
         Match existingMatch = matchRepository.findMatchForUsers(initialUser, dislikeUser);
         if (existingMatch != null) {
             return existingMatch;
         } else {
-            Match unconfirmedMatch = new Match();
+            Match unconfirmedMatch = new DislikeMatch();
             unconfirmedMatch.setUsers(initialUser, dislikeUser);
-            unconfirmedMatch.dislike();
             addMatch(unconfirmedMatch);
             return unconfirmedMatch;
         }
