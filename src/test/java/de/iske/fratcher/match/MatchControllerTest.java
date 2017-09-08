@@ -77,7 +77,6 @@ public class MatchControllerTest {
         assertEquals("User 1 should be admin user", new Long(1), matchResponse2.getBody().getUser1().getId());
         assertEquals("User 2 should be user 120", new Long(120), matchResponse2.getBody().getUser2().getId());
         assertFalse("Match should be unconfirmed", matchResponse2.getBody().isConfirmed());
-        assertFalse("Match should not be disliked by other user", matchResponse2.getBody().isDisliked());
     }
 
 }

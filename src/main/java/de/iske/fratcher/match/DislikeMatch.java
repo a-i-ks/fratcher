@@ -20,7 +20,7 @@ public class DislikeMatch extends Match {
         super();
     }
 
-    public boolean isConfirmedDislike() {
+    public boolean isConfirmed() {
         return confirmedDislike;
     }
 

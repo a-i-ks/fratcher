@@ -44,16 +44,33 @@ public class MatchServiceTest {
 
     @Test
     @Transactional
-    public void testIdShouldBeNullAfterCreation() {
-        Match match1 = new Match();
+    public void testLikeMatchIdShouldBeNullAfterCreation() {
+        Match match1 = new LikeMatch();
         assertNotNull("Match object should not null after creation",match1);
         assertNull("Match id should be null before persisting entity",match1.getId());
     }
 
     @Test
     @Transactional
-    public void testIdShouldNotBeNullAfterPersisting() {
-        Match match1 = new Match();
+    public void testDislikeMatchIdShouldBeNullAfterCreation() {
+        Match match1 = new DislikeMatch();
+        assertNotNull("Match object should not null after creation", match1);
+        assertNull("Match id should be null before persisting entity", match1.getId());
+    }
+
+    @Test
+    @Transactional
+    public void testLikeMatchIdShouldNotBeNullAfterPersisting() {
+        Match match1 = new LikeMatch();
+        matchService.addMatch(match1);
+        assertNotNull("Match object should not null after creation", match1);
+        assertNotNull("Match id should not null after persisting entity", match1.getId());
+    }
+
+    @Test
+    @Transactional
+    public void testDislikeMatchIdShouldNotBeNullAfterPersisting() {
+        Match match1 = new DislikeMatch();
         matchService.addMatch(match1);
         assertNotNull("Match object should not null after creation",match1);
         assertNotNull("Match id should not null after persisting entity",match1.getId());
@@ -68,11 +85,11 @@ public class MatchServiceTest {
         userService.addUser(user2);
 
 
-        Match match1 = new Match();
+        Match match1 = new LikeMatch();
         match1.setUser1(user1);
         matchService.addMatch(match1);
 
-        Match match2 = new Match();
+        Match match2 = new DislikeMatch();
         match2.setUser1(user1);
         match2.setUser2(user2);
         matchService.addMatch(match2);
@@ -100,8 +117,9 @@ public class MatchServiceTest {
         assertEquals("Match status should be default", Status.DEFAULT, match.getStatus());
         assertEquals("Match should have User 1 in property user1", user1, match.getUser1());
         assertEquals("Match should have User 2 in property user2", user2, match.getUser2());
+        assertTrue("Match should be a LikeMatch", match instanceof LikeMatch);
         assertEquals("Match should not be confirmed", false, match.isConfirmed());
-        assertNull("Match should have a empty confirmationTimestamp", match.getConfirmationTimestamp());
+        assertNull("Match should have a empty reactionTimestamp", match.getReactionTimestamp());
     }
 
     @Test
@@ -124,8 +142,9 @@ public class MatchServiceTest {
         assertEquals("Match status should be default", Status.DEFAULT, match.getStatus());
         assertEquals("Match should have User 1 in property user1", user1, match.getUser1());
         assertEquals("Match should have User 2 in property user2", user2, match.getUser2());
+        assertTrue("Match should be a LikeMatch", match instanceof LikeMatch);
         assertEquals("Match should be confirmed", true, match.isConfirmed());
-        assertNotNull("Match should have a confirmationTimestamp", match.getConfirmationTimestamp());
+        assertNotNull("Match should have a reactionTimestamp", match.getReactionTimestamp());
     }
 
 

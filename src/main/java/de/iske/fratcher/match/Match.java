@@ -8,7 +8,7 @@ import java.time.Instant;
 
 @Entity(name = "Match_")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class Match {
+public abstract class Match {
 
     @Id
     @GeneratedValue
@@ -105,4 +105,6 @@ public class Match {
     public boolean hasReaction() {
         return (getReactionTimestamp() != null);
     }
+
+    public abstract boolean isConfirmed();
 }
