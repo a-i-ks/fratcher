@@ -7,6 +7,7 @@ import {HashRouter as Router, Route, Switch} from "react-router-dom";
 
 import Navigation from "./components/navigation";
 import Authentication from "./components/authentication";
+
 import i18n from "./i18n";
 import User from "./util/User";
 
@@ -35,12 +36,12 @@ class Root extends React.Component {
                 <Switch>
                     {/*Authentication*/}
                     // See https://github.com/ReactTraining/react-router/issues/4627
-                    <Route path="/api/user/login"
+                    <Route path="/user/login"
                            render={(props) => (
                                <Authentication {...props} updateAuthentication={this.updateAuthentication}/> )}/>
 
                     {/*Post handling*/}
-                    {/*<Route path="/post/new" component={PostCreate}/>*/}
+                    <Route path="/matches/" component={MatchList}/>
                     {/*<Route path="/post/:id" component={PostDetail}/>*/}
 
                     {/*Default route*/}

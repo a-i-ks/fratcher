@@ -24,17 +24,16 @@ class Navigation extends React.Component {
                     </div>
                     <div id="navbar" className="collapse navbar-collapse">
                         <ul className="nav navbar-nav">
-                            <li><Link to="/">Post list</Link></li>
-                            <li><Link to="/post/new">Create post</Link></li>
+                            <li><Link to="/matches">Matches</Link></li>
 
                         </ul>
                         <ul className="nav navbar-nav navbar-right">
                             {User.isNotAuthenticated() &&
-                            <li><Link to="/api/user/login">Login</Link></li>
+                            <li><Link to="/user/login">Login</Link></li>
                             }
                             {
                                 User.isAuthenticated() &&
-                                <li><Link to="/api/user/login">
+                                <li><Link to="/user/login">
                                     {User.email}
                                 </Link></li>
                             }
