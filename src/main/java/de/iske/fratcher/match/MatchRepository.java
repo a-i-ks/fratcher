@@ -10,4 +10,6 @@ public interface MatchRepository extends CrudRepository<Match, Long> {
     @Query("SELECT m from Match_ m WHERE m.user1 = :initialUser AND m.user2 = :likedUser")
     Match findMatchForUsers(@Param("initialUser") User initialUser, @Param("likedUser") User likedUser);
 
+    @Query("SELECT m from LikeMatch m WHERE (m.user1 = :user OR m.user2 = :user) AND m.isConfirmed = TRUE")
+    Iterable<LikeMatch> findConfirmedLikeMatchesForUser(@Param("user") User user);
 }

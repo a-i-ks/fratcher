@@ -13,7 +13,7 @@ import java.time.Instant;
 public abstract class Match {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Enumerated(EnumType.ORDINAL)

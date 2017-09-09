@@ -70,13 +70,12 @@ public class MatchControllerTest {
 
         // Get created match
         final HttpEntity<Object> getMatchRequest = restAuthUtils.getEntityWithAdminAuthHeader(null);
-        final ResponseEntity<Match> matchResponse2 = restTemplate.exchange(matchResponse.getHeaders().getLocation(), HttpMethod.GET, getMatchRequest, Match.class);
+        final ResponseEntity<MatchDto> matchResponse2 = restTemplate.exchange(matchResponse.getHeaders().getLocation(), HttpMethod.GET, getMatchRequest, MatchDto.class);
 
         assertEquals("Get should return HTTP 200", HttpStatus.OK, matchResponse2.getStatusCode());
         assertNotNull("Response body should not be empty", matchResponse2.getBody());
         assertEquals("User 1 should be admin user", new Long(1), matchResponse2.getBody().getUser1().getId());
         assertEquals("User 2 should be user 120", new Long(120), matchResponse2.getBody().getUser2().getId());
-        assertFalse("Match should be unconfirmed", matchResponse2.getBody().isConfirmed());
     }
 
 }

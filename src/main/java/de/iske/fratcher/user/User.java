@@ -140,6 +140,10 @@ public class User {
         return (getUserType() == UserType.ADMIN);
     }
 
+    public boolean isMod() {
+        return (getUserType() == UserType.MODERATOR);
+    }
+
     public enum UserType {
         USER,
         MODERATOR,

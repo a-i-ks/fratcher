@@ -3,6 +3,7 @@ package de.iske.fratcher.match;
 import de.iske.fratcher.user.User;
 import de.iske.fratcher.user.UserService;
 import de.iske.fratcher.util.AddressService;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class MatchController {
 
     @Autowired
     MatchService matchService;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Autowired
     AddressService addressService;
@@ -85,15 +89,21 @@ public class MatchController {
      * @return Match object, if user is allowed to receive this info
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<Match> getMatch(@PathVariable Long id) {
+    public ResponseEntity<MatchDto> getMatch(@PathVariable Long id) {
         Match match = matchService.getMatchById(id);
         if (userService.isAnonymous()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else if (match == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else if (userService.getCurrentUser().getId().equals(match.getUser1().getId()) &&
                 userService.getCurrentUser().getId().equals(match.getUser2().getId())) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        return new ResponseEntity<>(match, HttpStatus.OK);
+        final MatchDto matchDto = convertToMatchDto(match);
+        return new ResponseEntity<>(matchDto, HttpStatus.OK);
     }
 
+    private MatchDto convertToMatchDto(Match match) {
+        return modelMapper.map(match, MatchDto.class);
+    }
 }

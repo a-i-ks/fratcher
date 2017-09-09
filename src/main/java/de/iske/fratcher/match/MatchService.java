@@ -50,6 +50,7 @@ public class MatchService {
             } else { // => just set reaction timestamp for match
                 inverseMatch.setReactionTimestamp(Instant.now());
             }
+            matchRepository.save(inverseMatch);
             return inverseMatch;
         }
         // Check if there is already an existing match for initialUser -> likedUser
@@ -99,5 +100,9 @@ public class MatchService {
 
     public Match getMatchById(Long id) {
         return matchRepository.findOne(id);
+    }
+
+    public Iterable<LikeMatch> getConfirmedLikeMatchesForUser(User user) {
+        return matchRepository.findConfirmedLikeMatchesForUser(user);
     }
 }
