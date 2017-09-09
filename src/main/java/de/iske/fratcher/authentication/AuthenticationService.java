@@ -82,7 +82,7 @@ public class AuthenticationService {
      * @param password plain text password
      * @return hashed password
      */
-    private String hashPassword(String password) {
+    public String hashPassword(String password) {
         return DigestUtils.sha512Hex(SALT + password);
 
     }
