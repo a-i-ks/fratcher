@@ -3,8 +3,9 @@ import {CookiesProvider} from "react-cookie";
 import ReactDOM from "react-dom";
 
 import {I18nextProvider} from "react-i18next";
-import {HashRouter as Router} from "react-router-dom";
+import {HashRouter as Router, Route, Switch} from "react-router-dom";
 import Authentication from "./components/authentication";
+import Navigation from "./components/navigation"
 
 import i18n from "./i18n";
 import User from "./util/User";
@@ -22,12 +23,23 @@ class Root extends React.Component {
     // This is called whenever the authentication state of a user is changed by a component. Additionally,
     // this is an example of intersibling communication with a common parent.
     updateAuthentication() {
-        this.nav.updateAuthentication();
+        //this.nav.updateAuthentication();
+        this.forceUpdate();
     }
 
     render() {
         return (
-            <Authentication/>
+            <Switch>
+                {User.isNotAuthenticated() &&
+                <Route path="/" render={(props) => (
+                    <Authentication {...props} updateAuthentication={this.updateAuthentication}/> )}/>
+                }
+                {User.isAuthenticated() &&
+                <Navigation ref={(component) => {
+                    this.nav = component;
+                }}/>
+                }
+            </Switch>
         );
     }
 }
