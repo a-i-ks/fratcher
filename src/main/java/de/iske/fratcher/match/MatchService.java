@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Service for all match-related functional operations.
@@ -104,5 +107,36 @@ public class MatchService {
 
     public Iterable<LikeMatch> getConfirmedLikeMatchesForUser(User user) {
         return matchRepository.findConfirmedLikeMatchesForUser(user);
+    }
+
+    public List<User> getMatchingCandidatesForUser(User user, int numberOfCandidates) {
+        // create empty result list
+        List<User> matchingCandidates = new ArrayList<>();
+
+        // empty list for users which have already been liked/disliked
+        List<User> alreadyMatchedUsers = new ArrayList<>();
+
+        // search all matches that had been initiated by user
+        final Iterable<Match> matchesForUser = matchRepository.findMatchesForUser(user);
+        // for each match add user1 (initial user) to list of already matched users
+        matchesForUser.forEach(match -> alreadyMatchedUsers.add(match.getUser1()));
+
+        // get full user directory
+        final Iterable<User> userList = userService.getUserList();
+
+        // add all users as possible matching candidates
+        userList.forEach(matchingCandidates::add);
+
+        // remove current user from matching candidates (obviously you can't match yourself)
+        matchingCandidates.remove(user);
+
+        // remove all already rated candidates
+        matchingCandidates = matchingCandidates.stream()
+                .filter(u -> !alreadyMatchedUsers.contains(u))
+                .limit(numberOfCandidates)
+                .collect(Collectors.toList());
+
+        return matchingCandidates;
+
     }
 }

@@ -147,6 +147,21 @@ public class UserController {
         }
     }
 
+    @RequestMapping(value = "candidates", method = RequestMethod.GET)
+    public ResponseEntity<Object> getMatchingCandidates(@RequestParam(value = "n", required = false) Integer numberOfCandidates) {
+        if (userService.isAnonymous()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        if (numberOfCandidates == null) {
+            numberOfCandidates = 10;
+        }
+        final List<User> matchingCandidates = matchService.getMatchingCandidatesForUser(userService.getCurrentUser(), numberOfCandidates);
+        List<UserDto> matchtingCandidatesDto = new ArrayList();
+        matchingCandidates.forEach(user -> matchtingCandidatesDto.add(convertUserToDto(user)));
+        return new ResponseEntity<>(
+                matchtingCandidatesDto, HttpStatus.OK);
+    }
+
     private UserDto convertUserToDto(User user) {
         return modelMapper.map(user, UserDto.class);
     }

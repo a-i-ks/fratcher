@@ -73,43 +73,45 @@ class Authentication extends React.Component {
         this.props.updateAuthentication();
     }
 
-
+    // Template of centered login page is from
+    // https://codepen.io/OldManJava/pen/bwupj
     render() {
         let loginComponent = null;
-        if (User.isNotAuthenticated()) {
             loginComponent =
-                <form onSubmit={this.handleSubmit} className="form-horizontal">
-                    <div className="form-group">
-                        <label className="col-sm-2">
-                            Email
-                        </label>
-                        <div className="col-sm-4">
-                            <input type="text" className="form-control"
-                                   autoFocus={true}
-                                   value={this.state.identification}
-                                   onChange={this.handleEmailChange}/>
+                <div className="container">
+                    <div className="row">
+                        <div className="Absolute-Center is-Responsive">
+                            <div id="logo-container"></div>
+                            <div className="col-sm-12 col-md-10 col-md-offset-1">
+                                <form action="" id="loginForm" onSubmit={this.handleSubmit}>
+                                    <div className="form-group input-group">
+                                        <span className="input-group-addon"><i className="glyphicon glyphicon-user"></i></span>
+                                        <input className="form-control" type="text"
+                                               name='username'
+                                               placeholder="username or email"
+                                               autoFocus={true}
+                                               value={this.state.identification}
+                                               onChange={this.handleEmailChange}/>
+                                    </div>
+                                    <div className="form-group input-group">
+                                        <span className="input-group-addon"><i className="glyphicon glyphicon-lock"></i></span>
+                                        <input className="form-control" type="password"
+                                               name='password'
+                                               placeholder="password"
+                                               value={this.state.password}
+                                               onChange={this.handlePasswordChange}/>
+                                    </div>
+                                    <div className="form-group">
+                                        <button type="submit" class="btn btn-def btn-block">Login</button>
+                                    </div>
+                                    <div className="form-group text-center">
+                                        <a href="#">Forgot Password</a>&nbsp;|&nbsp;<a href="#">Register</a>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
-
-                    <div className="form-group">
-                        <label className="col-sm-2">
-                            Password
-                        </label>
-                        <div className="col-sm-4">
-                            <input type="password" name="password" className="form-control"
-                                   value={this.state.password}
-                                   onChange={this.handlePasswordChange}/>
-                        </div>
-                    </div>
-                    <input type="submit" className="btn btn-success" value="Submit"/>
-                </form>
-        } else {
-            loginComponent =
-                <div>
-                    <button type="button" className="btn btn-danger" onClick={this.handleLogout}>Logout</button>
                 </div>
-        }
-
         return (
             <div className="component">
                 {loginComponent}

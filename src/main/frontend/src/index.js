@@ -3,9 +3,7 @@ import {CookiesProvider} from "react-cookie";
 import ReactDOM from "react-dom";
 
 import {I18nextProvider} from "react-i18next";
-import {HashRouter as Router, Route, Switch} from "react-router-dom";
-
-import Navigation from "./components/navigation";
+import {HashRouter as Router} from "react-router-dom";
 import Authentication from "./components/authentication";
 
 import i18n from "./i18n";
@@ -29,25 +27,7 @@ class Root extends React.Component {
 
     render() {
         return (
-            <div>
-                <Navigation ref={(component) => {
-                    this.nav = component;
-                }}/>
-                <Switch>
-                    {/*Authentication*/}
-                    // See https://github.com/ReactTraining/react-router/issues/4627
-                    <Route path="/user/login"
-                           render={(props) => (
-                               <Authentication {...props} updateAuthentication={this.updateAuthentication}/> )}/>
-
-                    {/*Post handling*/}
-                    <Route path="/matches/" component={MatchList}/>
-                    {/*<Route path="/post/:id" component={PostDetail}/>*/}
-
-                    {/*Default route*/}
-                    {/*<Route path="/" component={PostList}/>*/}
-                </Switch>
-            </div>
+            <Authentication/>
         );
     }
 }
