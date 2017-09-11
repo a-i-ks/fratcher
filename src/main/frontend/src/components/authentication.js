@@ -102,7 +102,7 @@ class Authentication extends React.Component {
                                                onChange={this.handlePasswordChange}/>
                                     </div>
                                     <div className="form-group">
-                                        <button type="submit" class="btn btn-def btn-block">Login</button>
+                                        <button type="submit" className="btn btn-def btn-block">Login</button>
                                     </div>
                                     <div className="form-group text-center">
                                         <a href="#">Forgot Password</a>&nbsp;|&nbsp;<a href="#">Register</a>
