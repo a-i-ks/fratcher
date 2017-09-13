@@ -1,5 +1,7 @@
 import axios from "axios";
 import React from "react";
+
+import {Link} from "react-router-dom";
 import {withCookies} from "react-cookie";
 
 import User from "../util/User";
@@ -105,7 +107,8 @@ class Authentication extends React.Component {
                                         <button type="submit" className="btn btn-def btn-block">Login</button>
                                     </div>
                                     <div className="form-group text-center">
-                                        <a href="#">Forgot Password</a>&nbsp;|&nbsp;<a href="#">Register</a>
+                                        <a href="#">Forgot Password</a>&nbsp;|&nbsp;<Link
+                                        to="/registration">Register</Link>
                                     </div>
                                 </form>
                             </div>

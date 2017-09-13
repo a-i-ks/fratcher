@@ -6,6 +6,7 @@ import {I18nextProvider} from "react-i18next";
 import {HashRouter as Router, Route, Switch} from "react-router-dom";
 import Authentication from "./components/authentication";
 import Navigation from "./components/navigation"
+import Registration from "./components/registration"
 
 import i18n from "./i18n";
 import User from "./util/User";
@@ -31,14 +32,16 @@ class Root extends React.Component {
         return (
             <Switch>
                 {User.isNotAuthenticated() &&
-                <Route path="/" render={(props) => (
-                    <Authentication {...props} updateAuthentication={this.updateAuthentication}/> )}/>
-                }
+                <Route path="/registration" render={(props) => (
+                    <Registration {...props}/>)}/>}
                 {User.isAuthenticated() &&
                 <Navigation ref={(component) => {
                     this.nav = component;
                 }}/>
                 }
+                {User.isNotAuthenticated() &&
+                <Route path="/" render={(props) => (
+                    <Authentication {...props} updateAuthentication={this.updateAuthentication}/> )}/>}
             </Switch>
         );
     }
