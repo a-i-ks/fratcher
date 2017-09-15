@@ -109,7 +109,6 @@ public class UserController {
                 System.out.println(e.getMessage());
                 return new ResponseEntity<>(HttpStatus.IM_USED);
             }
-            UserCreated userCreated = new UserCreated(newUser, addressService.getServerURL());
             // Add url of new created user to Location head field
             final URI location = ServletUriComponentsBuilder
                     .fromCurrentServletMapping().path("api/user/{id}").build()
@@ -148,6 +147,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "candidates", method = RequestMethod.GET)
+    @SuppressWarnings("unchecked")
     public ResponseEntity<Object> getMatchingCandidates(@RequestParam(value = "n", required = false) Integer numberOfCandidates) {
         if (userService.isAnonymous()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
