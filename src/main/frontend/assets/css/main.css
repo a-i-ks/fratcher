@@ -67,6 +67,23 @@ div.well {
 
 }
 
+.userNavObj {
+    margin-top: 15px;
+    color: white;
+}
+
+.userNavObj .userAvatar {
+    float: left;
+    margin-bottom: 10px;
+}
+
+.userNavObj .userName {
+    float: right;
+    margin-left: 10px;
+    margin-top: 8px;
+
+}
+
 
 .component {
     /*border: 1px solid lightgray;*/

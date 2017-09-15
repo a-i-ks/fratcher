@@ -1,6 +1,7 @@
 import React from "react";
 import {Link} from "react-router-dom";
 import User from "../util/User";
+import UserAvatar from "react-user-avatar"
 
 class Navigation extends React.Component {
     updateAuthentication() {
@@ -10,6 +11,15 @@ class Navigation extends React.Component {
     }
 
     render() {
+        let userNavObj = null;
+        if (User.isAuthenticated()) {
+            userNavObj =
+                <div className="userNavObj">
+                    <div className="userAvatar"><UserAvatar size="40" name={User.profile.name}/></div>
+                    <div className="userName">{User.profile.name}</div>
+
+                </div>
+        }
         return (
             <nav className="navbar navbar-inverse navbar-fixed-top">
                 <div className="container">
@@ -29,13 +39,9 @@ class Navigation extends React.Component {
                         </ul>
                         <ul className="nav navbar-nav navbar-right">
                             {User.isNotAuthenticated() &&
-                            <li><Link to="/user/login">Login</Link></li>
-                            }
-                            {
-                                User.isAuthenticated() &&
-                                <li><Link to="/user/login">
-                                    {User.email}
-                                </Link></li>
+                            <li><Link to="/user/login">Login</Link></li>}
+                            {User.isAuthenticated() &&
+                            userNavObj
                             }
                         </ul>
                     </div>

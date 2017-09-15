@@ -101,6 +101,12 @@ class Registration extends React.Component {
 
     handlePasswordConfirmationChange(event) {
         this.setState({passwordConfirmation: event.target.value.trim()});
+        if (this.state.password != event.target.value.trim()) {
+            this.setState({passwordsAreEqual: false});
+        } else {
+            this.setState({passwordsAreEqual: true});
+            event.target.u
+        }
         this.updateRegisterBtnState();
     }
 
@@ -162,9 +168,9 @@ class Registration extends React.Component {
 
     updateRegisterBtnState() {
         if (this.validateAllInputFields()) {
-            this.state.btnRegisterDisabled = false;
+            this.setState({btnRegisterDisabled: false});
         } else {
-            this.state.btnRegisterDisabled = true;
+            this.setState({btnRegisterDisabled: true});
         }
     }
 
