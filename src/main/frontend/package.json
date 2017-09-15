@@ -1,7 +1,7 @@
 {
   "name": "fratcher",
   "version": "1.0.0",
-  "license": "GPL",
+  "license": "GPL-3.0",
   "description": "lecture project for webengineering 2017",
   "main": "index.js",
   "repository": "https://github.com/a-i-ks/fratcher/",
