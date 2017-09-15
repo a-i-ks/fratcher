@@ -1,0 +1,93 @@
+
+body {
+    padding-top: 75px;
+}
+
+div.well {
+    height: 250px;
+}
+
+.Absolute-Center {
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+.Absolute-Center.is-Responsive {
+    width: 50%;
+    height: 50%;
+    min-width: 200px;
+    max-width: 400px;
+    padding: 40px;
+}
+
+#logo-container {
+    margin: auto;
+    margin-bottom: 2px;
+    width: 367px;
+    height: 141px;
+    background-image: url('../fratcher-logo.png');
+}
+
+.field-validation-error {
+    /* label classes */
+    display: inline;
+    padding: .2em .6em .3em;
+    font-size: 75%;
+    font-weight: bold;
+    line-height: 1;
+    color: #ffffff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25em;
+    z-index: 1000;
+    position: relative;
+    left: 35px;
+
+    /* label danger classes */
+    background-color: #d9534f;
+}
+
+.validation-summary-errors {
+    /* alert classes */
+
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+
+    /* alert danger classes */
+    color: #b94a48;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+
+}
+
+
+.component {
+    /*border: 1px solid lightgray;*/
+    /*margin: 10px;*/
+    /*padding: 5px;*/
+}
+
+.component h1 {
+    /*text-align: right;*/
+    /*color: lightgray;*/
+    /*margin: 5px;*/
+    /*font-size: 20px;*/
+}
+
+.component a {
+    text-decoration: none;
+    color: black;
+}
+
+.component .error {
+    color: red;
+}
+
+
