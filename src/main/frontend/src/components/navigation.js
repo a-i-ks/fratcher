@@ -1,7 +1,6 @@
 import React from "react";
-import {Link} from "react-router-dom";
-import User from "../util/User";
-import UserAvatar from "react-user-avatar"
+
+import {MenuItem, Nav, Navbar, NavDropdown, NavItem} from "react-bootstrap"
 
 class Navigation extends React.Component {
     updateAuthentication() {
@@ -11,42 +10,27 @@ class Navigation extends React.Component {
     }
 
     render() {
-        let userNavObj = null;
-        if (User.isAuthenticated()) {
-            userNavObj =
-                <div className="userNavObj">
-                    <div className="userAvatar"><UserAvatar size="40" name={User.profile.name}/></div>
-                    <div className="userName">{User.profile.name}</div>
-
-                </div>
-        }
+        navigation =
+            <Navbar>
+                <Navbar.Header>
+                    <Navbar.Brand>
+                        <a href="#">React-Bootstrap</a>
+                    </Navbar.Brand>
+                </Navbar.Header>
+                <Nav>
+                    <NavItem eventKey={1} href="#">Link</NavItem>
+                    <NavItem eventKey={2} href="#">Link</NavItem>
+                    <NavDropdown eventKey={3} title="Dropdown" id="basic-nav-dropdown">
+                        <MenuItem eventKey={3.1}>Action</MenuItem>
+                        <MenuItem eventKey={3.2}>Another action</MenuItem>
+                        <MenuItem eventKey={3.3}>Something else here</MenuItem>
+                        <MenuItem divider/>
+                        <MenuItem eventKey={3.4}>Separated link</MenuItem>
+                    </NavDropdown>
+                </Nav>
+            </Navbar>;
         return (
-            <nav className="navbar navbar-inverse navbar-fixed-top">
-                <div className="container">
-                    <div className="navbar-header">
-                        <button type="button" className="navbar-toggle collapsed" data-toggle="collapse"
-                                data-target="#navbar">
-                            <span className="icon-bar"></span>
-                            <span className="icon-bar"></span>
-                            <span className="icon-bar"></span>
-                        </button>
-                        <Link to="/" className="navbar-brand">Fratcher</Link>
-                    </div>
-                    <div id="navbar" className="collapse navbar-collapse">
-                        <ul className="nav navbar-nav">
-                            <li><Link to="/matches">Matches</Link></li>
-
-                        </ul>
-                        <ul className="nav navbar-nav navbar-right">
-                            {User.isNotAuthenticated() &&
-                            <li><Link to="/user/login">Login</Link></li>}
-                            {User.isAuthenticated() &&
-                            userNavObj
-                            }
-                        </ul>
-                    </div>
-                </div>
-            </nav>
+            navigation
         );
     }
 }
