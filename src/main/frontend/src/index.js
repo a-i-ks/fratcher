@@ -21,6 +21,7 @@ class Root extends React.Component {
         this.updateAuthentication = this.updateAuthentication.bind(this);
     }
 
+
     // This is called whenever the authentication state of a user is changed by a component. Additionally,
     // this is an example of intersibling communication with a common parent.
     updateAuthentication() {
@@ -35,7 +36,7 @@ class Root extends React.Component {
                 <Route path="/registration" render={(props) => (
                     <Registration {...props}/>)}/>}
                 {User.isAuthenticated() &&
-                <Navigation ref={(component) => {
+                <Navigation updateAuthentication={this.updateAuthentication} ref={(component) => {
                     this.nav = component;
                 }}/>
                 }
@@ -45,7 +46,7 @@ class Root extends React.Component {
             </Switch>
         );
     }
-}
+};
 
 ReactDOM.render(
     <CookiesProvider>

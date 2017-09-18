@@ -18,7 +18,6 @@ class Authentication extends React.Component {
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleLogout = this.handleLogout.bind(this);
         this.cookies = this.props.cookies;
     }
 
@@ -67,13 +66,6 @@ class Authentication extends React.Component {
             });
     }
 
-    handleLogout() {
-        axios.defaults.headers.common['Authorization'] = undefined;
-        User.reset();
-        this.cookies.remove('auth');
-        this.forceUpdate();
-        this.props.updateAuthentication();
-    }
 
     // Template of centered login page is from
     // https://codepen.io/OldManJava/pen/bwupj
