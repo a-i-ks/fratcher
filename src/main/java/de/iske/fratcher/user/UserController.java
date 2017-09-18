@@ -45,13 +45,18 @@ public class UserController {
     private Validator validator;
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
+    public ResponseEntity<Object> getUser(@PathVariable Long id) {
         if (userService.isAnonymous()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
             final User user = userService.getUser(id);
             if (user == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            // if current user requests its own user object
+            // => send full user object
+            else if (user.equals(userService.getCurrentUser())) {
+                return new ResponseEntity<>(user, HttpStatus.OK);
             }
             final UserDto userDto = convertUserToDto(user);
             return new ResponseEntity<>(userDto, HttpStatus.OK);
