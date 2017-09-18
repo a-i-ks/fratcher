@@ -12,11 +12,11 @@ public class Profile {
 
     private String aboutMe;
 
-    @ElementCollection(targetClass = String.class)
-    private List<String> interest;
+    @ElementCollection(targetClass = Interest.class)
+    private List<Interest> interests;
 
     public Profile() {
-        interest = new ArrayList<>();
+        interests = new ArrayList<>();
 
     }
 
@@ -28,12 +28,12 @@ public class Profile {
         this.aboutMe = aboutMe;
     }
 
-    public List<String> getInterest() {
-        return interest;
+    public List<Interest> getInterests() {
+        return interests;
     }
 
-    public void setInterest(List<String> interest) {
-        this.interest = interest;
+    public void setInterests(List<Interest> interests) {
+        this.interests = interests;
     }
 
     public String getName() {
