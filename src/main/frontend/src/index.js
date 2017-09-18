@@ -7,6 +7,7 @@ import {HashRouter as Router, Route, Switch} from "react-router-dom";
 import Authentication from "./components/authentication";
 import Navigation from "./components/navigation"
 import Registration from "./components/registration"
+import EditProfile from "./components/editProfile"
 
 import i18n from "./i18n";
 import User from "./util/User";
@@ -31,19 +32,23 @@ class Root extends React.Component {
 
     render() {
         return (
-            <Switch>
-                {User.isNotAuthenticated() &&
-                <Route path="/registration" render={(props) => (
-                    <Registration {...props}/>)}/>}
+            <div>
                 {User.isAuthenticated() &&
                 <Navigation updateAuthentication={this.updateAuthentication} ref={(component) => {
                     this.nav = component;
-                }}/>
-                }
-                {User.isNotAuthenticated() &&
-                <Route path="/" render={(props) => (
-                    <Authentication {...props} updateAuthentication={this.updateAuthentication}/> )}/>}
-            </Switch>
+                }}/>}
+                <Switch>
+                    {User.isNotAuthenticated() &&
+                    <Route path="/registration" render={(props) => (
+                        <Registration {...props}/>)}/>}
+                    {User.isAuthenticated() &&
+                    <Route path="/editProfile" render={(props) => (
+                        <EditProfile {...props}/>)}/>}
+                    {User.isNotAuthenticated() &&
+                    <Route path="/" render={(props) => (
+                        <Authentication {...props} updateAuthentication={this.updateAuthentication}/> )}/>}
+                </Switch>
+            </div>
         );
     }
 };

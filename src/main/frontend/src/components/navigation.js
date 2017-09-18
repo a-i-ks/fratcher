@@ -10,8 +10,6 @@ class Navigation extends React.Component {
 
     constructor(props) {
         super(props);
-        console.log("nav");
-        console.log(props);
         this.cookies = this.props.cookies;
         this.handleLogout = this.handleLogout.bind(this);
         this.updateAuthentication = this.props.updateAuthentication.bind(this);
@@ -19,11 +17,9 @@ class Navigation extends React.Component {
 
 
     handleLogout() {
-        console.log("handleLogout");
         User.reset();
         this.cookies.remove('auth');
         this.updateAuthentication();
-        console.log("end");
     }
 
     render() {
@@ -47,7 +43,7 @@ class Navigation extends React.Component {
                             </div>
                             <div className="userName">{User.profile.name}</div>
                         </div>} id="basic-nav-dropdown">
-                        <MenuItem eventKey={3.1}>Action</MenuItem>
+                        <MenuItem href="#/editProfile">Edit Profile</MenuItem>
                         <MenuItem eventKey={3.2}>Another action</MenuItem>
                         <MenuItem eventKey={3.3}>Something else here</MenuItem>
                         <MenuItem divider/>
