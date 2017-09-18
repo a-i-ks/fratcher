@@ -1,5 +1,6 @@
 package de.iske.fratcher.user.profile;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ public class Profile {
 
     private String aboutMe;
 
+    @ElementCollection(targetClass = String.class)
     private List<String> interest;
 
     public Profile() {
