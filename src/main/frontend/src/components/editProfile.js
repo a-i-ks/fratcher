@@ -9,6 +9,7 @@ import User from "../util/User";
 import axios from "axios";
 import UserAvatar from "react-user-avatar";
 import {Button, Col, ControlLabel, Form, FormControl, FormGroup} from "react-bootstrap";
+import InterestsTagCloud from "./interestsTagCloud";
 
 class EditProfile extends React.Component {
     constructor(props) {
@@ -269,6 +270,12 @@ class EditProfile extends React.Component {
                             <h6>Upload a different photo...</h6>
 
                             <input className="form-control" type="file"/>
+                        </div>
+                        <div className="tagcloud">
+                            <h3>Interests</h3>
+                            <div className="tags">
+                                <InterestsTagCloud/>
+                            </div>
                         </div>
                     </div>
 
