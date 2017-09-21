@@ -1,5 +1,8 @@
 package de.iske.fratcher.user.profile;
 
+import javax.persistence.Entity;
+
+@Entity
 public class Interest {
 
     private String value;
