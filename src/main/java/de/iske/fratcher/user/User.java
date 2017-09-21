@@ -147,8 +147,7 @@ public class User {
     public enum UserType {
         USER,
         MODERATOR,
-        ADMIN,
-        SUPER_ADMIN
+        ADMIN
     }
 
 
