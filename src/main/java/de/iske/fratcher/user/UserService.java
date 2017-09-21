@@ -88,6 +88,11 @@ public class UserService {
     }
 
     public void addUser(User user) {
+        if (!isUserProfileComplete(user)) {
+            user.setStatus(Status.INACTIVE);
+        } else {
+            user.setStatus(Status.DEFAULT);
+        }
         userRepository.save(user);
     }
 
@@ -100,6 +105,11 @@ public class UserService {
      */
     public void mergeUser(User userToMerge) {
         User userObj = userRepository.findById(userToMerge.getId());
+        if (!isUserProfileComplete(userToMerge)) {
+            userToMerge.setStatus(Status.INACTIVE);
+        } else {
+            userToMerge.setStatus(Status.DEFAULT);
+        }
         // merge user information
         if (userToMerge.getUsername() != null) {
             userObj.setUsername(userToMerge.getUsername());
@@ -125,6 +135,30 @@ public class UserService {
             userObj.getProfile().setInterests(userToMerge.getProfile().getInterests());
         }
         userRepository.save(userObj);
+    }
+
+    /**
+     * Check if all necessary information have been added to the user profile
+     * to participate in the matching process.
+     *
+     * @param user the user to check
+     * @return true if all info are present
+     */
+    public boolean isUserProfileComplete(User user) {
+        if (user.getProfile() == null) {
+            return false;
+        } else if (user.getProfile().getName() == null) {
+            return false;
+        } else if (user.getProfile().getName().length() == 0) {
+            return false;
+        } else if (user.getProfile().getAboutMe() == null) {
+            return false;
+        } else if (user.getProfile().getAboutMe().length() > 3) {
+            return false;
+        } else if (user.getProfile().getInterests().size() == 0) {
+            return false;
+        }
+        return true;
     }
 
     /**
