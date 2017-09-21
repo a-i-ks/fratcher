@@ -1,12 +1,8 @@
 package de.iske.fratcher.user.profile;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
-import javax.persistence.Transient;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Embeddable
@@ -16,16 +12,11 @@ public class Profile {
 
     private String aboutMe;
 
-    @JsonIgnore
-    @ElementCollection
-    private List<String> interestsList;
-
-    @Transient
-    private String[] interests;
+    @OneToMany
+    private List<Interest> interests;
 
     public Profile() {
-        interests = new String[0];
-        interestsList = new ArrayList<>();
+        interests = new ArrayList<>();
     }
 
     public String getAboutMe() {
@@ -36,12 +27,12 @@ public class Profile {
         this.aboutMe = aboutMe;
     }
 
-    public String[] getInterests() {
-        return interestsList.toArray(new String[interestsList.size()]);
+    public List<Interest> getInterests() {
+        return interests;
     }
 
-    public void setInterests(String[] interests) {
-        this.interestsList.addAll(Arrays.asList(interests));
+    public void setInterests(List<Interest> interests) {
+        this.interests = interests;
     }
 
     public String getName() {
