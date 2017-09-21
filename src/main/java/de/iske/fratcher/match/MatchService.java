@@ -3,6 +3,7 @@ package de.iske.fratcher.match;
 
 import de.iske.fratcher.user.User;
 import de.iske.fratcher.user.UserService;
+import de.iske.fratcher.util.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,6 +134,7 @@ public class MatchService {
         // remove all already rated candidates
         matchingCandidates = matchingCandidates.stream()
                 .filter(u -> !alreadyMatchedUsers.contains(u))
+                .filter(u -> u.getStatus() != Status.INACTIVE)
                 .limit(numberOfCandidates)
                 .collect(Collectors.toList());
 
