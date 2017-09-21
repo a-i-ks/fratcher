@@ -293,8 +293,10 @@ class EditProfile extends React.Component {
                             </div>
 
                             <h6>Upload a different photo...</h6>
-
-                            <input className="form-control" type="file"/>
+                            <form method="POST" action="/api/user/img" encType="multipart/form-data">
+                                <input className="form-control" type="file" name="file"/>
+                                <button action="submit">GO</button>
+                            </form>
                         </div>
                         <div className="tagcloud">
                             <h3>Interests &nbsp;&nbsp;

@@ -13,11 +13,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -269,10 +275,33 @@ public class UserController {
             numberOfCandidates = 10;
         }
         final List<User> matchingCandidates = matchService.getMatchingCandidatesForUser(userService.getCurrentUser(), numberOfCandidates);
-        List<UserDto> matchtingCandidatesDto = new ArrayList();
-        matchingCandidates.forEach(user -> matchtingCandidatesDto.add(convertUserToDto(user)));
+        List<UserDto> matchingCandidatesDto = new ArrayList();
+        matchingCandidates.forEach(user -> matchingCandidatesDto.add(convertUserToDto(user)));
         return new ResponseEntity<>(
-                matchtingCandidatesDto, HttpStatus.OK);
+                matchingCandidatesDto, HttpStatus.OK);
+    }
+
+    @PostMapping("img") //new annotation since spring 4.3
+    public ResponseEntity<Object> uploadUserImg(@RequestParam("file") MultipartFile file) {
+
+        if (file.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.LENGTH_REQUIRED);
+        }
+        try {
+
+            // Get the file and save it somewhere
+            byte[] bytes = file.getBytes();
+            String UPLOADED_FOLDER = "imgs/";
+            new File(UPLOADED_FOLDER).mkdirs();
+            Path path = Paths.get(UPLOADED_FOLDER + file.getOriginalFilename());
+            Files.write(path, bytes);
+
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     private UserDto convertUserToDto(User user) {
