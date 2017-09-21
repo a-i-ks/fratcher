@@ -34,8 +34,12 @@ class Navigation extends React.Component {
                     </Navbar.Brand>
                 </Navbar.Header>
                 <Nav>
-                    <NavItem eventKey={1} href="#">Link</NavItem>
-                    <NavItem eventKey={2} href="#">Link</NavItem>
+                    <NavItem eventKey={1} href="#">Matches</NavItem>
+                    {User.isMod() || User.isAdmin() &&
+                    <NavItem eventKey={2} href="#">Moderation</NavItem>}
+                    {User.isAdmin() &&
+                    <NavItem eventKey={3} href="#">Administration</NavItem>
+                    }
                 </Nav>
                 <Nav pullRight>
                     <NavDropdown eventKey={3} title={

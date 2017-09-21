@@ -5,8 +5,9 @@ class User {
     constructor() {
         this.reset();
         this.profile = {
-            name: ""
+            name: "Unknown"
         };
+        this.userType = "N/A";
         const cookies = new Cookies();
         const auth = cookies.get('auth');
         if (auth) {
@@ -23,12 +24,14 @@ class User {
         this.profile.name = data.profile.name;
         this.email = data.email;
         this.id = data.id;
+        this.userType = data.userType;
     }
 
     reset() {
-        this.name = undefined;
+        this.name = "";
         this.email = undefined;
         this.id = -1;
+        this.userType = "N/A"
     }
 
     isAuthenticated() {
@@ -37,6 +40,14 @@ class User {
 
     isNotAuthenticated() {
         return !this.isAuthenticated();
+    }
+
+    isAdmin() {
+        return this.userType === "ADMIN"
+    }
+
+    isMod() {
+        return this.userType === "MODERATOR"
     }
 }
 
