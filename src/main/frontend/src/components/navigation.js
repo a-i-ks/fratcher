@@ -10,6 +10,9 @@ class Navigation extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            name: User.profile.name === null ? "Unknown" : User.profile.name
+        };
         this.cookies = this.props.cookies;
         this.handleLogout = this.handleLogout.bind(this);
         this.updateAuthentication = this.props.updateAuthentication.bind(this);
@@ -23,8 +26,7 @@ class Navigation extends React.Component {
     }
 
     render() {
-        let navigation = null;
-        navigation =
+        let navigation =
             <Navbar>
                 <Navbar.Header>
                     <Navbar.Brand>
@@ -39,9 +41,9 @@ class Navigation extends React.Component {
                     <NavDropdown eventKey={3} title={
                         <div className="userNavObj">
                             <div className="userAvatar">
-                                <UserAvatar size="40" name={User.profile.name}/>
+                                <UserAvatar size="40" name={this.state.name}/>
                             </div>
-                            <div className="userName">{User.profile.name}</div>
+                            <div className="userName">{this.state.name}</div>
                         </div>} id="basic-nav-dropdown">
                         <MenuItem href="#/editProfile">Edit Profile</MenuItem>
                         <MenuItem eventKey={3.2}>Another action</MenuItem>

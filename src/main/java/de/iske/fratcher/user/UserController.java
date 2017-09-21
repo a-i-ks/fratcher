@@ -146,6 +146,9 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         userToMerge.setId(userService.getCurrentUser().getId());
+        if (userToMerge.getPassword() != null && userToMerge.getPassword().length() > 0) {
+            userToMerge.setPassword(authenticationService.hashPassword(userToMerge.getPassword()));
+        }
         userService.mergeUser(userToMerge);
         // Add url of merged user to Location head field
         final URI location = ServletUriComponentsBuilder
@@ -175,9 +178,8 @@ public class UserController {
                 !userService.getCurrentUser().isAdmin()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-
         userToMerge.setId(userService.getCurrentUser().getId());
-        if (userToMerge.getPassword() != null) {
+        if (userToMerge.getPassword() != null && userToMerge.getPassword().length() > 0) {
             userToMerge.setPassword(authenticationService.hashPassword(userToMerge.getPassword()));
         }
         userToMerge.setId(userID);

@@ -15,6 +15,7 @@ class EditProfile extends React.Component {
         super(props);
         this.state = {
             user: undefined,
+            submitBtnEnabled: true,
             name: "",
             nameValidationError: null,
             email: "",
@@ -23,6 +24,10 @@ class EditProfile extends React.Component {
             usernameValidationError: null,
             aboutMe: "",
             aboutMeValidationError: null,
+            password: "",
+            passwordValidationError: null,
+            passwordConfirmation: "",
+            passwordConfirmationValidationError: null,
             error: undefined,
             errorText: ""
         };
@@ -35,19 +40,27 @@ class EditProfile extends React.Component {
         this.handleAboutMeChange = this.handleAboutMeChange.bind(this);
         this.handleAboutMeChangeEnd = this.handleAboutMeChangeEnd.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
-        this.handlePasswordConfirmChange = this.handlePasswordConfirmChange.bind(this);
+        this.handlePasswordChangeEnd = this.handlePasswordChange.bind(this);
+        this.handlePasswordConfirmChange = this.handlePasswordConfirmChangeEnd.bind(this);
+        this.handlePasswordConfirmChangeEnd = this.handlePasswordConfirmChangeEnd.bind(this);
 
-        this.validateName = this.validateName.bind(this)
+        this.validateName = this.validateName.bind(this);
+        this.validateUsername = this.validateUsername.bind(this);
+        this.validateEmail = this.validateEmail.bind(this);
+        this.validatePassword = this.validatePassword.bind(this);
+        this.validatePasswordConfirmation = this.validatePasswordConfirmation.bind(this);
 
         this.handleCancel = this.handleCancel.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.postUserObj = this.postUserObj.bind(this);
+
+        this.isAllValid = this.isAllValid.bind(this);
     }
 
     // This function is called before render() to initialize its state.
     componentWillMount() {
         axios.get('/api/user/' + User.id)
             .then(({data}) => {
+                User.name = (data.profile.name === null || undefined) ? "Unknown" : data.profile.name;
                 this.setState({
                     origUser: data,
                     user: data,
@@ -64,16 +77,16 @@ class EditProfile extends React.Component {
     }
 
     handleNameChangeEnd(event) {
-        this.setState({name: event.target.value.trim()}, this.validateName(this.state.name));
+        this.setState({name: event.target.value.trim()}, this.validateName(this.state.name))
     }
 
     validateName(value) {
         // regex from https://stackoverflow.com/a/2044909/3898604
-        var re = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/g;
+        let re = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/g;
         if (!re.test(value)) {
-            this.setState({nameValidationError: "error"});
+            this.setState({nameValidationError: "error"}, this.isAllValid);
         } else {
-            this.setState({nameValidationError: null});
+            this.setState({nameValidationError: null}, this.isAllValid);
         }
     }
 
@@ -87,11 +100,11 @@ class EditProfile extends React.Component {
 
     validateEmail(value) {
         // regex from http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
-        var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if (!re.test(value)) {
-            this.setState({emailValidationError: "error"});
+            this.setState({emailValidationError: "error"}, this.isAllValid);
         } else {
-            this.setState({emailValidationError: null});
+            this.setState({emailValidationError: null}, this.isAllValid);
         }
     }
 
@@ -105,20 +118,20 @@ class EditProfile extends React.Component {
 
     validateUsername(value) {
         // regex from https://stackoverflow.com/a/2044909/3898604
-        var re = /^[a-zA-z_0-9]{3,20}$/;
+        let re = /^[a-zA-z_0-9]{3,20}$/;
         if (!re.test(value)) {
-            this.setState({usernameValidationError: "error"});
+            this.setState({usernameValidationError: "error"}, this.isAllValid);
         } else {
-            this.setState({usernameValidationError: null});
+            this.setState({usernameValidationError: null}, this.isAllValid);
         }
     }
 
     handleAboutMeChange(event) {
-        this.setState({aboutMe: event.target.value.trim()});
+        this.setState({aboutMe: event.target.value});
     }
 
     handleAboutMeChangeEnd(event) {
-        this.setState({aboutMe: event.target.value.trim()});
+        this.setState({aboutMe: event.target.value});
     }
 
     validateAboutMe(value) {
@@ -126,16 +139,90 @@ class EditProfile extends React.Component {
     }
 
     handlePasswordChange(event) {
-        this.setState({password: event.target.value.trim()});
+        this.setState({password: event.target.value.trim()}, this.validatePassword(this.state.password));
+    }
+
+    handlePasswordChangeEnd(event) {
+        this.setState({password: event.target.value.trim()}, this.validatePassword(this.state.password));
+    }
+
+    validatePassword(value) {
+        let re = /^.{8,}$/;
+        if (!re.test(value) && value.length > 0) {
+            console.log("validatePassword: too short");
+            this.setState({passwordValidationError: "error"}, this.isAllValid);
+        } else {
+            this.setState({passwordValidationError: null}, this.isAllValid);
+        }
     }
 
     handlePasswordConfirmChange(event) {
-        this.setState({passwordConfirmation: event.target.value.trim()});
+        this.setState({passwordConfirmation: event.target.value.trim()},
+            this.validatePasswordConfirmation(this.state.passwordConfirmation));
     }
 
+    handlePasswordConfirmChangeEnd(event) {
+        this.setState({passwordConfirmation: event.target.value.trim()},
+            this.validatePasswordConfirmation(this.state.passwordConfirmation));
+    }
 
-    handleSubmit() {
-        this.render();
+    validatePasswordConfirmation(value) {
+        if (this.state.password === value && value.length > 0) {
+            this.setState({passwordConfirmationValidationError: "error"}, this.isAllValid);
+        } else {
+            this.setState({passwordConfirmationValidationError: null}, this.isAllValid);
+        }
+    }
+
+    isAllValid() {
+        let inputFieldsValid = (!this.state.nameValidationError &&
+            !this.state.usernameValidationError &&
+            !this.state.emailValidationError);
+        let passwordFieldFilled = (this.state.password.length > 0 ||
+            this.state.passwordConfirmation.length > 0);
+        if (inputFieldsValid && !passwordFieldFilled) {
+            console.log("all valid true (" + this.state.nameValidationError + "," + this.state.usernameValidationError + "," + this.state.emailValidationError + ")");
+            this.setState({submitBtnEnabled: true});
+        } else if (inputFieldsValid && passwordFieldFilled) {
+            console.log("inputs valid password filled");
+            if (this.state.password === this.state.passwordConfirmation) {
+                console.log("Passwords ==");
+                this.setState({
+                    submitBtnEnabled: true,
+                    passwordConfirmationValidationError: null
+                });
+            } else {
+                console.log("Passwords =!");
+                this.setState({
+                    submitBtnEnabled: false,
+                    passwordConfirmationValidationError: "error"
+                });
+            }
+        } else {
+            console.log("all valid false (" + this.state.nameValidationError + "," + this.state.usernameValidationError + "," + this.state.emailValidationError + ")");
+            this.setState({submitBtnEnabled: false});
+        }
+    }
+
+    handleSubmit(event) {
+        event.preventDefault();
+        axios.patch('/api/user',
+            {
+                email: this.state.email,
+                username: this.state.username,
+                profile: Object.assign({}, this.state.user.profile, {
+                    name: this.state.name,
+                    aboutMe: this.state.aboutMe
+                }),
+                password: this.state.password
+            })
+            .then((data) => {
+                // Redirect to front page.
+                console.log(data);
+            });
+
+
+
         this.setState({
             user: Object.assign({}, this.state.user, {
                 profile: Object.assign({}, this.state.user.profile, {
@@ -145,38 +232,27 @@ class EditProfile extends React.Component {
                 username: this.state.username,
                 email: this.state.email
             }),
-        }, this.postUserObj(this.state.user));
+        });
     }
 
-    handleCancel() {
+    handleCancel(event) {
+        event.preventDefault();
         this.setState({
             name: (this.state.origUser.profile.name === null || undefined) ? "" : this.state.origUser.profile.name,
             email: (this.state.origUser.email === null || undefined) ? "" : this.state.origUser.email,
             username: (this.state.origUser.username === null || undefined) ? "" : this.state.origUser.username,
             aboutMe: (this.state.origUser.profile.aboutMe === null || undefined) ? "" : this.state.origUser.profile.aboutMe,
+            password: "",
+            passwordConfirmation: "",
             nameValidationError: null,
             emailValidationError: null,
             usernameValidationError: null,
-            aboutMeValidationError: null
+            aboutMeValidationError: null,
+            passwordValidationError: null,
+            passwordConfirmationValidationError: null,
         });
     }
 
-    postUserObj(user) {
-        event.preventDefault();
-        let comments = [];
-        if (this.state.comment) {
-            comments = [{text: this.state.comment}];
-        }
-        axios.post('/api/user',
-            {
-                title: this.state.title,
-                comments: comments
-            })
-            .then((data) => {
-                // Redirect to front page.
-                this.props.history.push("/");
-            });
-    }
 
     render() {
         return (
@@ -205,7 +281,8 @@ class EditProfile extends React.Component {
                         </div>
                         <h3>Personal info</h3>
                         <Form horizontal>
-                            <FormGroup controlId="editProfileName" validationState={this.state.nameValidationError}>
+                            <FormGroup controlId="editProfileName"
+                                       validationState={this.state.nameValidationError}>
                                 <Col componentClass={ControlLabel} sm={3}>Name:</Col>
                                 <Col sm={8}>
                                     <FormControl type="text" value={this.state.name}
@@ -217,7 +294,8 @@ class EditProfile extends React.Component {
                                     }
                                 </Col>
                             </FormGroup>
-                            <FormGroup controlId="editProfileEmail" validationState={this.state.emailValidationError}>
+                            <FormGroup controlId="editProfileEmail"
+                                       validationState={this.state.emailValidationError}>
                                 <Col componentClass={ControlLabel} sm={3}>Email:</Col>
                                 <Col sm={8}>
                                     <FormControl value={this.state.email} type="text"
@@ -246,7 +324,9 @@ class EditProfile extends React.Component {
                                        validationState={this.state.aboutMeValidationError}>
                                 <Col componentClass={ControlLabel} sm={3}>About me:</Col>
                                 <Col sm={8}>
-                                    <FormControl componentClass="textarea" value={this.state.aboutMe} type="text"
+                                    <FormControl componentClass="textarea" value={this.state.aboutMe}
+                                                 type="text"
+                                                 rows={5}
                                                  onChange={this.handleAboutMeChange}
                                                  onBlur={this.handleAboutMeChangeEnd}/>
                                     <FormControl.Feedback/>
@@ -255,26 +335,40 @@ class EditProfile extends React.Component {
                                     }
                                 </Col>
                             </FormGroup>
-                            <FormGroup controlId="editProfilePassword">
+                            <FormGroup controlId="editProfilePassword"
+                                       validationState={this.state.passwordValidationError}>
                                 <Col componentClass={ControlLabel} sm={3}>Password:</Col>
                                 <Col sm={8}>
-                                    <FormControl value="" type="password"
-                                                 onChange={this.handlePasswordChange}/>
+                                    <FormControl value={this.state.password} type="password"
+                                                 onChange={this.handlePasswordChange}
+                                                 onBlur={this.handlePasswordChangeEnd}
+                                                 autoComplete='off'/>
 
+                                    <FormControl.Feedback/>
+                                    {this.state.passwordValidationError &&
+                                    <ControlLabel>Entered password does not match requirements.</ControlLabel>
+                                    }
                                 </Col>
                             </FormGroup>
-                            <FormGroup controlId="editProfileConfirmPassword">
+                            <FormGroup controlId="editProfileConfirmPassword"
+                                       validationState={this.state.passwordConfirmationValidationError}>
                                 <Col componentClass={ControlLabel} sm={3}>Confirm password:</Col>
                                 <Col sm={8}>
-                                    <FormControl value="" type="password"
-                                                 onChange={this.handlePasswordConfirmChange}/>
-
+                                    <FormControl value={this.state.passwordConfirmation} type="password"
+                                                 onChange={this.handlePasswordConfirmChange}
+                                                 onBlur={this.handlePasswordConfirmChangeEnd}/>
+                                    <FormControl.Feedback/>
+                                    {this.state.passwordConfirmationValidationError &&
+                                    <ControlLabel>The entered passwords do not match.</ControlLabel>
+                                    }
                                 </Col>
                             </FormGroup>
                             <FormGroup controlId="editProfileSaveOrCancel">
                                 <Col componentClass={ControlLabel} sm={3}/>
                                 <Col sm={8}>
-                                    <Button bsClass="btn btn-primary" onClick={this.handleSubmit}>Save Changes</Button>
+                                    <Button bsClass="btn btn-primary"
+                                            disabled={!this.state.submitBtnEnabled}
+                                            onClick={this.handleSubmit}>Save Changes</Button>
                                     <span>&nbsp;&nbsp;</span>
                                     <Button bsClass="btn btn-default" onClick={this.handleCancel}
                                             type="reset">Cancel</Button>

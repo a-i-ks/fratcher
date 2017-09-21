@@ -108,7 +108,7 @@ public class UserService {
             userObj.setPassword(userToMerge.getPassword());
         }
         if (userToMerge.getEmail() != null) {
-            userObj.setEmail(userToMerge.getPassword());
+            userObj.setEmail(userToMerge.getEmail());
         }
         // merge profile information
         if (userToMerge.getProfile() == null) {
