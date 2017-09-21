@@ -104,15 +104,13 @@ public class UserController {
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<Object> addUser(@RequestBody User newUser) {
-
         Set<ConstraintViolation<User>> violations = validator.validate(newUser);
         if (violations.isEmpty()) {
             newUser.setPassword(authenticationService.hashPassword(newUser.getPassword()));
             try {
                 userService.addUser(newUser);
             } catch (DataIntegrityViolationException e) {
-                System.out.println(e.getMessage());
-                return new ResponseEntity<>(HttpStatus.IM_USED);
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
             }
             // Add url of new created user to Location head field
             final URI location = ServletUriComponentsBuilder
@@ -135,6 +133,114 @@ public class UserController {
         }
     }
 
+    /**
+     * Endpoint for updating current user object. Every value that is not null will be
+     * updated to the values passed to this request method.
+     *
+     * @param userToMerge user object that contains new values for user to update
+     * @return 200 if merge was successful
+     */
+    @RequestMapping(value = "", method = RequestMethod.PATCH)
+    public ResponseEntity<Object> updateUser(@RequestBody User userToMerge) {
+        if (userService.isAnonymous()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        userToMerge.setId(userService.getCurrentUser().getId());
+        userService.mergeUser(userToMerge);
+        // Add url of merged user to Location head field
+        final URI location = ServletUriComponentsBuilder
+                .fromCurrentServletMapping().path("api/user/{id}").build()
+                .expand(userToMerge.getId()).toUri();
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(location);
+
+        return new ResponseEntity<>(headers, HttpStatus.OK);
+    }
+
+    /**
+     * Endpoint for updating a existing user object. Every value that is not null will be
+     * updated to the values passed to this request method.
+     * <p>
+     * Only admins are allowed to change user objects deviating from its own user object.
+     *
+     * @param userToMerge user object that contains new values for user to update
+     * @param userID      id of user that should be updated
+     * @return 200 if merge was successful
+     */
+    @RequestMapping(value = "{id}", method = RequestMethod.PATCH)
+    public ResponseEntity<Object> updateUser(@RequestBody User userToMerge, @PathVariable Long userID) {
+        if (userService.isAnonymous()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else if (!userID.equals(userService.getCurrentUser().getId()) &&
+                !userService.getCurrentUser().isAdmin()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        userToMerge.setId(userService.getCurrentUser().getId());
+        if (userToMerge.getPassword() != null) {
+            userToMerge.setPassword(authenticationService.hashPassword(userToMerge.getPassword()));
+        }
+        userToMerge.setId(userID);
+        userService.mergeUser(userToMerge);
+        // Add url of merged user to Location head field
+        final URI location = ServletUriComponentsBuilder
+                .fromCurrentServletMapping().path("api/user/{id}").build()
+                .expand(userToMerge.getId()).toUri();
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(location);
+
+        return new ResponseEntity<>(headers, HttpStatus.OK);
+    }
+
+
+    /**
+     * Endpoint to delete a specific user. The user status will be set to DELETED.
+     * <p>
+     * Only admins are allowed to delete user objects deviating from its own user object.
+     *
+     * @param userID the id of the user that should be deleted.
+     * @return 200 if the deleting was successful.
+     */
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<Object> deleteUser(@PathVariable Long userID) {
+        if (userService.isAnonymous()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else if (!userID.equals(userService.getCurrentUser().getId()) &&
+                !userService.getCurrentUser().isAdmin()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        // find user that should be deleted
+        User userToDelete = userService.getUser(userID);
+
+        userService.deleteUser(userToDelete);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * Endpoint the current user. The user status will be set to DELETED.
+     * *
+     *
+     * @return 200 if the deleting was successful.
+     */
+    @RequestMapping(value = "", method = RequestMethod.DELETE)
+    public ResponseEntity<Object> deleteUser() {
+        if (userService.isAnonymous()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        userService.deleteUser(userService.getCurrentUser());
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    /**
+     * Endpoint to receive a list of all existing user.
+     * <p>
+     * Only admins and moderators are allowed to receive a complete user list
+     *
+     * @return a list of all existing users
+     */
     @RequestMapping(value = "", method = RequestMethod.GET)
     @SuppressWarnings("unchecked")
     public ResponseEntity<Object> getUserList() {

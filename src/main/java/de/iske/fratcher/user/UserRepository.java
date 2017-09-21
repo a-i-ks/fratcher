@@ -18,4 +18,5 @@ public interface UserRepository extends CrudRepository<User, Long> {
     User findById(@Param("id") Long id);
 
     Iterable<User> findAll();
+
 }

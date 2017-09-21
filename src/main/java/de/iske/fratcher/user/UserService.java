@@ -1,5 +1,6 @@
 package de.iske.fratcher.user;
 
+import de.iske.fratcher.util.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,8 +69,8 @@ public class UserService {
     /**
      * Retrieve a user with the given email/username and password.
      *
-     * @param emailOrUsername    email or username
-     * @param password password
+     * @param emailOrUsername email or username
+     * @param password        password
      * @return the user or null if none could be found
      */
     public User getUser(String emailOrUsername, String password) {
@@ -90,4 +91,62 @@ public class UserService {
         userRepository.save(user);
     }
 
+    /**
+     * Update a existing user object. All non null values will be replaced with values from userToMerge.
+     * <p>
+     * User status and type cannot be updated with this method.
+     *
+     * @param userToMerge user object containing new values for user
+     */
+    public void mergeUser(User userToMerge) {
+        User userObj = userRepository.findById(userToMerge.getId());
+        // merge user information
+        if (userToMerge.getUsername() != null) {
+            userObj.setUsername(userToMerge.getUsername());
+        }
+        if (userToMerge.getPassword() != null) {
+            userObj.setPassword(userToMerge.getPassword());
+        }
+        if (userToMerge.getEmail() != null) {
+            userObj.setEmail(userToMerge.getPassword());
+        }
+        // merge profile information
+        if (userToMerge.getProfile() == null) {
+            userRepository.save(userObj);
+            return;
+        }
+        if (userToMerge.getProfile().getName() != null) {
+            userObj.getProfile().setName(userToMerge.getProfile().getName());
+        }
+        if (userToMerge.getProfile().getAboutMe() != null) {
+            userObj.getProfile().setAboutMe(userToMerge.getProfile().getAboutMe());
+        }
+        if (userToMerge.getProfile().getInterests() != null) {
+            userObj.getProfile().setInterests(userToMerge.getProfile().getInterests());
+        }
+        userRepository.save(userObj);
+    }
+
+    /**
+     * Update the status of passed user to DELETED.
+     *
+     * @param userToDelete user object that should be set to deleted
+     */
+    public void deleteUser(User userToDelete) {
+        User userObj = userRepository.findById(userToDelete.getId());
+        userObj.setStatus(Status.DELETED);
+        userRepository.save(userObj);
+    }
+
+    /**
+     * Update the user type of an existing user to the passed user type.
+     *
+     * @param userToChange user object that type should be change
+     * @param newUserType  the new type of the userToChange
+     */
+    public void setUserType(User userToChange, User.UserType newUserType) {
+        User userObj = userRepository.findById(userToChange.getId());
+        userObj.setUserType(newUserType);
+        userRepository.save(userObj);
+    }
 }

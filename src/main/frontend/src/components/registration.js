@@ -143,6 +143,11 @@ class Registration extends React.Component {
                         this.setState({error: true});
                         this.setState({errorText: data});
                         break;
+
+                    case 226:
+                        this.setState({error: true});
+                        this.setState({errorText: data});
+                        break;
                 }
             });
     }

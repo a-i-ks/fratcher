@@ -126,9 +126,10 @@ public class UserControllerTest {
         newUser.setUsername("admin"); //username admin is already in use
         HttpEntity<String> requestObj = getUserObjAsJsonWithPwd(newUser);
 
-        final ResponseEntity<Void> response = rest.exchange(url, HttpMethod.POST, requestObj, Void.class);
+        thrown.expect(HttpClientErrorException.class);
+        thrown.expect(hasProperty("statusCode", is(HttpStatus.CONFLICT)));
 
-        assertEquals("Server response should be 226 (I'm used)", HttpStatus.IM_USED, response.getStatusCode());
+        final ResponseEntity<Void> response = rest.exchange(url, HttpMethod.POST, requestObj, Void.class);
     }
 
     /**
@@ -144,9 +145,10 @@ public class UserControllerTest {
         newUser.setEmail("admin@fratcher.de"); //email admin@fratcher.de is already in use
         HttpEntity<String> requestObj = getUserObjAsJsonWithPwd(newUser);
 
-        final ResponseEntity<Void> response = rest.exchange(url, HttpMethod.POST, requestObj, Void.class);
+        thrown.expect(HttpClientErrorException.class);
+        thrown.expect(hasProperty("statusCode", is(HttpStatus.CONFLICT)));
 
-        assertEquals("Server response should be 226 (I'm used)", HttpStatus.IM_USED, response.getStatusCode());
+        final ResponseEntity<Void> response = rest.exchange(url, HttpMethod.POST, requestObj, Void.class);
     }
 
     /**
