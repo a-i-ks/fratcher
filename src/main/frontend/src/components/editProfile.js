@@ -8,7 +8,7 @@ import User from "../util/User";
 
 import axios from "axios";
 import UserAvatar from "react-user-avatar";
-import {Button, Col, ControlLabel, Form, FormControl, FormGroup} from "react-bootstrap";
+import {Button, Col, ControlLabel, Form, FormControl, FormGroup, Glyphicon} from "react-bootstrap";
 import InterestsTagCloud from "./interestsTagCloud";
 
 class EditProfile extends React.Component {
@@ -16,21 +16,27 @@ class EditProfile extends React.Component {
         super(props);
         this.state = {
             user: undefined,
+
             submitBtnEnabled: true,
-            name: "",
-            nameValidationError: null,
-            email: "",
-            emailValidationError: null,
-            username: "",
-            usernameValidationError: null,
-            aboutMe: "",
-            aboutMeValidationError: null,
-            password: "",
-            passwordValidationError: null,
-            passwordConfirmation: "",
-            passwordConfirmationValidationError: null,
             error: undefined,
-            errorText: ""
+            errorText: "",
+            tagsEditState: false,
+            tagsEditBtnIcon: "pencil",
+
+            name: "",
+            email: "",
+            username: "",
+            aboutMe: "",
+            password: "",
+            passwordConfirmation: "",
+
+            nameValidationError: null,
+            emailValidationError: null,
+            usernameValidationError: null,
+            aboutMeValidationError: null,
+            passwordValidationError: null,
+            passwordConfirmationValidationError: null
+
         };
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handleNameChangeEnd = this.handleNameChangeEnd.bind(this);
@@ -51,6 +57,7 @@ class EditProfile extends React.Component {
         this.validatePassword = this.validatePassword.bind(this);
         this.validatePasswordConfirmation = this.validatePasswordConfirmation.bind(this);
 
+        this.handleEditTags = this.handleEditTags.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
 
@@ -205,6 +212,21 @@ class EditProfile extends React.Component {
         }
     }
 
+    handleEditTags() {
+        if (this.state.tagsEditState) {
+            this.setState({
+                tagsEditBtnIcon: "pencil",
+                tagsEditState: false
+            });
+        } else {
+            this.setState({
+                tagsEditBtnIcon: "ok",
+                tagsEditState: true
+            });
+        }
+
+    }
+
     handleSubmit(event) {
         event.preventDefault();
         axios.patch('/api/user',
@@ -245,12 +267,15 @@ class EditProfile extends React.Component {
             aboutMe: (this.state.origUser.profile.aboutMe === null || undefined) ? "" : this.state.origUser.profile.aboutMe,
             password: "",
             passwordConfirmation: "",
+
             nameValidationError: null,
             emailValidationError: null,
             usernameValidationError: null,
             aboutMeValidationError: null,
             passwordValidationError: null,
             passwordConfirmationValidationError: null,
+
+
         });
     }
 
@@ -272,7 +297,12 @@ class EditProfile extends React.Component {
                             <input className="form-control" type="file"/>
                         </div>
                         <div className="tagcloud">
-                            <h3>Interests</h3>
+                            <h3>Interests &nbsp;&nbsp;
+                                <Button onClick={this.handleEditTags}><Glyphicon
+                                    glyph={this.state.tagsEditBtnIcon}/></Button></h3>
+
+
+
                             <div className="tags">
                                 <InterestsTagCloud/>
                             </div>
