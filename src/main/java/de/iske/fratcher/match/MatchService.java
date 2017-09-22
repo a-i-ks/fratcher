@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -110,7 +111,7 @@ public class MatchService {
         return matchRepository.findConfirmedLikeMatchesForUser(user);
     }
 
-    public List<User> getMatchingCandidatesForUser(User user, int numberOfCandidates) {
+    public List<User> getMatchingCandidatesForUser(User user, int numberOfCandidates, boolean randomOrder) {
         // create empty result list
         List<User> matchingCandidates = new ArrayList<>();
 
@@ -137,6 +138,10 @@ public class MatchService {
                 .filter(u -> u.getStatus() != Status.INACTIVE)
                 .limit(numberOfCandidates)
                 .collect(Collectors.toList());
+
+        if (randomOrder) {
+            Collections.shuffle(matchingCandidates);
+        }
 
         return matchingCandidates;
 

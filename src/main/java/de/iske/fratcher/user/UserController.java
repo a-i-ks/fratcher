@@ -274,12 +274,13 @@ public class UserController {
         if (numberOfCandidates == null) {
             numberOfCandidates = 10;
         }
-        final List<User> matchingCandidates = matchService.getMatchingCandidatesForUser(userService.getCurrentUser(), numberOfCandidates);
+        final List<User> matchingCandidates = matchService.getMatchingCandidatesForUser(userService.getCurrentUser(), numberOfCandidates, true);
         List<UserDto> matchingCandidatesDto = new ArrayList();
         matchingCandidates.forEach(user -> matchingCandidatesDto.add(convertUserToDto(user)));
         return new ResponseEntity<>(
                 matchingCandidatesDto, HttpStatus.OK);
     }
+
 
     @PostMapping("img") //new annotation since spring 4.3
     public ResponseEntity<Object> uploadUserImg(@RequestParam("file") MultipartFile file) {
