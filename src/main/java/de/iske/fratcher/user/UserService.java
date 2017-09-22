@@ -114,7 +114,8 @@ public class UserService {
         if (userToMerge.getUsername() != null) {
             userObj.setUsername(userToMerge.getUsername());
         }
-        if (userToMerge.getPassword() != null) {
+        if (userToMerge.getPassword() != null &&
+                userToMerge.getPassword().length() > 0) {
             userObj.setPassword(userToMerge.getPassword());
         }
         if (userToMerge.getEmail() != null) {
