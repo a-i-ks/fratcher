@@ -1,6 +1,7 @@
 package de.iske.fratcher.chat;
 
 import de.iske.fratcher.match.Match;
+import de.iske.fratcher.user.User;
 import de.iske.fratcher.util.Status;
 
 import javax.persistence.*;
@@ -19,6 +20,28 @@ public class ChatConversation {
 
     @OneToMany(targetEntity = ChatMessage.class, mappedBy = "conversation")
     private List<ChatMessage> messages;
+
+    @OneToOne
+    private User sender;
+
+    @OneToOne
+    private User receiver;
+
+    public User getSender() {
+        return sender;
+    }
+
+    public void setSender(User sender) {
+        this.sender = sender;
+    }
+
+    public User getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(User receiver) {
+        this.receiver = receiver;
+    }
 
     private Status status;
 
