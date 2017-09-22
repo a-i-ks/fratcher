@@ -5,6 +5,7 @@ import de.iske.fratcher.util.Status;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,6 +28,7 @@ public class ChatConversation {
     public ChatConversation() {
         this.startedTimestamp = Instant.now();
         this.status = Status.DEFAULT;
+        messages = new ArrayList<>();
     }
 
     public Long getId() {
