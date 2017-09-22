@@ -18,6 +18,8 @@ class MatchingCandidates extends React.Component {
         };
         console.log("MatchingCandidates constructor");
 
+        this.likeDislikeUser = this.likeDislikeUser.bind(this);
+
     }
 
 
@@ -28,10 +30,8 @@ class MatchingCandidates extends React.Component {
             .then(({data}) => {
                 console.log(data);
 
-                const matchingCandidates = data;
-
                 this.setState({
-                    matchingCandidates,
+                    matchingCandidates: data,
                     loading: false,
                     error: null
                 });
@@ -58,19 +58,65 @@ class MatchingCandidates extends React.Component {
         );
     }
 
+    likeDislikeUser(userObj, like) {
+        console.log(userObj.id);
+        let apiPath = like ? "/api/match/like" : "/api/match/dislike";
+        axios.post(apiPath,
+            {
+                id: userObj.id
+            })
+            .then((data) => {
+                {/*TODO Handle success message*/
+                }
+                let filteredArray = this.state.matchingCandidates.filter(item => item !== userObj);
+                this.setState({matchingCandidates: filteredArray});
+
+                console.log(data);
+            })
+            .catch(({error}) => {
+                {/*TODO Better error handling*/
+                }
+                console.log("error during send");
+                console.log(error);
+                this.setState({
+                    error: true
+                });
+            });
+
+    }
+
     renderCandidates() {
 
         const candidateDivStyle = {
             position: 'absolute',
-            backgroundColor: 'white'
+            width: "50%",
+            backgroundColor: 'white',
+            border: '1px solid black'
+        };
+
+
+        const likeDislikeBtns = {};
+
+        const likeBtn = {};
+        const dislikeBtn = {
+
         };
 
         const Candidate = ({user}) => {
             console.log("Candidate const");
             console.log("username=" + user.username);
             return (
-                <div key={user.key} style={candidateDivStyle}>
-                    <h1>Hello, {user.username}!</h1>
+                <div key={user.key} id={user.key} style={candidateDivStyle}>
+                    <h1>{user.profile.name}</h1>
+                    <div>{user.profile.aboutMe}</div>
+                    <div style={likeDislikeBtns}>
+                        <div style={likeBtn}>
+                            <button onClick={() => this.likeDislikeUser(user, true)}>Like</button>
+                        </div>
+                        <div style={dislikeBtn}>
+                            <button onClick={() => this.likeDislikeUser(user, false)}>Dislike</button>
+                        </div>
+                    </div>
                 </div>);
         };
 
