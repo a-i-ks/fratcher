@@ -10,6 +10,8 @@ import axios from "axios";
 import UserAvatar from "react-user-avatar";
 import {Button, Col, ControlLabel, Form, FormControl, FormGroup, Glyphicon} from "react-bootstrap";
 import InterestsTagCloud from "./interestsTagCloud";
+import {translate} from "react-i18next";
+
 
 class EditProfile extends React.Component {
     constructor(props) {
@@ -77,6 +79,14 @@ class EditProfile extends React.Component {
                     username: (data.username === null || undefined) ? "" : data.username,
                     aboutMe: (data.profile.aboutMe === null || undefined) ? "" : data.profile.aboutMe
                 })
+            })
+            .catch(({error}) => {
+                //TODO Better error handling
+                console.log("error during load");
+                console.log(error);
+                this.setState({
+                    error: true
+                });
             });
     }
 
@@ -143,7 +153,7 @@ class EditProfile extends React.Component {
     }
 
     validateAboutMe(value) {
-
+        //TODO validate AboutMe
     }
 
     handlePasswordChange(event) {
@@ -241,9 +251,17 @@ class EditProfile extends React.Component {
             })
             .then((data) => {
                 // Redirect to front page.
+                //TODO Handle success message
                 console.log(data);
+            })
+            .catch(({error}) => {
+                //TODO Better error handling
+                console.log("error during send");
+                console.log(error);
+                this.setState({
+                    error: true
+                });
             });
-
 
 
         this.setState({
@@ -281,9 +299,10 @@ class EditProfile extends React.Component {
 
 
     render() {
+        const {t} = this.props;
         return (
             <div className="container">
-                <h1>Edit Profile</h1>
+                <h1>{t('editProfile')}</h1>
                 <hr/>
                 <div className="row">
                     <div className="col-md-3">
@@ -291,7 +310,7 @@ class EditProfile extends React.Component {
                             <div className="avatar img-circle">
                                 <UserAvatar size="100" name={User.profile.name}/>
                             </div>
-
+                            {/ TODO User picture upload */}
                             <h6>Upload a different photo...</h6>
                             <form method="POST" action="/api/user/img" encType="multipart/form-data">
                                 <input className="form-control" type="file" name="file"/>
@@ -421,4 +440,4 @@ class EditProfile extends React.Component {
     }
 }
 
-export default EditProfile;
+export default translate()(EditProfile);
