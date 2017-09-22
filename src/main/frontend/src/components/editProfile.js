@@ -250,12 +250,13 @@ class EditProfile extends React.Component {
                 password: this.state.password
             })
             .then((data) => {
-                // Redirect to front page.
-                //TODO Handle success message
+                {/*TODO Handle success message*/
+                }
                 console.log(data);
             })
             .catch(({error}) => {
-                //TODO Better error handling
+                {/*TODO Better error handling*/
+                }
                 console.log("error during send");
                 console.log(error);
                 this.setState({
@@ -310,7 +311,7 @@ class EditProfile extends React.Component {
                             <div className="avatar img-circle">
                                 <UserAvatar size="100" name={User.profile.name}/>
                             </div>
-                            {/ TODO User picture upload */}
+                            {/* TODO User picture upload */}
                             <h6>Upload a different photo...</h6>
                             <form method="POST" action="/api/user/img" encType="multipart/form-data">
                                 <input className="form-control" type="file" name="file"/>
