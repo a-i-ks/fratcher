@@ -21,27 +21,34 @@ public class ChatConversation {
     @OneToMany(targetEntity = ChatMessage.class, mappedBy = "conversation")
     private List<ChatMessage> messages;
 
+    /**
+     * User1 is always the user who started the conversation
+     */
     @OneToOne
-    private User sender;
+    private User user1;
 
+    /**
+     * User2 is always the user who received the first message from user1.
+     */
     @OneToOne
-    private User receiver;
+    private User user2;
 
-    public User getSender() {
-        return sender;
+    public User getUser1() {
+        return user1;
     }
 
-    public void setSender(User sender) {
-        this.sender = sender;
+    public void setUser1(User user1) {
+        this.user1 = user1;
     }
 
-    public User getReceiver() {
-        return receiver;
+    public User getUser2() {
+        return user2;
     }
 
-    public void setReceiver(User receiver) {
-        this.receiver = receiver;
+    public void setUser2(User user2) {
+        this.user2 = user2;
     }
+
 
     private Status status;
 
