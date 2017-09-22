@@ -8,6 +8,7 @@ import Authentication from "./components/authentication";
 import Navigation from "./components/navigation"
 import Registration from "./components/registration"
 import EditProfile from "./components/editProfile"
+import MatchingCandidates from "./components/matchingCandidates"
 
 import i18n from "./i18n";
 import User from "./util/User";
@@ -44,6 +45,9 @@ class Root extends React.Component {
                     {User.isAuthenticated() &&
                     <Route path="/editProfile" render={(props) => (
                         <EditProfile {...props}/>)}/>}
+                    {User.isAuthenticated() &&
+                    <Route path="/" render={(props) => (
+                        <MatchingCandidates {...props} />)}/>}
                     {User.isNotAuthenticated() &&
                     <Route path="/" render={(props) => (
                         <Authentication {...props} updateAuthentication={this.updateAuthentication}/> )}/>}
@@ -51,7 +55,7 @@ class Root extends React.Component {
             </div>
         );
     }
-};
+}
 
 ReactDOM.render(
     <CookiesProvider>
