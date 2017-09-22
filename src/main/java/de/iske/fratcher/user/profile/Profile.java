@@ -1,6 +1,7 @@
 package de.iske.fratcher.user.profile;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ public class Profile {
 
     private String name;
 
+    @Lob
     private String aboutMe;
 
     private String imgPath;
