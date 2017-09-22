@@ -1,6 +1,7 @@
 package de.iske.fratcher.match;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import de.iske.fratcher.chat.ChatConversation;
 import de.iske.fratcher.user.User;
 import de.iske.fratcher.util.Status;
 
@@ -32,6 +33,12 @@ public abstract class Match {
     private User user2;
 
     private Instant matchingTimestamp;
+
+    /**
+     * Chat between matched users
+     */
+    @OneToOne(targetEntity = ChatConversation.class, mappedBy = "match")
+    private ChatConversation chatConversation;
 
     /**
      * Timestamp when user2 presses like/dislike on user1
