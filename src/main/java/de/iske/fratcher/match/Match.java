@@ -38,7 +38,15 @@ public abstract class Match {
      * Chat between matched users
      */
     @OneToOne(targetEntity = ChatConversation.class, mappedBy = "match")
-    private ChatConversation chatConversation;
+    private ChatConversation conversation;
+
+    public ChatConversation getConversation() {
+        return conversation;
+    }
+
+    public void setConversation(ChatConversation conversation) {
+        this.conversation = conversation;
+    }
 
     /**
      * Timestamp when user2 presses like/dislike on user1
