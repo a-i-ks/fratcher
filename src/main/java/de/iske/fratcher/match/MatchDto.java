@@ -1,5 +1,6 @@
 package de.iske.fratcher.match;
 
+import de.iske.fratcher.chat.ChatConversation;
 import de.iske.fratcher.user.UserDto;
 
 import java.time.Instant;
@@ -13,6 +14,16 @@ public class MatchDto {
     private UserDto user1;
 
     private UserDto user2;
+
+    private ChatConversation conversation;
+
+    public ChatConversation getConversation() {
+        return conversation;
+    }
+
+    public void setConversation(ChatConversation conversation) {
+        this.conversation = conversation;
+    }
 
     public Long getId() {
         return id;
