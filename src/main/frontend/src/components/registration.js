@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 
 import {Link} from "react-router-dom";
+import {translate} from "react-i18next";
 
 
 class Registration extends React.Component {
@@ -49,7 +50,7 @@ class Registration extends React.Component {
 
     handleNameChangeEnd(event) {
         if (!this.validateName(this.state.profile.name)) {
-            console.warn("Invalid name: " + this.state.profile.name)
+            console.warn("Invalid name: " + this.state.profile.name);
             this.setState({nameIsValid: false});
         } else {
             this.setState({nameIsValid: true});
@@ -63,7 +64,7 @@ class Registration extends React.Component {
 
     handleEmailChangeEnd(event) {
         if (!this.validateEmail(this.state.email)) {
-            console.warn("Invalid email: " + this.state.email)
+            console.warn("Invalid email: " + this.state.email);
             this.setState({emailIsValid: false});
         } else {
             this.setState({emailIsValid: true});
@@ -77,7 +78,7 @@ class Registration extends React.Component {
 
     handleUsernameChangeEnd(event) {
         if (!this.validateUsername(this.state.username)) {
-            console.warn("Invalid username: " + this.state.username)
+            console.warn("Invalid username: " + this.state.username);
             this.setState({usernameIsValid: false});
         } else {
             this.setState({usernameIsValid: true});
@@ -91,7 +92,7 @@ class Registration extends React.Component {
 
     handlePasswordChangeEnd(event) {
         if (!this.validatePassword(this.state.password)) {
-            console.warn("Entered password does not match the requirements")
+            console.warn("Entered password does not match the requirements");
             this.setState({passwordIsValid: false});
         } else {
             this.setState({passwordIsValid: true});
@@ -112,7 +113,7 @@ class Registration extends React.Component {
 
     handlePasswordConfirmationChangeEnd(event) {
         if (this.state.password != this.state.passwordConfirmation) {
-            console.warn("Passwords do not match")
+            console.warn("Passwords do not match");
             this.setState({passwordsAreEqual: false});
         } else {
             this.setState({passwordsAreEqual: true});
@@ -201,16 +202,15 @@ class Registration extends React.Component {
         return re.test(value);
     }
 
-
-
     render() {
+        const {t} = this.props;
         return (
             <div className="registerComp">
                 <div className="container">
                     <div className="row main">
                         <div className="panel-heading">
                             <div className="panel-title text-center">
-                                <h1 className="title">Join us ...</h1>
+                                <h1 className="title">{t('joinUsTxt')}</h1>
                                 <hr/>
                             </div>
                         </div>
@@ -224,7 +224,7 @@ class Registration extends React.Component {
                                     <div className="cols-sm-10">
                                         <div className="input-group">
                                             <span className="input-group-addon"><i className="fa fa-user fa"
-                                                                                   aria-hidden="true"></i></span>
+                                                                                   aria-hidden="true"/></span>
                                             <input type="text" className="form-control" name="name" id="name"
                                                    placeholder="Enter your Name" value={this.state.profile.name}
                                                    onChange={this.handleNameChange}
@@ -242,7 +242,7 @@ class Registration extends React.Component {
 
                                         <div className="input-group">
                                             <span className="input-group-addon"><i className="fa fa-envelope fa"
-                                                                                   aria-hidden="true"></i></span>
+                                                                                   aria-hidden="true"/></span>
                                             <input type="text" className="form-control" name="email" id="email"
                                                    placeholder="Enter your E-Mail" value={this.state.email}
                                                    onChange={this.handleEmailChange}
@@ -259,7 +259,7 @@ class Registration extends React.Component {
                                     <div className="cols-sm-10">
                                         <div className="input-group">
                                             <span className="input-group-addon"><i className="fa fa-users fa"
-                                                                                   aria-hidden="true"></i></span>
+                                                                                   aria-hidden="true"/></span>
                                             <input type="text" className="form-control" name="username" id="username"
                                                    placeholder="Enter your Username" value={this.state.username}
                                                    onChange={this.handleUsernameChange}
@@ -276,7 +276,7 @@ class Registration extends React.Component {
                                     <div className="cols-sm-10">
                                         <div className="input-group">
                                             <span className="input-group-addon"><i className="fa fa-lock fa-lg"
-                                                                                   aria-hidden="true"></i></span>
+                                                                                   aria-hidden="true"/></span>
                                             <input type="password" className="form-control" name="password"
                                                    id="password" placeholder="Enter your Password"
                                                    value={this.state.password}
@@ -296,7 +296,7 @@ class Registration extends React.Component {
                                     <div className="cols-sm-10">
                                         <div className="input-group">
                                             <span className="input-group-addon"><i className="fa fa-lock fa-lg"
-                                                                                   aria-hidden="true"></i></span>
+                                                                                   aria-hidden="true"/></span>
                                             <input type="password" className="form-control" name="confirm" id="confirm"
                                                    placeholder="Confirm your Password"
                                                    value={this.state.passwordConfirmation}
@@ -328,4 +328,4 @@ class Registration extends React.Component {
     }
 }
 
-export default Registration;
+export default translate()(Registration);
