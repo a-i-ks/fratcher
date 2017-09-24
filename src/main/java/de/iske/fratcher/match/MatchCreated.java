@@ -1,14 +1,10 @@
 package de.iske.fratcher.match;
 
-class MatchCreated {
+public class MatchCreated {
     public boolean confirmed;
 
     public MatchCreated(Match match) {
-        if (match instanceof LikeMatch) {
-            this.confirmed = ((LikeMatch) match).isConfirmed();
-        } else {
-            this.confirmed = false;
-        }
+        this.confirmed = match instanceof LikeMatch && match.isConfirmed();
     }
 
     public MatchCreated() { //JPA only
