@@ -42,8 +42,14 @@ public class Interest {
 
     @Override
     public String toString() {
-        //TODO implement toString method for interest
-        return super.toString();
+        return
+                "Interest{" + "id=" +
+                        id +
+                        ", value='" +
+                        value +
+                        "', count=" +
+                        count +
+                        "'}";
     }
 
     @Override
