@@ -1,6 +1,12 @@
 import React from "react";
 
+import User from "../util/User";
+import InterestsTagCloud from "./interestsTagCloud"
+
+
 import axios from "axios";
+import UserAvatar from "react-user-avatar";
+
 
 class MatchDetail extends React.Component {
 
@@ -8,13 +14,11 @@ class MatchDetail extends React.Component {
         console.log("MatchDetail");
         super();
         this.state = {
-            matches: [],
+            matchIdFromPath: props.match.params.id,
+            match: null,
             loading: true,
             error: null
         };
-        axios.post("/api/match/21/chat/message", {
-            message: "Hallo Welt!"
-        });
         // this.handleClick = this.handleClick.bind(this);
     }
 
@@ -24,15 +28,29 @@ class MatchDetail extends React.Component {
 
     // This function is called before render() to initialize its state.
     componentWillMount() {
-        axios.get('/api/user/match')
+        axios.get('/api/match/' + this.state.matchIdFromPath)
             .then(({data}) => {
+                console.log("then ..");
                 console.log(data);
 
+                let user = null;
+                const {user1, user2} = data;
+                if (user1.id === User.id) {
+                    user = user2;
+                } else {
+                    user = user1;
+                }
+
+                console.log("user=");
+                console.log(user);
+
                 this.setState({
-                    matches: data,
+                    match: data,
+                    user: user,
                     loading: false,
                     error: null
                 });
+                console.log("after set");
                 this.forceUpdate();
             })
             .catch(({error}) => {
@@ -46,39 +64,36 @@ class MatchDetail extends React.Component {
 
     renderError() {
         return (
-            <tr>
-                <td>An error has occurred: {this.state.error.message}</td>
-            </tr>
+            <div>
+                An error has occurred: {this.state.error.message}
+            </div>
         );
     }
 
-    renderMatches() {
-
-        const Match = ({match}) => {
-            return (
-                <tr key={match.id} onClick={() => this.handleClick(match.id)}>
-                    <td>Name</td>
-                </tr>
-            );
-        };
-
+    renderMatch() {
         // Destructuring error and matches from state.
         // => I don't have to write "this.state...." every time.
-        const {error, matches} = this.state;
+        const {error, user} = this.state;
 
         if (error) {
             return this.renderError();
         }
 
-        if (matches.isEmpty) {
-            return (<div>No matches found!</div>)
-        }
+
 
         return (
             <div>
-                {matches.map(match =>
-                    <Match key={match.id} match={match}/>
-                )}
+                <div>
+                    {user.profile.imgPath &&
+                    <UserAvatar size="100" name={user.profile.name} src={user.profile.imgPath}/>}
+                    {!user.profile.imgPath &&
+                    <UserAvatar size="40" name={user.profile.name}/>}
+                </div>
+                <h1>{user.profile.name}</h1>
+                <div>{user.profile.aboutMe}</div>
+                <div>
+                    <InterestsTagCloud data={user.profile.interests}/>
+                </div>
             </div>
         );
     }
@@ -88,18 +103,11 @@ class MatchDetail extends React.Component {
         return (
             <div className="component">
                 {loading ? this.renderLoading() :
-                    <table className="table table-hover">
-                        <thead>
-                        <tr>
-                            <th className="col-sm-5">Name</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {this.renderMatches()}
-                        </tbody>
-                    </table>}
-            </div>
-        );
+                    <div className="row">
+                        <div className="col-sm-6">{this.renderMatch()}</div>
+                        <div className="col-sm-6">Chat</div>
+                    </div>}
+            </div>)
     }
 }
 
