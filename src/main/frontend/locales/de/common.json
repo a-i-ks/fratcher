@@ -1,3 +1,20 @@
 {
-  "editProfile": "Profil bearbeiten"
+  "editProfile": "Edit Profile",
+  "personalInfo": "Personal info",
+  "invalidName": "Invalid name",
+  "invalidEmail": "Invalid email",
+  "lblUsername": "Username",
+  "lblName": "Name",
+  "lblAboutMe": "About Me",
+  "invalidAboutMe": "Invalid About Me",
+  "lblEmail": "Email",
+  "lblPassword": "Password",
+  "lblConfirmPwd": "Confirm Password",
+  "invalidUsername": "Invalid username",
+  "invalidPassword": "Entered password does not match requirements.",
+  "passwordDoNotMatch": "The entered passwords do not match.",
+  "btnSaveChanges": "Save Changes",
+  "btnCancel": "Cancel",
+  "interests": "Interests",
+  "uploadProfilePicTxt": "Upload a different photo..."
 }

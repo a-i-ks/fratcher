@@ -71,13 +71,15 @@ class EditProfile extends React.Component {
         axios.get('/api/user/' + User.id)
             .then(({data}) => {
                 User.name = (data.profile.name === null || undefined) ? "Unknown" : data.profile.name;
+                User.profilePic = (data.profile.imgPath === null || undefined) ? "Unknown" : data.profile.imgPath;
                 this.setState({
                     origUser: data,
                     user: data,
                     name: (data.profile.name === null || undefined) ? "" : data.profile.name,
                     email: (data.email === null || undefined) ? "" : data.email,
                     username: (data.username === null || undefined) ? "" : data.username,
-                    aboutMe: (data.profile.aboutMe === null || undefined) ? "" : data.profile.aboutMe
+                    aboutMe: (data.profile.aboutMe === null || undefined) ? "" : data.profile.aboutMe,
+                    interests: (data.profile.interests === null || undefined) ? [] : data.profile.interests
                 })
             })
             .catch(({error}) => {
@@ -245,7 +247,8 @@ class EditProfile extends React.Component {
                 username: this.state.username,
                 profile: Object.assign({}, this.state.user.profile, {
                     name: this.state.name,
-                    aboutMe: this.state.aboutMe
+                    aboutMe: this.state.aboutMe,
+                    interests: this.state.interests
                 }),
                 password: this.state.password
             })
@@ -284,6 +287,7 @@ class EditProfile extends React.Component {
             email: (this.state.origUser.email === null || undefined) ? "" : this.state.origUser.email,
             username: (this.state.origUser.username === null || undefined) ? "" : this.state.origUser.username,
             aboutMe: (this.state.origUser.profile.aboutMe === null || undefined) ? "" : this.state.origUser.profile.aboutMe,
+            interests: (this.state.origUser.profile.interests === null || undefined) ? [] : this.state.origUser.profile.interests,
             password: "",
             passwordConfirmation: "",
 
@@ -312,21 +316,21 @@ class EditProfile extends React.Component {
                                 <UserAvatar size="100" name={User.profile.name}/>
                             </div>
                             {/* TODO User picture upload */}
-                            <h6>Upload a different photo...</h6>
+                            <h6>{t('uploadProfilePicTxt')}</h6>
                             <form method="POST" action="/api/user/img" encType="multipart/form-data">
                                 <input className="form-control" type="file" name="file"/>
                                 <button action="submit">GO</button>
                             </form>
                         </div>
                         <div className="tagcloud">
-                            <h3>Interests &nbsp;&nbsp;
+                            <h3>{t('interests')} &nbsp;&nbsp;
                                 <Button onClick={this.handleEditTags}><Glyphicon
                                     glyph={this.state.tagsEditBtnIcon}/></Button></h3>
 
 
 
                             <div className="tags">
-                                <InterestsTagCloud/>
+                                <InterestsTagCloud data={this.state.interests}/>
                             </div>
                         </div>
                     </div>
@@ -338,50 +342,50 @@ class EditProfile extends React.Component {
                             <i className="fa fa-coffee"/>
                             {this.state.errorText}
                         </div>
-                        <h3>Personal info</h3>
+                        <h3>{t('personalInfo')}</h3>
                         <Form horizontal>
                             <FormGroup controlId="editProfileName"
                                        validationState={this.state.nameValidationError}>
-                                <Col componentClass={ControlLabel} sm={3}>Name:</Col>
+                                <Col componentClass={ControlLabel} sm={3}>{t('lblName')}:</Col>
                                 <Col sm={8}>
                                     <FormControl type="text" value={this.state.name}
                                                  onChange={this.handleNameChange}
                                                  onBlur={this.handleNameChangeEnd}/>
                                     <FormControl.Feedback/>
                                     {this.state.nameValidationError &&
-                                    <ControlLabel>Invalid name</ControlLabel>
+                                    <ControlLabel>{t('invalidName')}</ControlLabel>
                                     }
                                 </Col>
                             </FormGroup>
                             <FormGroup controlId="editProfileEmail"
                                        validationState={this.state.emailValidationError}>
-                                <Col componentClass={ControlLabel} sm={3}>Email:</Col>
+                                <Col componentClass={ControlLabel} sm={3}>{t('lblEmail')}:</Col>
                                 <Col sm={8}>
                                     <FormControl value={this.state.email} type="text"
                                                  onChange={this.handleEmailChange}
                                                  onBlur={this.handleEmailChangeEnd}/>
                                     <FormControl.Feedback/>
                                     {this.state.emailValidationError &&
-                                    <ControlLabel>Invalid email</ControlLabel>
+                                    <ControlLabel>{t('invalidEmail')}</ControlLabel>
                                     }
                                 </Col>
                             </FormGroup>
                             <FormGroup controlId="editProfileUsername"
                                        validationState={this.state.usernameValidationError}>
-                                <Col componentClass={ControlLabel} sm={3}>Username:</Col>
+                                <Col componentClass={ControlLabel} sm={3}>{t('lblUsername')}:</Col>
                                 <Col sm={8}>
                                     <FormControl value={this.state.username} type="text"
                                                  onChange={this.handleUsernameChange}
                                                  onBlur={this.handleUsernameChangeEnd}/>
                                     <FormControl.Feedback/>
                                     {this.state.usernameValidationError &&
-                                    <ControlLabel>Invalid username</ControlLabel>
+                                    <ControlLabel>{t('invalidUsername')}</ControlLabel>
                                     }
                                 </Col>
                             </FormGroup>
                             <FormGroup controlId="editProfileAboutMe"
                                        validationState={this.state.aboutMeValidationError}>
-                                <Col componentClass={ControlLabel} sm={3}>About me:</Col>
+                                <Col componentClass={ControlLabel} sm={3}>{t('lblAboutMe')}:</Col>
                                 <Col sm={8}>
                                     <FormControl componentClass="textarea" value={this.state.aboutMe}
                                                  type="text"
@@ -390,13 +394,13 @@ class EditProfile extends React.Component {
                                                  onBlur={this.handleAboutMeChangeEnd}/>
                                     <FormControl.Feedback/>
                                     {this.state.aboutMeValidationError &&
-                                    <ControlLabel>Invalid AboutMe</ControlLabel>
+                                    <ControlLabel>{t('invalidAboutMe')}</ControlLabel>
                                     }
                                 </Col>
                             </FormGroup>
                             <FormGroup controlId="editProfilePassword"
                                        validationState={this.state.passwordValidationError}>
-                                <Col componentClass={ControlLabel} sm={3}>Password:</Col>
+                                <Col componentClass={ControlLabel} sm={3}>{t('lblPassword')}:</Col>
                                 <Col sm={8}>
                                     <FormControl value={this.state.password} type="password"
                                                  onChange={this.handlePasswordChange}
@@ -405,20 +409,20 @@ class EditProfile extends React.Component {
 
                                     <FormControl.Feedback/>
                                     {this.state.passwordValidationError &&
-                                    <ControlLabel>Entered password does not match requirements.</ControlLabel>
+                                    <ControlLabel>{t('invalidPassword')}</ControlLabel>
                                     }
                                 </Col>
                             </FormGroup>
                             <FormGroup controlId="editProfileConfirmPassword"
                                        validationState={this.state.passwordConfirmationValidationError}>
-                                <Col componentClass={ControlLabel} sm={3}>Confirm password:</Col>
+                                <Col componentClass={ControlLabel} sm={3}>:</Col>
                                 <Col sm={8}>
                                     <FormControl value={this.state.passwordConfirmation} type="password"
                                                  onChange={this.handlePasswordConfirmChange}
                                                  onBlur={this.handlePasswordConfirmChangeEnd}/>
                                     <FormControl.Feedback/>
                                     {this.state.passwordConfirmationValidationError &&
-                                    <ControlLabel>The entered passwords do not match.</ControlLabel>
+                                    <ControlLabel>{t('passwordDoNotMatch')}</ControlLabel>
                                     }
                                 </Col>
                             </FormGroup>
@@ -427,10 +431,10 @@ class EditProfile extends React.Component {
                                 <Col sm={8}>
                                     <Button bsClass="btn btn-primary"
                                             disabled={!this.state.submitBtnEnabled}
-                                            onClick={this.handleSubmit}>Save Changes</Button>
+                                            onClick={this.handleSubmit}>{t('btnSaveChanges')}</Button>
                                     <span>&nbsp;&nbsp;</span>
                                     <Button bsClass="btn btn-default" onClick={this.handleCancel}
-                                            type="reset">Cancel</Button>
+                                            type="reset">{t('btnCancel')}</Button>
                                 </Col>
                             </FormGroup>
                         </Form>
