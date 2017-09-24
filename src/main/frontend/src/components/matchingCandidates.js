@@ -1,6 +1,10 @@
 import React from "react";
 
 import axios from "axios";
+import UserAvatar from "react-user-avatar";
+import {Button, Modal} from "react-bootstrap";
+
+import InterestsTagCloud from "./interestsTagCloud"
 
 /**
  * I used the following tutorial as a guide, how to how and where to fetch data:
@@ -14,11 +18,16 @@ class MatchingCandidates extends React.Component {
         this.state = {
             matchingCandidates: [],
             loading: true,
-            error: null
+            showMatchConfirmationModal: false,
+            error: null,
+            lastMatchedUser: null,
+            lastConfirmedMatchId: null
         };
 
         this.likeDislikeUser = this.likeDislikeUser.bind(this);
-
+        this.openMatchConfirmationModal = this.openMatchConfirmationModal.bind(this);
+        this.closeMatchConfirmationModal = this.closeMatchConfirmationModal.bind(this);
+        this.closeMatchConfirmationAndChat = this.closeMatchConfirmationAndChat.bind(this);
     }
 
 
@@ -26,7 +35,6 @@ class MatchingCandidates extends React.Component {
     componentWillMount() {
         axios.get('/api/user/candidates')
             .then(({data}) => {
-                console.log(data);
 
                 this.setState({
                     matchingCandidates: data,
@@ -56,18 +64,53 @@ class MatchingCandidates extends React.Component {
         );
     }
 
+    openMatchConfirmationModal() {
+        this.setState({showMatchConfirmationModal: true});
+    }
+
+    closeMatchConfirmationModal() {
+        this.setState({
+            lastMatchedUser: null,
+            showMatchConfirmationModal: false
+        });
+    }
+
+    closeMatchConfirmationAndChat() {
+        this.props.history.push(`/matches/${this.state.lastConfirmedMatchId}`);
+        this.closeMatchConfirmationModal();
+    }
+
+
+
     likeDislikeUser(userObj, like) {
         let apiPath = like ? "/api/match/like" : "/api/match/dislike";
         axios.post(apiPath,
             {
                 id: userObj.id
             })
-            .then((data) => {
-                {/*TODO Handle success message*/
-                }
-                let filteredArray = this.state.matchingCandidates.filter(item => item !== userObj);
-                this.setState({matchingCandidates: filteredArray});
+            .then((response) => {
 
+                if (this.state.matchingCandidates.length > 1) {
+                    this.setState({
+                        matchingCandidates: this.state.matchingCandidates.slice(0, -1)
+                    });
+                } else {
+                    this.setState({
+                        matchingCandidates: null
+                    });
+                }
+
+
+                if (response.data.confirmed) {
+                    // show "It's a Match ..." modal
+                    const matchUrl = response.headers.location;
+                    const matchId = matchUrl.match(/\d*[\/]*$/)[0];
+                    this.setState({
+                        lastConfirmedMatchId: matchId,
+                        lastMatchedUser: userObj,
+                        showMatchConfirmationModal: true
+                    });
+                }
             })
             .catch(({error}) => {
                 {/*TODO Better error handling*/
@@ -84,10 +127,9 @@ class MatchingCandidates extends React.Component {
     renderCandidates() {
 
         const candidateDivStyle = {
-            position: 'absolute',
             width: "50%",
             backgroundColor: 'white',
-            border: '1px solid black'
+            border: '1px solid black',
         };
 
 
@@ -98,9 +140,18 @@ class MatchingCandidates extends React.Component {
 
         const Candidate = ({user}) => {
             return (
-                <div key={user.key} id={user.key} style={candidateDivStyle}>
+                <div style={candidateDivStyle} className="center-block">
+                    <div>
+                        {user.profile.imgPath &&
+                        <UserAvatar size="100" name={user.profile.name} src={user.profile.imgPath}/>}
+                        {!user.profile.imgPath &&
+                        <UserAvatar size="40" name={user.profile.name}/>}
+                    </div>
                     <h1>{user.profile.name}</h1>
                     <div>{user.profile.aboutMe}</div>
+                    <div>
+                        <InterestsTagCloud data={user.profile.interests}/>
+                    </div>
                     <div style={likeDislikeBtnDivStlye}>
                         <div style={likeBtnDivStyle}>
                             <button onClick={() => this.likeDislikeUser(user, true)}>Like</button>
@@ -120,23 +171,43 @@ class MatchingCandidates extends React.Component {
             return this.renderError();
         }
 
-        if (matchingCandidates.isEmpty) {
+        if (matchingCandidates == null || matchingCandidates.isEmpty) {
             return (<div>No candidates found!</div>)
         }
 
+        const nextCandidate = matchingCandidates[matchingCandidates.length - 1];
+
         return (
             <div>
-                {matchingCandidates.map(candidate =>
-                    <Candidate key={candidate.id} user={candidate}/>
-                )}
+                <Candidate user={nextCandidate}/>
             </div>
         );
     }
 
     render() {
         const {loading} = this.state;
+
+        let matchConfirmationModal =
+            <Modal show={this.state.showMatchConfirmationModal} onHide={this.closeMatchConfirmationModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>It's a Match ...</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <h4>You and&nbsp;
+                        {this.state.lastMatchedUser != null ?
+                            this.state.lastMatchedUser.profile.name : ""} are both
+                        interested in getting to know each other.</h4>
+                    <p></p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={this.closeMatchConfirmationModal}>Go on searching ...</Button>
+                    <Button onClick={this.closeMatchConfirmationAndChat}>Send a message</Button>
+                </Modal.Footer>
+            </Modal>;
+
         return (
-            <div>
+            <div className="row">
+                {matchConfirmationModal}
                 {loading ? this.renderLoading() : this.renderCandidates()}
             </div>
         );
