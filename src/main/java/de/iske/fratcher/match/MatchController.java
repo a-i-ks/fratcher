@@ -26,7 +26,6 @@ public class MatchController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MatchController.class);
 
-
     @Autowired
     UserService userService;
 
@@ -99,6 +98,7 @@ public class MatchController {
                 userService.getCurrentUser().getId().equals(match.getUser2().getId())) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
+        LOG.debug("{} requested {}", userService.getCurrentUser(), match);
         final MatchDto matchDto = convertToMatchDto(match);
         return new ResponseEntity<>(matchDto, HttpStatus.OK);
     }
