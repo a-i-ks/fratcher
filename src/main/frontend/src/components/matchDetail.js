@@ -18,7 +18,7 @@ class MatchDetail extends React.Component {
         // this.handleClick = this.handleClick.bind(this);
     }
 
-    static renderLoading() {
+    renderLoading() {
         return <div>Loading...</div>;
     }
 
