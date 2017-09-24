@@ -15,7 +15,7 @@ public class ChatConversation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToOne(targetEntity = Match.class)
+    @OneToOne(targetEntity = Match.class, fetch = FetchType.LAZY)
     private Match match;
 
     @OneToMany(targetEntity = ChatMessage.class, mappedBy = "conversation")

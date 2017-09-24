@@ -14,7 +14,7 @@ public class ChatMessage {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(targetEntity = ChatConversation.class)
+    @ManyToOne(targetEntity = ChatConversation.class, fetch = FetchType.LAZY)
     private ChatConversation conversation;
 
     @OneToOne
