@@ -99,6 +99,17 @@ public class UserController {
 
     }
 
+    /**
+     * Endpoint to query the list of confirmed LikeMatches of currentUser.
+     *
+     * @return a list of confirmed LikeMatches of the current user
+     */
+    @RequestMapping(value = "/match", method = RequestMethod.GET)
+    @SuppressWarnings("unchecked")
+    public ResponseEntity<Iterable> getMatchesForCurrent() {
+        return getMatchesForUser(userService.getCurrentUser().getId());
+    }
+
 
     /**
      * Endpoint for registering a new user. Expects a user object send by POST.
