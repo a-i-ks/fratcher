@@ -16,5 +16,6 @@
   "btnSaveChanges": "Save Changes",
   "btnCancel": "Cancel",
   "interests": "Interests",
-  "uploadProfilePicTxt": "Upload a different photo..."
+  "uploadProfilePicTxt": "Upload a different photo...",
+  "joinUsTxt": "Join us ..."
 }
