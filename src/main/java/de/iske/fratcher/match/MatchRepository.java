@@ -17,5 +17,18 @@ public interface MatchRepository extends CrudRepository<Match, Long> {
     Iterable<LikeMatch> findLikeMatchesForUser(@Param("user") User user);
 
     @Query("SELECT m from Match_ m WHERE m.user1 = :initialUser")
-    Iterable<Match> findMatchesForUser(@Param("initialUser") User initialUser);
+    Iterable<Match> findMatchesForUserAsInitiator(@Param("initialUser") User initialUser);
+
+    /**
+     * Get all matches in which the passed user has already pressed like/dislike
+     * Possibilities:
+     * 1. Passed user is user1 => he is initiator => already rated
+     * 2. Passed user is user2 and reactionTimestamp != null
+     * => he has reacted to the match => already rated
+     *
+     * @param user the user to search for already rated matches
+     * @return matches in which the passed user has already pressed like/dislike
+     */
+    @Query("SELECT m from Match_ m WHERE (m.user1 = :user) OR (m.user2 = :user AND m.reactionTimestamp IS NOT NULL)")
+    Iterable<Match> findMatchesAlreadyRatedByUser(@Param("user") User user);
 }

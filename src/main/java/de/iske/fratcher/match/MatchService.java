@@ -89,6 +89,8 @@ public class MatchService {
             } else { // => just set reaction timestamp for match
                 inverseMatch.setReactionTimestamp(Instant.now());
             }
+            // save changes of Match to database
+            matchRepository.save(inverseMatch);
             return inverseMatch;
         }
         // Check if there is already an existing dislike match for initialUser -> dislikeUser
@@ -120,18 +122,30 @@ public class MatchService {
         List<User> matchingCandidates = new ArrayList<>();
 
         // empty list for users which have already been liked/disliked
-        List<User> alreadyMatchedUsers = new ArrayList<>();
+        List<User> alreadyRatedUsers = new ArrayList<>();
 
-        // search all matches that had been initiated by user
-        final Iterable<Match> matchesForUser = matchRepository.findMatchesForUser(user);
-        // for each match add user2  to list of already matched users
-        matchesForUser.forEach(match -> alreadyMatchedUsers.add(match.getUser2()));
+        // search all matches where current user has already
+        final Iterable<Match> alreadyRatedMatches = matchRepository.findMatchesAlreadyRatedByUser(user);
+
+        // for each match add other user to list of already rated users
+        for (Match match : alreadyRatedMatches) {
+            if (match.getUser1().equals(user)) { //user is initiator
+                alreadyRatedUsers.add(match.getUser2());
+            } else { //user was matched by user1 first, but has already react to the match
+                alreadyRatedUsers.add(match.getUser1());
+            }
+        }
 
         // get full user directory
         final Iterable<User> userList = userService.getUserList();
 
         // add all users as possible matching candidates
         userList.forEach(matchingCandidates::add);
+
+        // shuffle userList (we don't want to see the same users every time)
+        if (randomOrder) {
+            Collections.shuffle(matchingCandidates);
+        }
 
         // remove current user from matching candidates (obviously you can't match yourself)
         matchingCandidates.remove(user);
@@ -140,13 +154,15 @@ public class MatchService {
         // bring potential matching candidates (which a already liked current user)
         // to a higher position
         matchingCandidates = matchingCandidates.stream()
-                .filter(u -> !alreadyMatchedUsers.contains(u))
+                .filter(u -> !alreadyRatedUsers.contains(u))
                 .filter(u -> u.getStatus() != Status.INACTIVE)
                 .sorted(this::userComparator)
                 .limit(numberOfCandidates)
                 .collect(Collectors.toList());
 
         // shuffle to make it a little more exciting
+        // otherwise the first press on like would likely
+        // be a confirmed match
         if (randomOrder) {
             Collections.shuffle(matchingCandidates);
         }
