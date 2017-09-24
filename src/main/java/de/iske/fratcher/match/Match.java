@@ -127,8 +127,9 @@ public abstract class Match {
 
     @Override
     public String toString() {
-        //TODO implement toString method for match
-        return super.toString();
+        return "Match{" + "id=" +
+                id +
+                '}';
     }
 
     @Override

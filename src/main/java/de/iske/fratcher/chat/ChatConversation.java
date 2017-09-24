@@ -78,8 +78,11 @@ public class ChatConversation {
 
     @Override
     public String toString() {
-        //TODO implement toString method for ChatConversation
-        return super.toString();
+        return "ChatConversation{" + "id=" +
+                id +
+                ", messageCount=" +
+                messages.size() +
+                '}';
     }
 
     @Override

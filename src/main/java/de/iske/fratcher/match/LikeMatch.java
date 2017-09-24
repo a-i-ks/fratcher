@@ -41,5 +41,26 @@ public class LikeMatch extends Match {
         setReactionTimestamp(Instant.now());
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (this.isConfirmed) {
+            sb.append("ConfirmedLikeMatch{");
+        } else {
+            sb.append("LikeMatch{");
+        }
+        sb.append("id=");
+        sb.append(super.getId());
+        if (this.getUser1() != null
+                && this.getUser2() != null) {
+            sb.append(", ");
+            sb.append(this.getUser1().toString());
+            sb.append(" <-> ");
+            sb.append(this.getUser2().toString());
+        }
+        sb.append('}');
+        return sb.toString();
+    }
+
 
 }
