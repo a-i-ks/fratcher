@@ -111,6 +111,10 @@ public class MatchService {
         return matchRepository.findConfirmedLikeMatchesForUser(user);
     }
 
+    public Iterable<LikeMatch> getLikeMatchesForUser(User user) {
+        return matchRepository.findLikeMatchesForUser(user);
+    }
+
     public List<User> getMatchingCandidatesForUser(User user, int numberOfCandidates, boolean randomOrder) {
         // create empty result list
         List<User> matchingCandidates = new ArrayList<>();
@@ -120,8 +124,8 @@ public class MatchService {
 
         // search all matches that had been initiated by user
         final Iterable<Match> matchesForUser = matchRepository.findMatchesForUser(user);
-        // for each match add user1 (initial user) to list of already matched users
-        matchesForUser.forEach(match -> alreadyMatchedUsers.add(match.getUser1()));
+        // for each match add user2  to list of already matched users
+        matchesForUser.forEach(match -> alreadyMatchedUsers.add(match.getUser2()));
 
         // get full user directory
         final Iterable<User> userList = userService.getUserList();
@@ -133,12 +137,16 @@ public class MatchService {
         matchingCandidates.remove(user);
 
         // remove all already rated candidates
+        // bring potential matching candidates (which a already liked current user)
+        // to a higher position
         matchingCandidates = matchingCandidates.stream()
                 .filter(u -> !alreadyMatchedUsers.contains(u))
                 .filter(u -> u.getStatus() != Status.INACTIVE)
+                .sorted(this::userComparator)
                 .limit(numberOfCandidates)
                 .collect(Collectors.toList());
 
+        // shuffle to make it a little more exciting
         if (randomOrder) {
             Collections.shuffle(matchingCandidates);
         }
@@ -146,4 +154,43 @@ public class MatchService {
         return matchingCandidates;
 
     }
+
+    public Iterable<Match> getAllMatches() {
+        return matchRepository.findAll();
+    }
+
+    private int userComparator(User u1, User u2) {
+        User currentUser = userService.getCurrentUser();
+        boolean u1HasCommonMatch;
+        boolean u2HasCommonMatch;
+
+        //check if user1 has confirmedLikeMatch with current user;
+        u1HasCommonMatch = haveUsersLikeMatchTogether(u1, currentUser);
+
+        //check if user2 has confirmedLikeMatch with current user;
+        u2HasCommonMatch = haveUsersLikeMatchTogether(u2, currentUser);
+
+        if (u1HasCommonMatch && !u2HasCommonMatch) {
+            return -1;
+        } else if (!u1HasCommonMatch && u2HasCommonMatch) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    private boolean haveUsersLikeMatchTogether(User u1, User u2) {
+        boolean commonMatch = false;
+        for (LikeMatch likeMatch : getLikeMatchesForUser(u1)) {
+            if ((likeMatch.getUser1().equals(u2) && likeMatch.getUser2().equals(u1))) {
+                commonMatch = true;
+                break;
+            } else if ((likeMatch.getUser1().equals(u1) && likeMatch.getUser2().equals(u2))) {
+                commonMatch = true;
+                break;
+            }
+        }
+        return commonMatch;
+    }
+
 }
