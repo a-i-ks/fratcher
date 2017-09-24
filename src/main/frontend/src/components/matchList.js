@@ -30,7 +30,6 @@ class MatchList extends React.Component {
     componentWillMount() {
         axios.get('/api/user/match')
             .then(({data}) => {
-                console.log(data);
 
                 this.setState({
                     matches: data,
@@ -69,10 +68,6 @@ class MatchList extends React.Component {
             const {profile} = user;
             const {name, imgPath} = profile;
 
-
-            console.log("renderMatches ...");
-            console.log(user);
-
             return (
                 <div key={match.id} onClick={() => this.handleClick(match.id)}>
                     <div>
@@ -99,6 +94,7 @@ class MatchList extends React.Component {
         if (matches.isEmpty) {
             return (<div>No matches found!</div>)
         }
+
 
         return (
             <div>
