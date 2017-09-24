@@ -18,7 +18,20 @@ class Authentication extends React.Component {
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.loginWithRandomUser = this.loginWithRandomUser.bind(this);
         this.cookies = this.props.cookies;
+    }
+
+    loginWithRandomUser() {
+        const userID = Math.floor(Math.random() * (200 - 1 + 1)) + 1;
+        const user = "user" + userID;
+        const password = "password" + (userID + 2);
+
+        this.setState({
+            identification: user,
+            password: password
+        });
+
     }
 
     handleEmailChange(event) {
@@ -37,6 +50,7 @@ class Authentication extends React.Component {
             // We allow a status code of 401 (unauthorized). Otherwise it is interpreted as an error and we can't
             // check the HTTP status code.
             validateStatus: (status) => {
+                // noinspection EqualityComparisonWithCoercionJS
                 return (status >= 200 && status < 300) || status == 401
             }
         })
@@ -70,16 +84,16 @@ class Authentication extends React.Component {
     // Template of centered login page is from
     // https://codepen.io/OldManJava/pen/bwupj
     render() {
-        let loginComponent = null;
-            loginComponent =
+        let loginComponent =
                 <div className="container">
                     <div className="row">
                         <div className="Absolute-Center is-Responsive">
-                            <div id="logo-container"></div>
+                            <div id="logo-container"/>
                             <div className="col-sm-12 col-md-10 col-md-offset-1">
                                 <form action="" id="loginForm" onSubmit={this.handleSubmit}>
                                     <div className="form-group input-group">
-                                        <span className="input-group-addon"><i className="glyphicon glyphicon-user"></i></span>
+                                        <span className="input-group-addon"><i
+                                            className="glyphicon glyphicon-user"/></span>
                                         <input className="form-control" type="text"
                                                name='username'
                                                placeholder="username or email"
@@ -88,7 +102,8 @@ class Authentication extends React.Component {
                                                onChange={this.handleEmailChange}/>
                                     </div>
                                     <div className="form-group input-group">
-                                        <span className="input-group-addon"><i className="glyphicon glyphicon-lock"></i></span>
+                                        <span className="input-group-addon"><i
+                                            className="glyphicon glyphicon-lock"/></span>
                                         <input className="form-control" type="password"
                                                name='password'
                                                placeholder="password"
@@ -99,14 +114,14 @@ class Authentication extends React.Component {
                                         <button type="submit" className="btn btn-def btn-block">Login</button>
                                     </div>
                                     <div className="form-group text-center">
-                                        <a href="#">Forgot Password</a>&nbsp;|&nbsp;<Link
+                                        <a onClick={this.loginWithRandomUser}>Forgot Password</a>&nbsp;|&nbsp;<Link
                                         to="/registration">Register</Link>
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>;
         return (
             <div className="component">
                 {loginComponent}
