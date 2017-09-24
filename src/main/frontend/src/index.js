@@ -14,7 +14,6 @@ import i18n from "./i18n";
 import User from "./util/User";
 import MatchList from "./components/matchList";
 import MatchDetail from "./components/matchDetail";
-import Chat from "./components/chat";
 
 
 // Design decision: We use a global parent component for inter-sibling communication.
@@ -48,9 +47,6 @@ class Root extends React.Component {
                     {User.isAuthenticated() &&
                     <Route path="/editProfile" render={(props) => (
                         <EditProfile {...props}/>)}/>}
-                    {User.isAuthenticated() &&
-                    <Route path="/matches/:id/chat" render={(props) => (
-                        <Chat {...props} />)}/>}
                     {User.isAuthenticated() &&
                     <Route path="/matches/:id/" render={(props) => (
                         <MatchDetail {...props} />)}/>}
