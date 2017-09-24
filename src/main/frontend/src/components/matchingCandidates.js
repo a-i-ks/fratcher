@@ -16,7 +16,6 @@ class MatchingCandidates extends React.Component {
             loading: true,
             error: null
         };
-        console.log("MatchingCandidates constructor");
 
         this.likeDislikeUser = this.likeDislikeUser.bind(this);
 
@@ -25,7 +24,6 @@ class MatchingCandidates extends React.Component {
 
     // This function is called before render() to initialize its state.
     componentWillMount() {
-        console.log("componentWillMount ....");
         axios.get('/api/user/candidates')
             .then(({data}) => {
                 console.log(data);
@@ -59,7 +57,6 @@ class MatchingCandidates extends React.Component {
     }
 
     likeDislikeUser(userObj, like) {
-        console.log(userObj.id);
         let apiPath = like ? "/api/match/like" : "/api/match/dislike";
         axios.post(apiPath,
             {
@@ -71,7 +68,6 @@ class MatchingCandidates extends React.Component {
                 let filteredArray = this.state.matchingCandidates.filter(item => item !== userObj);
                 this.setState({matchingCandidates: filteredArray});
 
-                console.log(data);
             })
             .catch(({error}) => {
                 {/*TODO Better error handling*/
@@ -95,32 +91,27 @@ class MatchingCandidates extends React.Component {
         };
 
 
-        const likeDislikeBtns = {};
+        const likeDislikeBtnDivStlye = {};
 
-        const likeBtn = {};
-        const dislikeBtn = {
-
-        };
+        const likeBtnDivStyle = {};
+        const dislikeBtnDivStyle = {};
 
         const Candidate = ({user}) => {
-            console.log("Candidate const");
-            console.log("username=" + user.username);
             return (
                 <div key={user.key} id={user.key} style={candidateDivStyle}>
                     <h1>{user.profile.name}</h1>
                     <div>{user.profile.aboutMe}</div>
-                    <div style={likeDislikeBtns}>
-                        <div style={likeBtn}>
+                    <div style={likeDislikeBtnDivStlye}>
+                        <div style={likeBtnDivStyle}>
                             <button onClick={() => this.likeDislikeUser(user, true)}>Like</button>
                         </div>
-                        <div style={dislikeBtn}>
+                        <div style={dislikeBtnDivStyle}>
                             <button onClick={() => this.likeDislikeUser(user, false)}>Dislike</button>
                         </div>
                     </div>
                 </div>);
         };
 
-        console.log("renderCandidates ...");
         // Destructuring error and candidates from state.
         // => I don't have to write "this.state...." every time.
         const {error, matchingCandidates} = this.state;

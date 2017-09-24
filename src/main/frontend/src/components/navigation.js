@@ -11,7 +11,8 @@ class Navigation extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: User.profile.name === null ? "Unknown" : User.profile.name
+            name: User.profile.name === null ? "Unknown" : User.profile.name,
+            profilePic: User.profilePic === null ? null : User.profilePic
         };
         this.cookies = this.props.cookies;
         this.handleLogout = this.handleLogout.bind(this);
@@ -34,7 +35,7 @@ class Navigation extends React.Component {
                     </Navbar.Brand>
                 </Navbar.Header>
                 <Nav>
-                    <NavItem eventKey={1} href="#">Matches</NavItem>
+                    <NavItem eventKey={1} href="#/matches">Matches</NavItem>
                     {User.isMod() || User.isAdmin() &&
                     <NavItem eventKey={2} href="#">Moderation</NavItem>}
                     {User.isAdmin() &&
@@ -45,7 +46,10 @@ class Navigation extends React.Component {
                     <NavDropdown eventKey={3} title={
                         <div className="userNavObj">
                             <div className="userAvatar">
-                                <UserAvatar size="40" name={this.state.name}/>
+                                {this.state.profilePic &&
+                                <UserAvatar size="40" name={this.state.name} src={this.state.profilePic}/>}
+                                {!this.state.profilePic &&
+                                <UserAvatar size="40" name={this.state.name}/>}
                             </div>
                             <div className="userName">{this.state.name}</div>
                         </div>} id="basic-nav-dropdown">

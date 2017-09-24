@@ -1,11 +1,8 @@
 import React from "react";
 
-import User from "../util/User";
-
-import UserAvatar from "react-user-avatar";
 import axios from "axios";
 
-class MatchList extends React.Component {
+class UserProfile extends React.Component {
 
     constructor(props) {
         super();
@@ -15,15 +12,11 @@ class MatchList extends React.Component {
             error: null
         };
 
-        this.handleClick = this.handleClick.bind(this);
+        // this.handleClick = this.handleClick.bind(this);
     }
 
     static renderLoading() {
         return <div>Loading...</div>;
-    }
-
-    handleClick(id) {
-        this.props.history.push(`/matches/${id}`);
     }
 
     // This function is called before render() to initialize its state.
@@ -59,32 +52,10 @@ class MatchList extends React.Component {
     renderMatches() {
 
         const Match = ({match}) => {
-            let user = null;
-            const {user1, user2} = match;
-            if (user1.id === User.id) {
-                user = user2;
-            } else {
-                user = user1;
-            }
-            const {profile} = user;
-            const {name, imgPath} = profile;
-
-
-            console.log("renderMatches ...");
-            console.log(user);
-
             return (
-                <div key={match.id} onClick={() => this.handleClick(match.id)}>
-                    <div>
-                        {imgPath &&
-                        <UserAvatar size="40" name={name} src={imgPath}/>}
-                        {!imgPath &&
-                        <UserAvatar size="40" name={name}/>}
-                    </div>
-                    <div>
-                        {name}
-                    </div>
-                </div>
+                <tr key={match.id} onClick={() => this.handleClick(match.id)}>
+                    <td>Name</td>
+                </tr>
             );
         };
 
@@ -111,21 +82,22 @@ class MatchList extends React.Component {
 
     render() {
         const {loading} = this.state;
-
-        const candidateDivStyle = {
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))'
-        };
-
         return (
             <div className="component">
                 {loading ? this.renderLoading() :
-                    <div style={candidateDivStyle}>
+                    <table className="table table-hover">
+                        <thead>
+                        <tr>
+                            <th className="col-sm-5">Name</th>
+                        </tr>
+                        </thead>
+                        <tbody>
                         {this.renderMatches()}
-                    </div>}
+                        </tbody>
+                    </table>}
             </div>
         );
     }
 }
 
-export default MatchList;
+export default UserProfile;

@@ -8,6 +8,7 @@ class User {
             name: "Unknown"
         };
         this.userType = "N/A";
+        this.profilePic = null;
         const cookies = new Cookies();
         const auth = cookies.get('auth');
         if (auth) {
@@ -25,13 +26,15 @@ class User {
         this.email = data.email;
         this.id = data.id;
         this.userType = data.userType;
+        this.profilePic = data.profilePic;
     }
 
     reset() {
         this.name = "";
         this.email = undefined;
         this.id = -1;
-        this.userType = "N/A"
+        this.userType = "N/A";
+        this.profilePic = undefined;
     }
 
     isAuthenticated() {
