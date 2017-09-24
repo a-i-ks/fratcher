@@ -17,10 +17,10 @@ public class ChatMessage {
     @ManyToOne(targetEntity = ChatConversation.class, fetch = FetchType.LAZY)
     private ChatConversation conversation;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private User sender;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private User receiver;
 
     @Size(min = 1, max = 255)
@@ -108,8 +108,15 @@ public class ChatMessage {
 
     @Override
     public String toString() {
-        //TODO implement toString method for chatMessage
-        return super.toString();
+        return "ChatMessage{" + "id=" +
+                id +
+                ", sender='" +
+                sender +
+                "', receiver='" +
+                receiver +
+                "', message='" +
+                this.message +
+                "'}";
     }
 
     @Override
