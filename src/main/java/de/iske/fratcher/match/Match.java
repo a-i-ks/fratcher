@@ -124,4 +124,29 @@ public abstract class Match {
     }
 
     public abstract boolean isConfirmed();
+
+    @Override
+    public String toString() {
+        //TODO implement toString method for match
+        return super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Match match = (Match) o;
+
+        return id != null ? id.equals(match.id) : match.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 }

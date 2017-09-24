@@ -129,9 +129,12 @@ public class User {
 
     @Override
     public String toString() {
+        //TODO fix toString in User
+        String name = this.profile.getName();
         return "User{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
+                name != null ? ", name=" + name + '\'' :
                 ", email='" + email + '\'' +
                 '}';
     }

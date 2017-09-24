@@ -75,4 +75,29 @@ public class ChatConversation {
     public void prePersist() {
         startedTimestamp = Instant.now();
     }
+
+    @Override
+    public String toString() {
+        //TODO implement toString method for ChatConversation
+        return super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ChatConversation conversation = (ChatConversation) o;
+
+        return id != null ? id.equals(conversation.id) : conversation.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 }
