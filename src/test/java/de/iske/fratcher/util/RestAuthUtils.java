@@ -13,7 +13,7 @@ public class RestAuthUtils {
     AuthenticationService authenticationService;
 
     public <T> HttpEntity<T> getEntityWithAdminAuthHeader(T entity) {
-        final AuthenticationService.UserToken userToken = authenticationService.login("admin", "kla4st#en");
+        final AuthenticationService.UserToken userToken = authenticationService.login("admin", "powerlan");
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + userToken.token);
         return new HttpEntity<>(entity, headers);
