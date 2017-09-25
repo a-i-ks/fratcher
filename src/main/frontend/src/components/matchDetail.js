@@ -6,12 +6,12 @@ import InterestsTagCloud from "./interestsTagCloud"
 
 import axios from "axios";
 import UserAvatar from "react-user-avatar";
+import Chat from "./chat";
 
 
 class MatchDetail extends React.Component {
 
     constructor(props) {
-        console.log("MatchDetail");
         super();
         this.state = {
             matchIdFromPath: props.match.params.id,
@@ -28,11 +28,15 @@ class MatchDetail extends React.Component {
 
     // This function is called before render() to initialize its state.
     componentWillMount() {
-        axios.get('/api/match/' + this.state.matchIdFromPath)
-            .then(({data}) => {
-                console.log("then ..");
-                console.log(data);
-
+        axios('/api/match/' + this.state.matchIdFromPath, {
+            validateStatus: (status) => {
+                return (status >= 200 && status < 300) || status === 401
+            }
+        })
+            .then(({data, status}) => {
+                if (status === 401) {
+                    throw new Error(data);
+                }
                 let user = null;
                 const {user1, user2} = data;
                 if (user1.id === User.id) {
@@ -41,31 +45,29 @@ class MatchDetail extends React.Component {
                     user = user1;
                 }
 
-                console.log("user=");
-                console.log(user);
-
                 this.setState({
                     match: data,
                     user: user,
                     loading: false,
                     error: null
                 });
-                console.log("after set");
                 this.forceUpdate();
             })
-            .catch(({error}) => {
-                console.log("error during load");
+            .catch((err) => {
+                console.error("ERROR during load of match details: ");
+                console.error(err.message);
                 this.setState({
                     loading: false,
-                    error: error
+                    error: err.message
                 });
+                this.forceUpdate();
             });
     }
 
     renderError() {
         return (
-            <div>
-                An error has occurred: {this.state.error.message}
+            <div style={{color: 'red'}}>
+                An error has occurred: {this.state.error}
             </div>
         );
     }
@@ -99,14 +101,17 @@ class MatchDetail extends React.Component {
     }
 
     render() {
-        const {loading} = this.state;
+        const {loading, error} = this.state;
         return (
             <div className="component">
                 {loading ? this.renderLoading() :
-                    <div className="row">
-                        <div className="col-sm-6">{this.renderMatch()}</div>
-                        <div className="col-sm-6">Chat</div>
-                    </div>}
+                    error ? this.renderError() :
+                        <div className="row">
+                            <div className="col-sm-6">{this.renderMatch()}</div>
+                            <div className="col-sm-6">Chat
+                                <Chat match={this.state.match}/>
+                            </div>
+                        </div>}
             </div>)
     }
 }
