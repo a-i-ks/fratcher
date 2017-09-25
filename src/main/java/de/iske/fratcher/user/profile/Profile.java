@@ -1,5 +1,7 @@
 package de.iske.fratcher.user.profile;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.Embeddable;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
@@ -12,6 +14,7 @@ public class Profile {
     private String name;
 
     @Lob
+    @Type(type = "text")
     private String aboutMe;
 
     private String imgPath;
