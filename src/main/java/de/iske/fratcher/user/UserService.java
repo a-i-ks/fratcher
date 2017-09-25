@@ -162,9 +162,6 @@ public class UserService {
         } else if (user.getProfile().getAboutMe() == null) {
             LOG.info("No about me for user {}", user);
             return false;
-        } else if (user.getProfile().getAboutMe().length() > 3) {
-            LOG.info("No about me too short {}", user);
-            return false;
         }
         return true;
     }
