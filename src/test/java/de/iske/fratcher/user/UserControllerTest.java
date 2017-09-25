@@ -142,7 +142,7 @@ public class UserControllerTest {
         String url = AddressUtils.getURL(addressService.getServerURL(), "api/user", port);
         RestTemplate rest = new RestTemplate();
         User newUser = random.nextObject(User.class, "id");
-        newUser.setEmail("admin@fratcher.de"); //email admin@fratcher.de is already in use
+        newUser.setEmail("andre.iske@mailbox.org"); //email andre.iske@mailbox.org is already in use
         HttpEntity<String> requestObj = getUserObjAsJsonWithPwd(newUser);
 
         thrown.expect(HttpClientErrorException.class);

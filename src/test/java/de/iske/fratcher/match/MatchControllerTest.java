@@ -4,7 +4,9 @@ import de.iske.fratcher.user.User;
 import de.iske.fratcher.util.AddressService;
 import de.iske.fratcher.util.AddressUtils;
 import de.iske.fratcher.util.RestAuthUtils;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +18,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.MalformedURLException;
 
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
@@ -36,6 +41,9 @@ public class MatchControllerTest {
 
     @Autowired
     private RestAuthUtils restAuthUtils;
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     /**
      * In this test case the admin user presses "like" on user120
@@ -68,14 +76,13 @@ public class MatchControllerTest {
         assertNotNull("Match object should not be null", matchCreated);
         assertFalse("Match object should not be confirmed", matchCreated.confirmed);
 
+        thrown.expect(HttpClientErrorException.class);
+        thrown.expect(hasProperty("statusCode", is(HttpStatus.UNAUTHORIZED)));
+        thrown.expect(hasProperty("responseBodyAsString", is("MATCH_NOT_CONFIRMED")));
+
         // Get created match
         final HttpEntity<Object> getMatchRequest = restAuthUtils.getEntityWithAdminAuthHeader(null);
         final ResponseEntity<MatchDto> matchResponse2 = restTemplate.exchange(matchResponse.getHeaders().getLocation(), HttpMethod.GET, getMatchRequest, MatchDto.class);
-
-        assertEquals("Get should return HTTP 200", HttpStatus.OK, matchResponse2.getStatusCode());
-        assertNotNull("Response body should not be empty", matchResponse2.getBody());
-        assertEquals("User 1 should be admin user", new Long(1), matchResponse2.getBody().getUser1().getId());
-        assertEquals("User 2 should be user 120", new Long(120), matchResponse2.getBody().getUser2().getId());
     }
 
 }
