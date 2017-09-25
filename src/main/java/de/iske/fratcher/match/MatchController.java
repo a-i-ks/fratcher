@@ -88,7 +88,7 @@ public class MatchController {
      * @return Match object, if user is allowed to receive this info
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<MatchDto> getMatch(@PathVariable Long id) {
+    public ResponseEntity<Object> getMatch(@PathVariable Long id) {
         Match match = matchService.getMatchById(id);
         if (userService.isAnonymous()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -97,8 +97,10 @@ public class MatchController {
         } else if (userService.getCurrentUser().getId().equals(match.getUser1().getId()) &&
                 userService.getCurrentUser().getId().equals(match.getUser2().getId())) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else if (!(match instanceof LikeMatch) || !match.isConfirmed()) {
+            return new ResponseEntity<>("MATCH_NOT_CONFIRMED", HttpStatus.UNAUTHORIZED);
         }
-        LOG.debug("{} requested {}", userService.getCurrentUser(), match);
+        LOG.info("{} requested {}", userService.getCurrentUser(), match);
         final MatchDto matchDto = convertToMatchDto(match);
         return new ResponseEntity<>(matchDto, HttpStatus.OK);
     }
