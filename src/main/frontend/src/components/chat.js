@@ -81,7 +81,7 @@ class Chat extends React.Component {
             return (m1.id - m2.id);
         });
         let messagesDivContent = [];
-        if (messages != null && messages.length > 0) {
+        if (messages != null && messages.length > 0 && messages[0] != "") {
             messages.map((msg) => {
                 messagesDivContent.push(this.processMsgToDiv(msg))
             })
