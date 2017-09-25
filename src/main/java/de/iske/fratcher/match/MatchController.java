@@ -96,8 +96,10 @@ public class MatchController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else if (userService.getCurrentUser().getId().equals(match.getUser1().getId()) &&
                 userService.getCurrentUser().getId().equals(match.getUser2().getId())) {
+            LOG.info("[UNAUTHORIZED] {} requested {}", userService.getCurrentUser(), match);
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else if (!(match instanceof LikeMatch) || !match.isConfirmed()) {
+            LOG.info("[UNAUTHORIZED] {} requested {}", userService.getCurrentUser(), match);
             return new ResponseEntity<>("MATCH_NOT_CONFIRMED", HttpStatus.UNAUTHORIZED);
         }
         LOG.info("{} requested {}", userService.getCurrentUser(), match);
