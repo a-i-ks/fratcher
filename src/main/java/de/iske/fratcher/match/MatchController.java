@@ -108,6 +108,10 @@ public class MatchController {
     }
 
     private MatchDto convertToMatchDto(Match match) {
-        return modelMapper.map(match, MatchDto.class);
+        MatchDto matchDto = modelMapper.map(match, MatchDto.class);
+        if (match.getConversation() != null) {
+            matchDto.setHasChat(true);
+        }
+        return matchDto;
     }
 }

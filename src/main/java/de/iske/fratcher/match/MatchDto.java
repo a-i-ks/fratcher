@@ -16,7 +16,7 @@ public class MatchDto {
 
     private boolean hasChat;
 
-    public boolean isHasChat() {
+    public boolean hasChat() {
         return hasChat;
     }
 
