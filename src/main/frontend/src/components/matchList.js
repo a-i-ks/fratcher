@@ -19,7 +19,7 @@ class MatchList extends React.Component {
     }
 
     renderLoading() {
-        return <div>Loading...</div>;
+        return <div style={{marginLeft: '120px'}}>Loading...</div>;
     }
 
     handleClick(id) {
@@ -49,9 +49,9 @@ class MatchList extends React.Component {
 
     renderError() {
         return (
-            <tr>
-                <td>An error has occurred: {this.state.error.message}</td>
-            </tr>
+            <div style={{marginLeft: '120px'}}>
+                An error has occurred: {this.state.error.message}
+            </div>
         );
     }
 

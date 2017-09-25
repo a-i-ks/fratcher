@@ -1,8 +1,8 @@
 import React from "react";
 
 import axios from "axios";
-import UserAvatar from "react-user-avatar";
-import {Button, Modal} from "react-bootstrap";
+import Avatar from 'react-avatar';
+import {Button, Glyphicon, Modal} from "react-bootstrap";
 
 import InterestsTagCloud from "./interestsTagCloud"
 
@@ -35,7 +35,9 @@ class MatchingCandidates extends React.Component {
     componentWillMount() {
         axios.get('/api/user/candidates')
             .then(({data}) => {
-
+                if (data !== Array && data.length == 0) {
+                    throw new Error("No matching candidates found");
+                }
                 this.setState({
                     matchingCandidates: data,
                     loading: false,
@@ -47,18 +49,18 @@ class MatchingCandidates extends React.Component {
                 console.log("error during load");
                 this.setState({
                     loading: false,
-                    error: error
+                    error: error.message
                 });
             });
     }
 
     renderLoading() {
-        return <div>Loading...</div>;
+        return <div style={{marginLeft: '120px'}}>Loading...</div>;
     }
 
     renderError() {
         return (
-            <div>
+            <div style={{marginLeft: '120px'}}>
                 An error has occurred: {this.state.error.message}
             </div>
         );
@@ -130,34 +132,45 @@ class MatchingCandidates extends React.Component {
             width: "50%",
             backgroundColor: 'white',
             border: '1px solid black',
+            textAlign: 'center'
         };
 
+        const aboutMeDivStyle = {
+            margin: '10px'
+        };
 
-        const likeDislikeBtnDivStlye = {};
+        const likeDislikeBtnDivStyle = {
+            margin: '10px'
+        };
 
-        const likeBtnDivStyle = {};
+        const likeBtnDivStyle = {
+            float: 'left',
+            left: '120px'
+        };
         const dislikeBtnDivStyle = {};
 
         const Candidate = ({user}) => {
             return (
                 <div style={candidateDivStyle} className="center-block">
-                    <div>
+                    <div style={{width: '17%', margin: '10px auto'}}>
                         {user.profile.imgPath &&
-                        <UserAvatar size="100" name={user.profile.name} src={user.profile.imgPath}/>}
+                        <Avatar name={user.profile.name} size={120} round={true} src={user.profile.imgPath}/>}
                         {!user.profile.imgPath &&
-                        <UserAvatar size="40" name={user.profile.name}/>}
+                        <Avatar name={user.profile.name} size={90} round={true}/>}
                     </div>
-                    <h1>{user.profile.name}</h1>
-                    <div>{user.profile.aboutMe}</div>
+                    <h1 style={{margin: 'auto', verticalAlign: 'middle'}}>{user.profile.name}</h1>
+                    <div style={aboutMeDivStyle}>{user.profile.aboutMe}</div>
                     <div>
                         <InterestsTagCloud data={user.profile.interests}/>
                     </div>
-                    <div style={likeDislikeBtnDivStlye}>
+                    <div style={likeDislikeBtnDivStyle}>
                         <div style={likeBtnDivStyle}>
-                            <button onClick={() => this.likeDislikeUser(user, true)}>Like</button>
+                            <Button onClick={() => this.likeDislikeUser(user, true)} bsStyle="success"><Glyphicon
+                                glyph="thumbs-up"/> Like</Button>
                         </div>
                         <div style={dislikeBtnDivStyle}>
-                            <button onClick={() => this.likeDislikeUser(user, false)}>Dislike</button>
+                            <Button onClick={() => this.likeDislikeUser(user, false)} bsStyle="danger"><Glyphicon
+                                glyph="thumbs-down"/> Dislike</Button>
                         </div>
                     </div>
                 </div>);
@@ -172,7 +185,7 @@ class MatchingCandidates extends React.Component {
         }
 
         if (matchingCandidates == null || matchingCandidates.isEmpty) {
-            return (<div>No candidates found!</div>)
+            return (<div style={{marginLeft: "180px"}}>No candidates found! Reload page to load more.</div>)
         }
 
         const nextCandidate = matchingCandidates[matchingCandidates.length - 1];
@@ -200,8 +213,9 @@ class MatchingCandidates extends React.Component {
                     <p></p>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={this.closeMatchConfirmationModal}>Go on searching ...</Button>
-                    <Button onClick={this.closeMatchConfirmationAndChat}>Send a message</Button>
+                    <Button onClick={this.closeMatchConfirmationModal} bsStyle='primary'>Go on searching ...</Button>
+                    <Button onClick={this.closeMatchConfirmationAndChat} bsStyle='success'><Glyphicon glyph="send"/>
+                        Send a message</Button>
                 </Modal.Footer>
             </Modal>;
 

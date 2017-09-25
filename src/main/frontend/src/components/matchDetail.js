@@ -6,7 +6,8 @@ import Chat from "./chat";
 
 
 import axios from "axios";
-import UserAvatar from "react-user-avatar";
+import Avatar from 'react-avatar';
+
 import {Button, Glyphicon, Modal} from "react-bootstrap"
 
 class MatchDetail extends React.Component {
@@ -26,7 +27,7 @@ class MatchDetail extends React.Component {
     }
 
     renderLoading() {
-        return <div>Loading...</div>;
+        return <div style={{marginLeft: '120px'}}>Loading...</div>;
     }
 
     // This function is called before render() to initialize its state.
@@ -69,7 +70,7 @@ class MatchDetail extends React.Component {
 
     renderError() {
         return (
-            <div style={{color: 'red'}}>
+            <div style={{color: 'red', marginLeft: '100px'}}>
                 An error has occurred: {this.state.error}
             </div>
         );
@@ -116,6 +117,12 @@ class MatchDetail extends React.Component {
     }
 
     renderMatch() {
+
+        const candidateDivStyle = {
+            textAlign: 'center'
+        };
+
+
         // Destructuring error and matches from state.
         // => I don't have to write "this.state...." every time.
         const {error, user} = this.state;
@@ -125,17 +132,17 @@ class MatchDetail extends React.Component {
         }
 
         return (
-            <div>
+            <div style={candidateDivStyle}>
                 <div>
                     <span className="pull-right">
                         <Button onClick={this.handleDeleteMatch} bsStyle='danger'><Glyphicon glyph="trash"/> Delete Match</Button>
                     </span>
                 </div>
-                <div>
+                <div style={{width: '17%', margin: '10px auto'}}>
                     {user.profile.imgPath &&
-                    <UserAvatar size="100" name={user.profile.name} src={user.profile.imgPath}/>}
+                    <Avatar name={user.profile.name} size={120} round={true} src={user.profile.imgPath}/>}
                     {!user.profile.imgPath &&
-                    <UserAvatar size="40" name={user.profile.name}/>}
+                    <Avatar name={user.profile.name} size={90} round={true}/>}
                 </div>
                 <h1>{user.profile.name}</h1>
                 <div>{user.profile.aboutMe}</div>
@@ -170,7 +177,7 @@ class MatchDetail extends React.Component {
                     error ? this.renderError() :
                         <div className="row">
                             <div className="col-sm-6">{this.renderMatch()}</div>
-                            <div className="col-sm-6">Chat
+                            <div className="col-sm-6">
                                 <Chat match={this.state.match}/>
                             </div>
                         </div>}

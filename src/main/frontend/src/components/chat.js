@@ -1,6 +1,7 @@
 import React from "react";
 
 import User from "../util/User";
+import Avatar from 'react-avatar';
 
 import axios from "axios";
 
@@ -38,13 +39,16 @@ class Chat extends React.Component {
     }
 
     processMsgToDiv(msg) {
-        const {message, senderId} = msg;
+        const {message, senderId, transmissionTimestamp} = msg;
         if (senderId === User.id) { // msg by currentUser
             return (
                 <li style={{width: '100%'}} key={msg.id}>
                     <div className="msj macro">
                         <div className="avatar">
-                            <img className="img-circle" style={{width: '100%'}} src={User.profilePic}/>
+                            {User.profilePic != null &&
+                            <img className="img-circle" style={{width: '100%'}} src={User.profilePic}/>}
+                            {User.profilePic == null &&
+                            <Avatar name={User.profile.name} size={25} round={true}/>}
                         </div>
                         <div className="text text-l">
                             <p>{message}</p>
@@ -66,8 +70,10 @@ class Chat extends React.Component {
                             </p>
                         </div>
                         <div className="avatar" style={{padding: '0px 0px 0px 10px !important'}}>
-                            <img className="img-circle" style={{width: '100%'}} src="you.avatar"/>
-                        </div>
+                            {User.profilePic != null &&
+                            <img className="img-circle" style={{width: '100%'}} src={User.profilePic}/>}
+                            {User.profilePic == null &&
+                            <Avatar name={User.profile.name} size={25} round={true}/>}                        </div>
                     </div>
                 </li>
             )
@@ -182,7 +188,7 @@ class Chat extends React.Component {
         return (
             <div className="chat">
                 {loading ? this.renderLoading() :
-                    <div className="chat col-sm-3 col-sm-offset-4 frame">
+                    <div className="chat col-sm-9 col-sm-offset-1 frame">
                         <ul>{this.renderMessages()}</ul>
                         <div>
                             <div className="msj-rta macro" style={{margin: `auto`}}>
