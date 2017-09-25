@@ -6,28 +6,21 @@ class InterestsTagCloud extends React.Component {
         super(props);
     }
 
-    componentWillMount() {
-        if (this.props.data !== null) {
-            const tmpKeywords = this.props.data.map(function (keyword) {
+    render() {
+        console.log("render tag cloud");
+        let keywords;
+        if (this.props.data) {
+            keywords = this.props.data.map(function (keyword) {
                 return {value: keyword.value, count: keyword.count, key: keyword.id};
             });
-            this.setState({
-                keywords: tmpKeywords
-            });
-        } else {
-            this.setState({
-                keywords: null
-            });
+            console.log(keywords);
         }
-    }
-
-    render() {
         return (
             <div>
-                {this.state.keywords ?
+                {keywords ?
                     <TagCloud minSize={12}
                               maxSize={35}
-                              tags={this.state.keywords}/> :
+                              tags={keywords}/> :
                     <div/>}
             </div>)
     }

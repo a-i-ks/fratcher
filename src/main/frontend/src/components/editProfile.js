@@ -169,7 +169,7 @@ class EditProfile extends React.Component {
     validatePassword(value) {
         let re = /^.{8,}$/;
         if (!re.test(value) && value.length > 0) {
-            console.log("validatePassword: too short");
+            console.error("validatePassword: too short");
             this.setState({passwordValidationError: "error"}, this.isAllValid);
         } else {
             this.setState({passwordValidationError: null}, this.isAllValid);
@@ -201,25 +201,20 @@ class EditProfile extends React.Component {
         let passwordFieldFilled = (this.state.password.length > 0 ||
             this.state.passwordConfirmation.length > 0);
         if (inputFieldsValid && !passwordFieldFilled) {
-            console.log("all valid true (" + this.state.nameValidationError + "," + this.state.usernameValidationError + "," + this.state.emailValidationError + ")");
             this.setState({submitBtnEnabled: true});
         } else if (inputFieldsValid && passwordFieldFilled) {
-            console.log("inputs valid password filled");
             if (this.state.password === this.state.passwordConfirmation) {
-                console.log("Passwords ==");
                 this.setState({
                     submitBtnEnabled: true,
                     passwordConfirmationValidationError: null
                 });
             } else {
-                console.log("Passwords =!");
                 this.setState({
                     submitBtnEnabled: false,
                     passwordConfirmationValidationError: "error"
                 });
             }
         } else {
-            console.log("all valid false (" + this.state.nameValidationError + "," + this.state.usernameValidationError + "," + this.state.emailValidationError + ")");
             this.setState({submitBtnEnabled: false});
         }
     }
@@ -305,6 +300,7 @@ class EditProfile extends React.Component {
 
     render() {
         const {t} = this.props;
+
         return (
             <div className="container">
                 <h1>{t('editProfile')}</h1>
@@ -326,9 +322,6 @@ class EditProfile extends React.Component {
                             <h3>{t('interests')} &nbsp;&nbsp;
                                 <Button onClick={this.handleEditTags}><Glyphicon
                                     glyph={this.state.tagsEditBtnIcon}/></Button></h3>
-
-
-
                             <div className="tags">
                                 <InterestsTagCloud data={this.state.interests}/>
                             </div>
@@ -415,7 +408,7 @@ class EditProfile extends React.Component {
                             </FormGroup>
                             <FormGroup controlId="editProfileConfirmPassword"
                                        validationState={this.state.passwordConfirmationValidationError}>
-                                <Col componentClass={ControlLabel} sm={3}>:</Col>
+                                <Col componentClass={ControlLabel} sm={3}>{t('lblConfirmPwd')}:</Col>
                                 <Col sm={8}>
                                     <FormControl value={this.state.passwordConfirmation} type="password"
                                                  onChange={this.handlePasswordConfirmChange}
