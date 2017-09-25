@@ -66,7 +66,7 @@ public class AuthenticationControllerTest {
     @Test
     public void testLoginWithMailAndCorrectPwd() throws MalformedURLException {
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity<UserLogin> loginRequest = new HttpEntity<>(new UserLogin("admin@fratcher.de", "kla4st#en"));
+        HttpEntity<UserLogin> loginRequest = new HttpEntity<>(new UserLogin("andre.iske@mailbox.org", "powerlan"));
         final String loginUrl = AddressUtils.getURL(addressService.getServerURL(), "api/user/login", port);
         final ResponseEntity<AuthenticationService.UserToken> loginResponse = restTemplate.exchange(loginUrl, HttpMethod.POST, loginRequest, AuthenticationService.UserToken.class);
 
@@ -74,7 +74,7 @@ public class AuthenticationControllerTest {
 
         assertEquals("HTTP response code should be 202 (ACCEPTED).", HttpStatus.ACCEPTED, loginResponse.getStatusCode());
         assertNotNull("Response body shouldn't be empty", loginResponse.getBody());
-        assertEquals("Response user should be the same which had send the request", "admin@fratcher.de", loginResponse.getBody().user.getEmail());
+        assertEquals("Response user should be the same which had send the request", "andre.iske@mailbox.org", loginResponse.getBody().user.getEmail());
         assertNotNull("Response token should not be null", token);
         assertTrue("Response token should have a correct format", token.matches("^\\S+\\.\\S+\\.\\S+$"));
 
@@ -91,7 +91,7 @@ public class AuthenticationControllerTest {
     @Test
     public void testLoginWithUsernameAndCorrectPwd() throws MalformedURLException {
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity<UserLogin> loginRequest = new HttpEntity<>(new UserLogin("admin", "kla4st#en"));
+        HttpEntity<UserLogin> loginRequest = new HttpEntity<>(new UserLogin("admin", "powerlan"));
         final String loginUrl = AddressUtils.getURL(addressService.getServerURL(), "api/user/login", port);
         final ResponseEntity<AuthenticationService.UserToken> loginResponse = restTemplate.exchange(loginUrl, HttpMethod.POST, loginRequest, AuthenticationService.UserToken.class);
 
@@ -99,7 +99,7 @@ public class AuthenticationControllerTest {
 
         assertEquals("HTTP response code should be 202 (ACCEPTED).", HttpStatus.ACCEPTED, loginResponse.getStatusCode());
         assertNotNull("Response body shouldn't be empty", loginResponse.getBody());
-        assertEquals("Response user should be the same which had send the request", "admin@fratcher.de", loginResponse.getBody().user.getEmail());
+        assertEquals("Response user should be the same which had send the request", "andre.iske@mailbox.org", loginResponse.getBody().user.getEmail());
         assertNotNull("Response token should not be null", token);
         assertTrue("Response token should have a correct format", token.matches("^\\S+\\.\\S+\\.\\S+$"));
 
