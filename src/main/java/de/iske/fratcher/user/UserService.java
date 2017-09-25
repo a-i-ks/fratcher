@@ -94,6 +94,7 @@ public class UserService {
             user.setStatus(Status.DEFAULT);
         }
         userRepository.save(user);
+        LOG.info("[ADDED] {}", user);
     }
 
     /**
@@ -107,7 +108,9 @@ public class UserService {
         User userObj = userRepository.findById(userToMerge.getId());
         if (!isUserProfileComplete(userToMerge)) {
             userToMerge.setStatus(Status.INACTIVE);
+            LOG.info("[INACTIVE] {}", userToMerge);
         } else {
+            LOG.info("[ACTIVE] {}", userToMerge);
             userToMerge.setStatus(Status.DEFAULT);
         }
         // merge user information
