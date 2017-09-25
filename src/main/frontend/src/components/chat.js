@@ -113,7 +113,9 @@ class Chat extends React.Component {
             })
             .then((response) => {
                 if (response.status === 201) {
-                    console.log("status 201");
+                    this.setState({
+                        messageInput: ""
+                    });
                     this.checkForNewMessages();
                 } else {
                     throw new Error("Unexpected response with code " + response.status);
