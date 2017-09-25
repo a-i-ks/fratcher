@@ -37,7 +37,9 @@ class MatchingCandidates extends React.Component {
             .then(({data}) => {
                 console.log("received data ...");
                 console.log(data);
-                if (data !== Array && data.length == 0) {
+                if (data == null) {
+                    throw new Error("No matching candidates found");
+                } else if (data.length == 0) {
                     throw new Error("No matching candidates found");
                 } else if (data == "") {
                     throw new Error("No matching candidates found");
