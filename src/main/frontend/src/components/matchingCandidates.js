@@ -36,7 +36,8 @@ class MatchingCandidates extends React.Component {
         axios.get('/api/user/candidates')
             .then(({data}) => {
                 if (data !== Array && data.length == 0) {
-                    log.error("No matching candidates found");
+                    throw new Error("No matching candidates found");
+                } else if (data == "") {
                     throw new Error("No matching candidates found");
                 }
                 this.setState({
@@ -46,11 +47,12 @@ class MatchingCandidates extends React.Component {
                 });
                 this.forceUpdate();
             })
-            .catch(({error}) => {
-                console.log("error during load");
+            .catch(({err}) => {
+                console.error("error during load");
+                console.error(err);
                 this.setState({
                     loading: false,
-                    error: error.message
+                    error: err.message
                 });
             });
     }
