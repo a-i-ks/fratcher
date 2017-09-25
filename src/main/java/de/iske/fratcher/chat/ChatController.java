@@ -129,7 +129,7 @@ public class ChatController {
      * If the ChatConversation is not existing or was deleted, a new will be created.
      *
      * @param matchId matchID for for which the message should send
-     * @return OK(200) if successful
+     * @return CREATED(201) if successful
      */
     @RequestMapping(value = "message", method = RequestMethod.POST)
     public ResponseEntity<Object> sendMessage(@PathVariable Long matchId, @RequestBody ChatMessage message) {
