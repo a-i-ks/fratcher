@@ -147,6 +147,9 @@ public class MatchService {
         // add all users as possible matching candidates
         userList.forEach(matchingCandidates::add);
 
+        LOG.info("[1] MatchingCandidates contains {} user before filtering", matchingCandidates.size());
+
+
         // shuffle userList (we don't want to see the same users every time)
         if (randomOrder) {
             Collections.shuffle(matchingCandidates);
@@ -154,6 +157,9 @@ public class MatchService {
 
         // remove current user from matching candidates (obviously you can't match yourself)
         matchingCandidates.remove(user);
+
+        LOG.info("[2] MatchingCandidates contains {} user after 1. filtering", matchingCandidates.size());
+
 
         // remove all already rated candidates
         // bring potential matching candidates (which a already liked current user)
@@ -171,6 +177,9 @@ public class MatchService {
         if (randomOrder) {
             Collections.shuffle(matchingCandidates);
         }
+
+        LOG.info("[3] MatchingCandidates contains {} user after 2. filtering", matchingCandidates.size());
+
 
         LOG.info("[FOUND] {} matching candidates for {}", matchingCandidates.size(), user);
 
