@@ -35,6 +35,8 @@ class MatchingCandidates extends React.Component {
     componentWillMount() {
         axios.get('/api/user/candidates')
             .then(({data}) => {
+                console.log("received data ...");
+                console.log(data);
                 if (data !== Array && data.length == 0) {
                     throw new Error("No matching candidates found");
                 } else if (data == "") {
