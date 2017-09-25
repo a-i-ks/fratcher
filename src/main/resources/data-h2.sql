@@ -14,10 +14,10 @@ DELETE FROM USER_;
 
 -- Insert new users.
 INSERT INTO USER_ (ID, STATUS, USERNAME, EMAIL, NAME, PASSWORD, USER_TYPE, ABOUT_ME, IMG_PATH) VALUES
-  (1, 0, 'admin', 'andre.iske@mailbox.org', 'Andre',
+  (1, 1, 'admin', 'andre.iske@mailbox.org', 'Andre',
    '5d2fbe6da3587a2c4b0914b07b822c26088266e96780c49d10efe87aef763285f6e4407054b0022cb8006e5ac60dd4d084a465ca76d2d63390d1c1dab1239956',
-   'ADMIN', 'aboutMe', 'assets/profilePics/img75.jpg'),
-  (2, 0, 'user0', 'randomMail@mail.de', 'Max Muster', '313dee0b8b9b98060fbf183249811ef45fbef0a5843c5f4a97bb65d678bc42cb0251a8753f3b735b0e8e795cf6472cac10b3a59629e7cb87a2282c14953dffb6', 'MODERATOR', 'aboutMe', NULL),
+   'ADMIN', 'aboutMe', 'assets/profilePics/img43.jpg'),
+  (2, 1, 'user0', 'randomMail@mail.de', 'Max Muster', '313dee0b8b9b98060fbf183249811ef45fbef0a5843c5f4a97bb65d678bc42cb0251a8753f3b735b0e8e795cf6472cac10b3a59629e7cb87a2282c14953dffb6', 'MODERATOR', 'aboutMe', NULL),
   (3, 0, 'user1', 'ducasse@mac.com', 'Jan', 'f7ae2a3b435b70c89b549c2ed177452c385ebc666f9a3ecee2e05bf1e8977e7b84d996f6cfebf2e86590b1623fd731c5883dd04d8eb5adac3ca320f4a6f3d53f', 'USER', 'Heyyy no robots posing as real people really only soft drugs I have an IQ of 140, which means. P90X I am extremely experienced and talented laughing hysterically blackjack The Game, making people mad ask your mother lol making people mad I''m a nice guy. Motorcycle collection shooting females lol please post your real pictures proper grammar.', NULL),
   (4, 0, 'user2', 'arnold@att.net', 'Laurin', '30321f73e56f3656c857286fb31c7f46e42eed71227155ded54c8c71c8e187ac3df02c83a67824e1c5700a1c97bab222d0d3e97c19a9d47d0a1e729ef625a035', 'USER', 'Chilling at a bar with friends trying this for the first time Infinite Jest life is short. It depends on the night just looking to have some fun but then it wouldn''t be private Murakami my cats, amazing women I''ve met open-minded playing my guitar fixing my scooter Doctor Who. I''m really good at no drama Neutral Milk Hotel extrovert On The Road loyal.', NULL),
   (5, 0, 'user3', 'okroeger@icloud.com', 'Malte', 'ebc2aea7894d5fc7e4ca7cdb7016d2a6830b978aa649082af6e5ca54fb58cf5aa2881a7bd414b84e26c92918331a06320fb060c1af05e53249b93d81a5a543ff', 'USER', 'Crossfit everything but country music outdoor activities sleeping late. Video games what to order off of the menu foodie there''s no such thing as a typical Friday night new friends, working at a coffee shop Kurosawa going to shows I don''t really like talking about myself training for the marathon. My eyes my phone, my friends, the internet vinyl records short-term dating fascinates me Sunday funday.', 'assets/profilePics/img138.jpg'),
