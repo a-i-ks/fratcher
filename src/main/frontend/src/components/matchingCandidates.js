@@ -36,6 +36,7 @@ class MatchingCandidates extends React.Component {
         axios.get('/api/user/candidates')
             .then(({data}) => {
                 if (data !== Array && data.length == 0) {
+                    log.error("No matching candidates found");
                     throw new Error("No matching candidates found");
                 }
                 this.setState({
@@ -98,7 +99,7 @@ class MatchingCandidates extends React.Component {
                     });
                 } else {
                     this.setState({
-                        matchingCandidates: null
+                        matchingCandidates: null,
                     });
                 }
 
@@ -121,6 +122,7 @@ class MatchingCandidates extends React.Component {
                 console.log(error);
                 this.setState({
                     error: true
+
                 });
             });
 
