@@ -7,13 +7,11 @@ class InterestsTagCloud extends React.Component {
     }
 
     render() {
-        console.log("render tag cloud");
         let keywords;
         if (this.props.data) {
             keywords = this.props.data.map(function (keyword) {
                 return {value: keyword.value, count: keyword.count, key: keyword.id};
             });
-            console.log(keywords);
         }
         return (
             <div>
