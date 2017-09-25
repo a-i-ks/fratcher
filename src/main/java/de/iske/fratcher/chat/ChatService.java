@@ -36,6 +36,7 @@ public class ChatService {
             conversation = new ChatConversation();
             conversation.setMatch(match);
             chatConversationRepository.save(conversation);
+            LOG.info("[ADDED] ChatConversation for {}", match);
         }
         return conversation;
     }
@@ -47,6 +48,7 @@ public class ChatService {
         } else {
             conversation.setStatus(Status.DELETED);
             chatConversationRepository.save(conversation);
+            LOG.info("[DELETED] ChatConversation for {}", match);
             return true;
         }
     }
@@ -57,6 +59,7 @@ public class ChatService {
             conversation = new ChatConversation();
             conversation.setMatch(match);
         }
+        LOG.info("[CREATED] {} in chat for match {}", message, match);
         //save message in database
         message.setConversation(conversation);
         chatConversationRepository.save(conversation);
