@@ -156,8 +156,6 @@ public class UserService {
             return false;
         } else if (user.getProfile().getAboutMe().length() > 3) {
             return false;
-        } else if (user.getProfile().getInterests().size() == 0) {
-            return false;
         }
         return true;
     }
