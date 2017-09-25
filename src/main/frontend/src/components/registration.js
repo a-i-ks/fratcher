@@ -106,7 +106,6 @@ class Registration extends React.Component {
             this.setState({passwordsAreEqual: false});
         } else {
             this.setState({passwordsAreEqual: true});
-            event.target.u
         }
         this.updateRegisterBtnState();
     }
@@ -128,7 +127,7 @@ class Registration extends React.Component {
             // We allow a status code of 401 (unauthorized). Otherwise it is interpreted as an error and we can't
             // check the HTTP status code.
             validateStatus: (status) => {
-                return (status >= 200 && status < 300) || status == 400
+                return (status >= 200 && status < 300) || status === 400 || status === 409
             }
         })
             .then(({data, status}) => {
@@ -145,9 +144,9 @@ class Registration extends React.Component {
                         this.setState({errorText: data});
                         break;
 
-                    case 226:
+                    case 409:
                         this.setState({error: true});
-                        this.setState({errorText: data});
+                        this.setState({errorText: "Username or E-Mail is already in use."});
                         break;
                 }
             });
@@ -166,10 +165,8 @@ class Registration extends React.Component {
         if (this.state.password != this.state.passwordConfirmation) {
             return false;
         }
-        if (!this.validatePassword(this.state.password)) {
-            return false
-        }
-        return true;
+        return this.validatePassword(this.state.password);
+
     }
 
     updateRegisterBtnState() {
@@ -182,23 +179,23 @@ class Registration extends React.Component {
 
     validateName(value) {
         // regex from https://stackoverflow.com/a/2044909/3898604
-        var re = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/g;
+        let re = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/g;
         return re.test(value);
     }
 
     validateEmail(value) {
         // regex from http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
-        var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(value);
     }
 
     validateUsername(value) {
-        var re = /^[a-zA-z_0-9]{3,20}$/;
+        let re = /^[a-zA-z_0-9]{3,20}$/;
         return re.test(value);
     }
 
     validatePassword(value) {
-        var re = /^.{8,}$/;
+        let re = /^.{8,}$/;
         return re.test(value);
     }
 
