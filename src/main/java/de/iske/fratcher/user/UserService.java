@@ -149,15 +149,21 @@ public class UserService {
      * @return true if all info are present
      */
     public boolean isUserProfileComplete(User user) {
+        LOG.info("Checking {} for complete profile ...", user);
         if (user.getProfile() == null) {
+            LOG.error("Profile is null for user {}", user);
             return false;
         } else if (user.getProfile().getName() == null) {
+            LOG.info("No name for user {}", user);
             return false;
         } else if (user.getProfile().getName().length() == 0) {
+            LOG.info("No name for user {}", user);
             return false;
         } else if (user.getProfile().getAboutMe() == null) {
+            LOG.info("No about me for user {}", user);
             return false;
         } else if (user.getProfile().getAboutMe().length() > 3) {
+            LOG.info("No about me too short {}", user);
             return false;
         }
         return true;
