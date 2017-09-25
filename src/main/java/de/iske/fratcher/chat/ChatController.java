@@ -5,6 +5,7 @@ import de.iske.fratcher.match.Match;
 import de.iske.fratcher.match.MatchService;
 import de.iske.fratcher.user.User;
 import de.iske.fratcher.user.UserService;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ public class ChatController {
     @Autowired
     private ChatService chatService;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     /**
      * API endpoint to receive a ChatConversation for a match.
      * <p>
@@ -60,7 +64,8 @@ public class ChatController {
         if (chatForMatch == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(chatForMatch, HttpStatus.OK);
+        ChatConversationDto conversationDto = convertConversationToDto(chatForMatch);
+        return new ResponseEntity<>(conversationDto, HttpStatus.OK);
     }
 
 
@@ -171,6 +176,14 @@ public class ChatController {
             return new ResponseEntity<>("MATCH_NOT_CONFIRMED", HttpStatus.UNAUTHORIZED);
         }
         return null;
+    }
+
+    private ChatConversationDto convertConversationToDto(ChatConversation conversation) {
+        return modelMapper.map(conversation, ChatConversationDto.class);
+    }
+
+    private ChatMessageDto convertToMsgToMsgDto(ChatMessage msg) {
+        return modelMapper.map(msg, ChatMessageDto.class);
     }
 
 
