@@ -7,18 +7,13 @@ class InterestsTagCloud extends React.Component {
     }
 
     componentWillMount() {
-        console.log("componentWillMount()");
-        console.log(this.props.data);
         if (this.props.data !== null) {
-            console.log("data != null");
             const tmpKeywords = this.props.data.map(function (keyword) {
                 return {value: keyword.value, count: keyword.count, key: keyword.id};
             });
-            console.log(tmpKeywords);
             this.setState({
                 keywords: tmpKeywords
             });
-            console.log("after ..");
         } else {
             this.setState({
                 keywords: null
