@@ -72,11 +72,11 @@ class MatchList extends React.Component {
                 <div key={match.id} onClick={() => this.handleClick(match.id)}>
                     <div>
                         {imgPath &&
-                        <UserAvatar size="40" name={name} src={imgPath}/>}
+                        <UserAvatar size="100" name={name} src={imgPath}/>}
                         {!imgPath &&
-                        <UserAvatar size="40" name={name}/>}
+                        <UserAvatar size="100" name={name}/>}
                     </div>
-                    <div>
+                    <div style={{}}>
                         {name}
                     </div>
                 </div>
