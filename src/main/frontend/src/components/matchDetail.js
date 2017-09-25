@@ -2,12 +2,12 @@ import React from "react";
 
 import User from "../util/User";
 import InterestsTagCloud from "./interestsTagCloud"
+import Chat from "./chat";
 
 
 import axios from "axios";
 import UserAvatar from "react-user-avatar";
-import Chat from "./chat";
-
+import {Button, Glyphicon, Modal} from "react-bootstrap"
 
 class MatchDetail extends React.Component {
 
@@ -15,11 +15,14 @@ class MatchDetail extends React.Component {
         super();
         this.state = {
             matchIdFromPath: props.match.params.id,
+            showDeleteConfirmationModal: false,
             match: null,
             loading: true,
             error: null
         };
-        // this.handleClick = this.handleClick.bind(this);
+        this.handleDeleteMatch = this.handleDeleteMatch.bind(this);
+        this.closeDeleteConfirmationModal = this.closeDeleteConfirmationModal.bind(this);
+        this.deleteMatch = this.deleteMatch.bind(this);
     }
 
     renderLoading() {
@@ -72,6 +75,46 @@ class MatchDetail extends React.Component {
         );
     }
 
+    closeDeleteConfirmationModal() {
+        this.setState({
+            showDeleteConfirmationModal: false
+        });
+    }
+
+    handleDeleteMatch() {
+        this.setState({
+            showDeleteConfirmationModal: true
+        });
+    }
+
+    deleteMatch() {
+        this.setState({
+            showDeleteConfirmationModal: true
+        });
+        axios('/api/match/' + this.state.matchIdFromPath, {
+            method: 'delete',
+            validateStatus: (status) => {
+                return (status >= 200 && status < 300) || status === 401
+            }
+        })
+            .then(({data, status}) => {
+                if (status === 401) {
+                    throw new Error(data);
+                } else if (status === 200) {
+                    this.props.history.push(`/matches/`);
+                }
+            })
+            .catch((err) => {
+                console.error("ERROR during delete of match : ");
+                console.error(err.message);
+                this.setState({
+                    loading: false,
+                    error: err.message
+                });
+                this.forceUpdate();
+            });
+    }
+
     renderMatch() {
         // Destructuring error and matches from state.
         // => I don't have to write "this.state...." every time.
@@ -81,10 +124,13 @@ class MatchDetail extends React.Component {
             return this.renderError();
         }
 
-
-
         return (
             <div>
+                <div>
+                    <span className="pull-right">
+                        <Button onClick={this.handleDeleteMatch} bsStyle='danger'><Glyphicon glyph="trash"/> Delete Match</Button>
+                    </span>
+                </div>
                 <div>
                     {user.profile.imgPath &&
                     <UserAvatar size="100" name={user.profile.name} src={user.profile.imgPath}/>}
@@ -102,8 +148,24 @@ class MatchDetail extends React.Component {
 
     render() {
         const {loading, error} = this.state;
+        let deleteConfirmationModal =
+            <Modal show={this.state.showDeleteConfirmationModal} onHide={this.closeDeleteConfirmationModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Delete Match ...</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <h4>Do you really want to break up this match?</h4>
+                    <p>You will then no longer be able to contact the user.</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={this.deleteMatch} bsStyle='danger'>Delete</Button>
+                    <Button onClick={this.closeDeleteConfirmationModal}>Cancel</Button>
+                </Modal.Footer>
+            </Modal>;
+
         return (
             <div className="component">
+                {deleteConfirmationModal}
                 {loading ? this.renderLoading() :
                     error ? this.renderError() :
                         <div className="row">

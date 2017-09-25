@@ -1,6 +1,8 @@
 package de.iske.fratcher.match;
 
 
+import de.iske.fratcher.chat.ChatConversation;
+import de.iske.fratcher.chat.ChatService;
 import de.iske.fratcher.user.User;
 import de.iske.fratcher.user.UserService;
 import de.iske.fratcher.util.Status;
@@ -27,6 +29,9 @@ public class MatchService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ChatService chatService;
 
     @Autowired
     private MatchRepository matchRepository;
@@ -167,8 +172,23 @@ public class MatchService {
             Collections.shuffle(matchingCandidates);
         }
 
+        LOG.info("[FOUND] {} matching candidates for {}", matchingCandidates.size(), user);
+
         return matchingCandidates;
 
+    }
+
+    public void deleteMatch(Match match) {
+        Match matchToDelete = matchRepository.findOne(match.getId());
+        matchToDelete.setStatus(Status.DELETED);
+        //update child entities
+        ChatConversation conversation = matchToDelete.getConversation();
+        if (conversation != null) {
+            chatService.deleteConversation(conversation);
+            conversation.setStatus(Status.DELETED);
+        }
+        matchRepository.save(matchToDelete);
+        LOG.info("[DELETED] {}", matchToDelete);
     }
 
     public Iterable<Match> getAllMatches() {

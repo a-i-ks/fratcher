@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface ChatConversationRepository extends CrudRepository<ChatConversation, Long> {
 
-    @Query("SELECT c FROM ChatConversation c WHERE c.match = :m")
+    @Query("SELECT c FROM ChatConversation c WHERE c.match = :m " +
+            "AND c.status = 0")
     ChatConversation findConversationForMatch(@Param("m") Match match);
 }

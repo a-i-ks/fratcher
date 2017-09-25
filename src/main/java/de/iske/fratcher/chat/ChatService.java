@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Service for all chat-related functional operations.
  *
@@ -68,5 +70,23 @@ public class ChatService {
 
     public ChatConversation getChatForMatch(Match match) {
         return chatConversationRepository.findConversationForMatch(match);
+    }
+
+    public void deleteConversation(ChatConversation conversation) {
+        ChatConversation conversationToDeleted = chatConversationRepository.findOne(conversation.getId());
+        conversationToDeleted.setStatus(Status.DELETED);
+        chatConversationRepository.save(conversationToDeleted);
+        // update messages of conversation
+        List<ChatMessage> messages = conversationToDeleted.getMessages();
+        if (messages != null) {
+            for (int i = 0; i < messages.size(); i++) {
+                ChatMessage msg = messages.get(i);
+                ChatMessage msgToDelete = chatMessageRepository.findOne(msg.getId());
+                msgToDelete.setStatus(Status.DELETED);
+                chatMessageRepository.save(msgToDelete);
+                LOG.info("[DELETED] {}", msgToDelete);
+            }
+        }
+        LOG.info("[DELETED] {}", conversationToDeleted);
     }
 }

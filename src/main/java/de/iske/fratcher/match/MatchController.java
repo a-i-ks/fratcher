@@ -107,6 +107,35 @@ public class MatchController {
         return new ResponseEntity<>(matchDto, HttpStatus.OK);
     }
 
+    /**
+     * API endpoint to delete a specific match.
+     * <p>
+     * Only confirmed LikeMatches can be deleted by one of the containing
+     * users. Otherwise a user could reject a like or dislike rating
+     *
+     * @param id ID of the match that should be deleted
+     * @return OK (200) if successful
+     */
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<Object> deleteMatch(@PathVariable Long id) {
+        if (userService.isAnonymous()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        Match match = matchService.getMatchById(id);
+        if (match == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else if (!match.getUser1().equals(userService.getCurrentUser()) &&
+                !match.getUser2().equals(userService.getCurrentUser())) {
+            return new ResponseEntity<>("NOT_PART_OF_MATCH", HttpStatus.UNAUTHORIZED);
+        } else if (!(match instanceof LikeMatch)) {
+            return new ResponseEntity<>("NO_LIKE_MATCH", HttpStatus.UNAUTHORIZED);
+        } else if (!match.isConfirmed()) {
+            return new ResponseEntity<>("NOT_CONFIRMED", HttpStatus.UNAUTHORIZED);
+        }
+        matchService.deleteMatch(match);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     private MatchDto convertToMatchDto(Match match) {
         MatchDto matchDto = modelMapper.map(match, MatchDto.class);
         if (match.getConversation() != null) {
