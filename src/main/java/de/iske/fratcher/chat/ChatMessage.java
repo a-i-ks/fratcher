@@ -5,7 +5,7 @@ import de.iske.fratcher.util.Status;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
 public class ChatMessage {
@@ -28,12 +28,12 @@ public class ChatMessage {
 
     private Status status;
 
-    private Instant transmissionTimestamp;
+    private LocalDateTime transmissionTimestamp;
 
-    private Instant seenTimestamp;
+    private LocalDateTime seenTimestamp;
 
     public ChatMessage() {
-        this.transmissionTimestamp = Instant.now();
+        this.transmissionTimestamp = LocalDateTime.now();
         this.status = Status.DEFAULT;
     }
 
@@ -85,25 +85,25 @@ public class ChatMessage {
         this.status = status;
     }
 
-    public Instant getTransmissionTimestamp() {
+    public LocalDateTime getTransmissionTimestamp() {
         return transmissionTimestamp;
     }
 
-    public void setTransmissionTimestamp(Instant transmissionTimestamp) {
+    public void setTransmissionTimestamp(LocalDateTime transmissionTimestamp) {
         this.transmissionTimestamp = transmissionTimestamp;
     }
 
-    public Instant getSeenTimestamp() {
+    public LocalDateTime getSeenTimestamp() {
         return seenTimestamp;
     }
 
-    public void setSeenTimestamp(Instant seenTimestamp) {
+    public void setSeenTimestamp(LocalDateTime seenTimestamp) {
         this.seenTimestamp = seenTimestamp;
     }
 
     @PrePersist
     public void prePersist() {
-        transmissionTimestamp = Instant.now();
+        transmissionTimestamp = LocalDateTime.now();
     }
 
     @Override

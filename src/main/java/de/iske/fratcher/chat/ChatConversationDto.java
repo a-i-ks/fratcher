@@ -1,6 +1,6 @@
 package de.iske.fratcher.chat;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class ChatConversationDto {
@@ -9,7 +9,7 @@ public class ChatConversationDto {
 
     private List<ChatMessageDto> messages;
 
-    private Instant startedTimestamp;
+    private LocalDateTime startedTimestamp;
 
     private Long matchId;
 
@@ -29,11 +29,11 @@ public class ChatConversationDto {
         this.messages = messages;
     }
 
-    public Instant getStartedTimestamp() {
+    public LocalDateTime getStartedTimestamp() {
         return startedTimestamp;
     }
 
-    public void setStartedTimestamp(Instant startedTimestamp) {
+    public void setStartedTimestamp(LocalDateTime startedTimestamp) {
         this.startedTimestamp = startedTimestamp;
     }
 

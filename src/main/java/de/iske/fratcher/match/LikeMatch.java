@@ -2,7 +2,7 @@ package de.iske.fratcher.match;
 
 import javax.persistence.Entity;
 import javax.persistence.PrePersist;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * Entity that describes that user1 pressed like on user2.
@@ -33,12 +33,12 @@ public class LikeMatch extends Match {
 
     @PrePersist
     public void prePersist() {
-        setMatchingTimestamp(Instant.now());
+        setMatchingTimestamp(LocalDateTime.now());
     }
 
     public void confirm() {
         setConfirmed(true);
-        setReactionTimestamp(Instant.now());
+        setReactionTimestamp(LocalDateTime.now());
     }
 
     @Override

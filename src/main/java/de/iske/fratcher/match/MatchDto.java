@@ -2,13 +2,13 @@ package de.iske.fratcher.match;
 
 import de.iske.fratcher.user.UserDto;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 public class MatchDto {
 
     private Long id;
 
-    private Instant matchingTimestamp;
+    private LocalDateTime matchingTimestamp;
 
     private UserDto user1;
 
@@ -32,11 +32,11 @@ public class MatchDto {
         this.id = id;
     }
 
-    public Instant getMatchingTimestamp() {
+    public LocalDateTime getMatchingTimestamp() {
         return matchingTimestamp;
     }
 
-    public void setMatchingTimestamp(Instant matchingTimestamp) {
+    public void setMatchingTimestamp(LocalDateTime matchingTimestamp) {
         this.matchingTimestamp = matchingTimestamp;
     }
 

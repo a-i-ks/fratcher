@@ -4,7 +4,7 @@ import de.iske.fratcher.match.Match;
 import de.iske.fratcher.util.Status;
 
 import javax.persistence.*;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,10 +23,10 @@ public class ChatConversation {
 
     private Status status;
 
-    private Instant startedTimestamp;
+    private LocalDateTime startedTimestamp;
 
     public ChatConversation() {
-        this.startedTimestamp = Instant.now();
+        this.startedTimestamp = LocalDateTime.now();
         this.status = Status.DEFAULT;
         messages = new ArrayList<>();
     }
@@ -63,17 +63,17 @@ public class ChatConversation {
         this.status = status;
     }
 
-    public Instant getStartedTimestamp() {
+    public LocalDateTime getStartedTimestamp() {
         return startedTimestamp;
     }
 
-    public void setStartedTimestamp(Instant startedTimestamp) {
+    public void setStartedTimestamp(LocalDateTime startedTimestamp) {
         this.startedTimestamp = startedTimestamp;
     }
 
     @PrePersist
     public void prePersist() {
-        startedTimestamp = Instant.now();
+        startedTimestamp = LocalDateTime.now();
     }
 
     @Override

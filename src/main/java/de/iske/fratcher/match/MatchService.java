@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -58,7 +58,7 @@ public class MatchService {
                 // => confirm like
                 ((LikeMatch) inverseMatch).confirm();
             } else { // => just set reaction timestamp for match
-                inverseMatch.setReactionTimestamp(Instant.now());
+                inverseMatch.setReactionTimestamp(LocalDateTime.now());
             }
             matchRepository.save(inverseMatch);
             return inverseMatch;
@@ -92,7 +92,7 @@ public class MatchService {
                 // => confirm dislike
                 ((DislikeMatch) inverseMatch).confirmDislike();
             } else { // => just set reaction timestamp for match
-                inverseMatch.setReactionTimestamp(Instant.now());
+                inverseMatch.setReactionTimestamp(LocalDateTime.now());
             }
             // save changes of Match to database
             matchRepository.save(inverseMatch);

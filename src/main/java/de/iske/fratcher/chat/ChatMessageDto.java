@@ -1,6 +1,6 @@
 package de.iske.fratcher.chat;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 public class ChatMessageDto {
 
@@ -12,9 +12,9 @@ public class ChatMessageDto {
 
     private String message;
 
-    private Instant transmissionTimestamp;
+    private LocalDateTime transmissionTimestamp;
 
-    private Instant seenTimestamp;
+    private LocalDateTime seenTimestamp;
 
     public Long getId() {
         return id;
@@ -48,19 +48,19 @@ public class ChatMessageDto {
         this.message = message;
     }
 
-    public Instant getTransmissionTimestamp() {
+    public LocalDateTime getTransmissionTimestamp() {
         return transmissionTimestamp;
     }
 
-    public void setTransmissionTimestamp(Instant transmissionTimestamp) {
+    public void setTransmissionTimestamp(LocalDateTime transmissionTimestamp) {
         this.transmissionTimestamp = transmissionTimestamp;
     }
 
-    public Instant getSeenTimestamp() {
+    public LocalDateTime getSeenTimestamp() {
         return seenTimestamp;
     }
 
-    public void setSeenTimestamp(Instant seenTimestamp) {
+    public void setSeenTimestamp(LocalDateTime seenTimestamp) {
         this.seenTimestamp = seenTimestamp;
     }
 }

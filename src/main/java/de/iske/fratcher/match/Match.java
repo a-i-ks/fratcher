@@ -6,7 +6,7 @@ import de.iske.fratcher.user.User;
 import de.iske.fratcher.util.Status;
 
 import javax.persistence.*;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity(name = "Match_")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -32,7 +32,7 @@ public abstract class Match {
     @ManyToOne(targetEntity = User.class)
     private User user2;
 
-    private Instant matchingTimestamp;
+    private LocalDateTime matchingTimestamp;
 
     /**
      * Chat between matched users
@@ -54,24 +54,24 @@ public abstract class Match {
      * of user1.
      * This timestamp is null, if user2 has not react on the like/dislike of user1
      */
-    private Instant reactionTimestamp;
+    private LocalDateTime reactionTimestamp;
 
     public Match() {
-        matchingTimestamp = Instant.now();
+        matchingTimestamp = LocalDateTime.now();
         status = Status.DEFAULT;
     }
 
-    public Instant getReactionTimestamp() {
+    public LocalDateTime getReactionTimestamp() {
         return reactionTimestamp;
     }
 
-    public void setReactionTimestamp(Instant reactionTimestamp) {
+    public void setReactionTimestamp(LocalDateTime reactionTimestamp) {
         this.reactionTimestamp = reactionTimestamp;
     }
 
     @PrePersist
     public void prePersist() {
-        matchingTimestamp = Instant.now();
+        matchingTimestamp = LocalDateTime.now();
     }
 
     public Status getStatus() {
@@ -111,11 +111,11 @@ public abstract class Match {
         this.setUser2(user2);
     }
 
-    public Instant getMatchingTimestamp() {
+    public LocalDateTime getMatchingTimestamp() {
         return matchingTimestamp;
     }
 
-    public void setMatchingTimestamp(Instant matchingTimestamp) {
+    public void setMatchingTimestamp(LocalDateTime matchingTimestamp) {
         this.matchingTimestamp = matchingTimestamp;
     }
 

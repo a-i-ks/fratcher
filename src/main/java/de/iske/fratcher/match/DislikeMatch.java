@@ -1,7 +1,7 @@
 package de.iske.fratcher.match;
 
 import javax.persistence.Entity;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * Entity that describes that user1 pressed dislike on user2.
@@ -30,7 +30,7 @@ public class DislikeMatch extends Match {
 
     public void confirmDislike() {
         setConfirmedDislike(true);
-        setReactionTimestamp(Instant.now());
+        setReactionTimestamp(LocalDateTime.now());
     }
 
     @Override
