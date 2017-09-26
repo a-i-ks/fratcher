@@ -159,6 +159,10 @@ public class MatchService {
         matchingCandidates.remove(user);
 
         LOG.info("[2] MatchingCandidates contains {} user after 1. filtering", matchingCandidates.size());
+        LOG.info("The following user are inside ...");
+        for (User u : matchingCandidates) {
+            LOG.info("{} {}", u.getStatus(), u);
+        }
 
 
         // remove all already rated candidates
