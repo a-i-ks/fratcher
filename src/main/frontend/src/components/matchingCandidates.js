@@ -217,7 +217,7 @@ class MatchingCandidates extends React.Component {
                 <Modal.Footer>
                     <Button onClick={this.closeMatchConfirmationModal} bsStyle='primary'>Go on searching ...</Button>
                     <Button onClick={this.closeMatchConfirmationAndChat} bsStyle='success'><Glyphicon glyph="send"/>
-                        Send a message</Button>
+                        &nbsp;&nbsp;Send a message</Button>
                 </Modal.Footer>
             </Modal>;
 
