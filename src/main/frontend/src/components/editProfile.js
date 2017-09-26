@@ -60,6 +60,7 @@ class EditProfile extends React.Component {
         this.validatePasswordConfirmation = this.validatePasswordConfirmation.bind(this);
 
         this.handleEditTags = this.handleEditTags.bind(this);
+        this.closeInfoMessage = this.closeInfoMessage.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
 
@@ -82,12 +83,12 @@ class EditProfile extends React.Component {
                     interests: (data.profile.interests === null || undefined) ? [] : data.profile.interests
                 })
             })
-            .catch(({error}) => {
-                //TODO Better error handling
-                console.log("error during load");
-                console.log(error);
+            .catch((err) => {
+                console.error("error during load");
+                console.error(err);
                 this.setState({
-                    error: true
+                    error: err,
+                    errorText: err.message,
                 });
             });
     }
@@ -246,19 +247,33 @@ class EditProfile extends React.Component {
                     interests: this.state.interests
                 }),
                 password: this.state.password
-            })
-            .then((data) => {
-                {/*TODO Handle success message*/
+            },
+            {
+                validateStatus: (status) => {
+                    return (status >= 200 && status < 300) || status === 409
                 }
-                console.log(data);
             })
-            .catch(({error}) => {
-                {/*TODO Better error handling*/
+            .then(({data, status}) => {
+                if (status === 200) {
+                    console.log("Successfully saved.");
+                    // use error property to display success message
+                    this.setState({
+                        error: true,
+                        errorText: "Successfully saved."
+                    });
+                } else if (status === 409) {
+                    console.error("Save not successful. Unique constraint conflict.");
+                    throw new Error(data);
+                } else {
+                    throw new Error("Unexpected server response: " + status)
                 }
-                console.log("error during send");
-                console.log(error);
+            })
+            .catch((err) => {
+                console.error("error during send");
+                console.error(err);
                 this.setState({
-                    error: true
+                    error: true,
+                    errorText: err.message
                 });
             });
 
@@ -273,6 +288,10 @@ class EditProfile extends React.Component {
                 email: this.state.email
             }),
         });
+    }
+
+    closeInfoMessage() {
+        this.setState({error: null});
     }
 
     handleCancel(event) {
@@ -331,9 +350,9 @@ class EditProfile extends React.Component {
                     <div className="col-md-9 personal-info">
                         <div className="alert alert-info alert-dismissable"
                              style={this.state.error ? {} : {display: `none`}}>
-                            <a className="panel-close close" data-dismiss="alert">×</a>
+                            <a className="panel-close close" data-dismiss="alert" onClick={this.closeInfoMessage}>×</a>
                             <i className="fa fa-coffee"/>
-                            {this.state.errorText}
+                            &nbsp;&nbsp;{this.state.errorText}
                         </div>
                         <h3>{t('personalInfo')}</h3>
                         <Form horizontal>

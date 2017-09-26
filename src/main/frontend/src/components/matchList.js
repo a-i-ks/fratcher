@@ -38,19 +38,20 @@ class MatchList extends React.Component {
                 });
                 this.forceUpdate();
             })
-            .catch(({error}) => {
-                console.log("error during load");
+            .catch((err) => {
+                console.error("error during load");
+                console.error(err);
                 this.setState({
                     loading: false,
-                    error: error
+                    error: err.message
                 });
             });
     }
 
     renderError() {
         return (
-            <div style={{marginLeft: '120px'}}>
-                An error has occurred: {this.state.error.message}
+            <div style={{marginLeft: '120px', color: 'red'}}>
+                An error has occurred: {this.state.error}
             </div>
         );
     }

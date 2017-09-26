@@ -107,11 +107,11 @@ public class UserService {
     public void mergeUser(User userToMerge) {
         User userObj = userRepository.findById(userToMerge.getId());
         if (!isUserProfileComplete(userToMerge)) {
-            userToMerge.setStatus(Status.INACTIVE);
+            userObj.setStatus(Status.INACTIVE);
             LOG.info("[INACTIVE] {}", userToMerge);
         } else {
             LOG.info("[ACTIVE] {}", userToMerge);
-            userToMerge.setStatus(Status.DEFAULT);
+            userObj.setStatus(Status.DEFAULT);
         }
         // merge user information
         if (userToMerge.getUsername() != null) {

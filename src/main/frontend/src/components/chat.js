@@ -34,7 +34,7 @@ class Chat extends React.Component {
 
     renderError() {
         return (
-            <div style={{color: 'red'}}>An error has occurred: {this.state.error.message}</div>
+            <div style={{color: 'red'}}>An error has occurred: {this.state.error}</div>
         );
     }
 
@@ -127,15 +127,13 @@ class Chat extends React.Component {
                     throw new Error("Unexpected response with code " + response.status);
                 }
             })
-            .catch(({err}) => {
-                if (err) {
-                    console.error("Error during submit of message:");
-                    console.error(err);
-                    this.setState({
-                        loading: false,
-                        error: err.message
-                    });
-                }
+            .catch((err) => {
+                console.error("Error during submit of message:");
+                console.error(err);
+                this.setState({
+                    loading: false,
+                    error: err.message
+                });
             });
     }
 
@@ -171,9 +169,9 @@ class Chat extends React.Component {
                 }
                 this.forceUpdate();
             })
-            .catch(({err}) => {
+            .catch((err) => {
                 console.error("Error during load of ChatConversation:");
-                console.error(err.message);
+                console.error(err);
                 this.setState({
                     loading: false,
                     error: err.message

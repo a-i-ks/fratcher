@@ -35,14 +35,10 @@ class MatchingCandidates extends React.Component {
     componentWillMount() {
         axios.get('/api/user/candidates')
             .then(({data}) => {
-                console.log("received data ...");
-                console.log(data);
                 if (data == null) {
-                    throw new Error("No matching candidates found");
+                    throw new Error("No matching candidates found. Is your profile complete?");
                 } else if (data.length == 0) {
-                    throw new Error("No matching candidates found");
-                } else if (data == "") {
-                    throw new Error("No matching candidates found");
+                    throw new Error("No matching candidates found. Is your profile complete?");
                 }
                 this.setState({
                     matchingCandidates: data,
@@ -51,7 +47,7 @@ class MatchingCandidates extends React.Component {
                 });
                 this.forceUpdate();
             })
-            .catch(({err}) => {
+            .catch((err) => {
                 console.error("error during load");
                 console.error(err);
                 this.setState({
@@ -67,8 +63,8 @@ class MatchingCandidates extends React.Component {
 
     renderError() {
         return (
-            <div style={{marginLeft: '120px'}}>
-                An error has occurred: {this.state.error.message}
+            <div style={{color: 'red', marginLeft: '120px'}}>
+                An error has occurred: {this.state.error}
             </div>
         );
     }
@@ -121,14 +117,12 @@ class MatchingCandidates extends React.Component {
                     });
                 }
             })
-            .catch(({error}) => {
-                {/*TODO Better error handling*/
-                }
-                console.log("error during send");
-                console.log(error);
+            .catch((err) => {
+                console.error("error during send");
+                console.error(err);
                 this.setState({
-                    error: true
-
+                    error: err.message,
+                    loading: false
                 });
             });
 

@@ -166,7 +166,23 @@ public class UserController {
         if (userToMerge.getPassword() != null && userToMerge.getPassword().length() > 0) {
             userToMerge.setPassword(authenticationService.hashPassword(userToMerge.getPassword()));
         }
-        userService.mergeUser(userToMerge);
+        try {
+            userService.mergeUser(userToMerge);
+        } catch (Exception e) { // something gone wrong during user merge
+            if (e instanceof DataIntegrityViolationException) {
+                // username/email already existing?
+                String message = e.toString().toLowerCase();
+                if (message.contains("public.user_(username)")) {
+                    return new ResponseEntity<>("Username is already taken.", HttpStatus.CONFLICT);
+                } else if (message.contains("public.user_(email)")) {
+                    return new ResponseEntity<>("Email is already taken.", HttpStatus.CONFLICT);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            } else {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
         // Add url of merged user to Location head field
         final URI location = ServletUriComponentsBuilder
                 .fromCurrentServletMapping().path("api/user/{id}").build()
