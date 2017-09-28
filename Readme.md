@@ -1,5 +1,8 @@
 # Fratcher #
 
+## Struture ##
+![Class Diagramm](/doc/fratcher_class_diagramm.png)
+
 ## Manual ##
 
 ### Test Users ###
