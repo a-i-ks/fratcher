@@ -1,5 +1,7 @@
 # Fratcher #
 
+Fratcher (Friend Matcher) is a demo application of a dating portal that is based on the Tinder principle. The technologies used include React for the frontend and Java Spring Boot for the backend. 
+
 ## Struture ##
 ![Class Diagramm](/doc/fratcher_class_diagramm.png)
 
